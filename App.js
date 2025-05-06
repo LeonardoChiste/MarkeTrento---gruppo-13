@@ -8,7 +8,7 @@ const Stato = {
 const Tannuncio={
     Evento, Promozione
 }
-const Tazienda={
+const Tazienda = {
     Ristorante, 
     Bar,
     Locale,
@@ -45,9 +45,10 @@ const Tprodotto = {
     AltraFrutta
 }
 class Prodotto{
-    constructor(nome, descrizione){
+    constructor(nome, descrizione,costo){
         this.nome=nome;
         this.descrizione=descrizione;
+        this.prezzo=costo;
     }
 }
 class PagaDati{
