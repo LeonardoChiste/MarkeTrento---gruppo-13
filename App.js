@@ -8,7 +8,7 @@ const Stato = {
 const Tannuncio={
     Evento, Promozione
 }
-const Tazienda={
+const Tazienda = {
     Ristorante, 
     Bar,
     Locale,
