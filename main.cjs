@@ -20,7 +20,7 @@ const cs=new mongoose.Schema(
         id:Number,
         nome:String,
         cognome:String,
-        birthdate:String,
+        birthdate:Number,
         email:String,
         username:String,
         password:String,
