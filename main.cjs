@@ -3,7 +3,7 @@ const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
 const{ Cliente} = require( "./App.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
-require('dotenv').config({ path: 'secret.env' });
+require('dotenv').config({ path: 'sec.env' });
 
 const dbUrl = process.env.DB_URL;
 
