@@ -11,13 +11,20 @@ class PagaDati{
     }
 }
 
-class Utente
-{
-
+class Utente {
+   constructor(){
+       this.name="-"
+       this.surname="-"
+       this.username="User"
+       this.birthdate=new Date(1900-1-1)
+       this.email=null
+       this.password=null
+   }
 }
 
 class Cliente extends Utente {
     constructor(name, surname, birthdate, email, username, password){
+        super()
         this.name=name;
         this.surname=surname;
         this.username=username;
