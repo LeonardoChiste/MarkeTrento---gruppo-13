@@ -22,7 +22,16 @@ class Cliente {
         this.password=password;
     }
 }
-class Venditore extends Cliente{
+//intanto non specifico nulla ma cambio solo ereditarietà
+class Imprenditore extends Cliente{
+    constructor(name, surname, birthdate, email, password){
+     super(name,surname,birthdate,email,password)
+    }
+    pubblicaAnnuncio(datiAnnuncio){ }
+    eliminaAnnuncio(annuncio){ }
+}
+
+class Venditore extends Imprenditore{
     constructor(name, surname, birthdate, email, password, tipo, datiPagamento){
         super(name, surname, birthdate, email, password);
         this.tipo=tipo;
@@ -30,15 +39,4 @@ class Venditore extends Cliente{
     }
     pubblicaProdotto(prod){ }
     eliminaProdotto(prod){ }
-}
-class Promotore extends Cliente{
-    constructor(name, surname, birthdate, email, password){
-        this.name=name;
-        this.surname=surname;
-        this.birthdate=birthdate;
-        this.email=email;
-        this.password=password;
-    }
-    pubblicaAnnuncio(datiAnnuncio){ }
-    eliminaAnnuncio(annuncio){ }
 }
