@@ -296,7 +296,7 @@ app.get('/mercato', (req, res) => {
 
 
 
-mongoose.connect('mongodb+srv://luciangorie:Ciambella2021+@cluster0.uty9hib.mongodb.net/AuthNams').then( ()=> {
+mongoose.connect('mongodb+srv://luciangorie:Ciam(Nopass)@cluster0.uty9hib.mongodb.net/AuthNams').then( ()=> {
     console.log("Connected!")
 })
 .catch(err => {
