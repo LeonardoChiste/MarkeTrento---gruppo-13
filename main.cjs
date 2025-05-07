@@ -1,8 +1,7 @@
 const express =require( 'express');
 const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
-const{ Cliente} = require( "./cliente.cjs");
-const{ Imprenditore} = require ( "./cliente.cjs");
+const{ Cliente} = require( "./App.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
 
 
@@ -19,6 +18,10 @@ app.use(express.static('public'));
 const cs=new mongoose.Schema(
     {
         id:Number,
+        nome:String,
+        cognome:String,
+        birthdate:String,
+        email:String,
         username:String,
         password:String,
     
@@ -27,8 +30,8 @@ const cs=new mongoose.Schema(
     
     
     let Clienti = [
-        new Cliente('admin', '$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa'),
-        new Cliente('adminz', '$2b$10$VX38pk7kmY/Re4QpLWvJZ.QcfgFJgkLBPxRquiQd.9BKZFcvRenpa'),
+        new Cliente('Nome','Cognome',151103,'a@gmail.com','cliente', '$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa'),
+        new Cliente('Nome','Cognome',12062000,'b@alicemail,com','cliente2', '$2b$10$VX38pk7kmY/Re4QpLWvJZ.QcfgFJgkLBPxRquiQd.9BKZFcvRenpa'),
     ];
     
     
