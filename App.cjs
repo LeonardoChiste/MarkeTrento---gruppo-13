@@ -13,11 +13,12 @@ class PagaDati{
 
 class Utente
 {
-
+    Utente(){}
 }
 
 class Cliente extends Utente {
     constructor(name, surname, birthdate, email, username, password){
+        super()
         this.name=name;
         this.surname=surname;
         this.username=username;
