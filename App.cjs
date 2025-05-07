@@ -11,9 +11,15 @@ class PagaDati{
     }
 }
 
-class Utente
-{
-    Utente(){}
+class Utente {  //metto delle robe di default per utenti non registrati
+   constructor(){
+       this.name="-"
+       this.surname="-"
+       this.username="User"
+       this.birthdate=new Date(1900-1-1)
+       this.email=null
+       this.password=null
+   }
 }
 
 class Cliente extends Utente {
@@ -26,9 +32,9 @@ class Cliente extends Utente {
         this.email=email;
         this.password=password;
     }
+    acquista(){ }
 }
 //intanto non specifico nulla ma cambio solo ereditarietà
-//Ma nel diagramma UML delle classi non c'è imprenditore, da dove salta fuori? -Leonardo
 class Imprenditore extends Cliente{
     constructor(name, surname, birthdate, email, password,sede,descrizione,tipo){
      super(name,surname,birthdate,email,password)
@@ -47,6 +53,19 @@ class Venditore extends Imprenditore{
     }
     pubblicaProdotto(prod){ }
     eliminaProdotto(prod){ }
+}
+
+class Admin extends Utente{
+    constructor(name, surname, birthdate, email, username, password){
+        super()
+        this.name=name;
+        this.surname=surname;
+        this.username=username;
+        this.birthdate=birthdate;
+        this.email=email;
+        this.password=password;
+    }
+    visualizzaCandidature(){ }
 }
 
 module.exports = {Cliente}
