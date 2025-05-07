@@ -25,7 +25,6 @@ class Utente {  //metto delle robe di default per utenti non registrati
 class Cliente extends Utente {
     constructor(name, surname, birthdate, email, username, password){
         super()
-        super()
         this.name=name;
         this.surname=surname;
         this.username=username;
