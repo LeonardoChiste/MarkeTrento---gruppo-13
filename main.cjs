@@ -20,7 +20,7 @@ const cs=new mongoose.Schema(
         id:Number,
         nome:String,
         cognome:String,
-        birthdate:String,
+        birthdate:Number,
         email:String,
         username:String,
         password:String,
@@ -296,7 +296,7 @@ app.get('/mercato', (req, res) => {
 
 
 
-mongoose.connect('mongodb+srv://luciangorie:Ciambella2021+@cluster0.uty9hib.mongodb.net/AuthNams').then( ()=> {
+mongoose.connect('mongodb+srv://luciangorie:Ciam(Nopass)@cluster0.uty9hib.mongodb.net/AuthNams').then( ()=> {
     console.log("Connected!")
 })
 .catch(err => {
