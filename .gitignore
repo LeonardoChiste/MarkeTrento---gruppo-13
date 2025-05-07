@@ -1,0 +1,3 @@
+#file contenenti password o info da coprire
+*.env
+#la totalità degli env files
