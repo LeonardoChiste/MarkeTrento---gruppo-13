@@ -3,6 +3,9 @@ const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
 const{ Cliente} = require( "./App.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
+require('dotenv').config({ path: 'secret.env' });
+
+const dbUrl = process.env.DB_URL;
 
 
 
@@ -298,7 +301,7 @@ app.get('/mercato', (req, res) => {
 
 
 //Va su tutti gli IP solo oggi 07/05, se non funziona chiedetemi che sblocco, Luzzani A
-mongoose.connect('mongodb+srv://luciangorie:2MhWKK941avMjmlT@cluster0.uty9hib.mongodb.net/AuthNams').then( ()=> {
+mongoose.connect(dbUrl).then( ()=> {
     console.log("Connected!")
 })
 .catch(err => {
