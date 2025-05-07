@@ -23,6 +23,7 @@ class Cliente {
     }
 }
 //intanto non specifico nulla ma cambio solo ereditarietà
+//Ma nel diagramma UML delle classi non c'è imprenditore, da dove salta fuori? -Leonardo
 class Imprenditore extends Cliente{
     constructor(name, surname, birthdate, email, password){
      super(name,surname,birthdate,email,password)
