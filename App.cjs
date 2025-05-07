@@ -11,10 +11,7 @@ class PagaDati{
     }
 }
 
-class Utente
-{
-    Utente(){}
-class Utente {
+class Utente {  //metto delle robe di default per utenti non registrati
    constructor(){
        this.name="-"
        this.surname="-"
