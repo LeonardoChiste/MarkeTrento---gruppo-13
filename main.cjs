@@ -68,11 +68,13 @@ async function compareDB(cc) {
         
         if (!user) {
             return false;
+            //var w=await hashPassword(cc.password);
+            //console.log(w);
         }
         else{
 
-        var w= await hashPassword(cc.password)
-        console.log(w);
+        //var w= await hashPassword(cc.password)
+        //console.log(w);
         return comparePassword(cc.password,user.password)
         
         }
@@ -179,7 +181,7 @@ app.get('/', (req, res) => {
 // Gestione del login (POST)
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    var c=new Cliente(username,password,'nd')
+    var c=new Cliente('n','n',2,'nd',username,password)
     var au= await compareDB(c);
     if (au) {
         res.send(`
@@ -295,8 +297,8 @@ app.get('/mercato', (req, res) => {
 
 
 
-
-mongoose.connect('mongodb+srv://luciangorie:Ciam(Nopass)@cluster0.uty9hib.mongodb.net/AuthNams').then( ()=> {
+//Va su tutti gli IP solo oggi 07/05, se non funziona chiedetemi che sblocco, Luzzani A
+mongoose.connect('mongodb+srv://luciangorie:2MhWKK941avMjmlT@cluster0.uty9hib.mongodb.net/AuthNams').then( ()=> {
     console.log("Connected!")
 })
 .catch(err => {
