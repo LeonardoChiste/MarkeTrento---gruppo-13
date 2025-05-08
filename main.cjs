@@ -3,8 +3,9 @@ const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
 const{ Cliente} = require( "./App.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
+require('dotenv').config({ path: 'process.env' });
 
-
+const dbUrl = process.env.DB_URL;
 
 
 const app = express();
@@ -20,7 +21,7 @@ const cs=new mongoose.Schema(
         id:Number,
         nome:String,
         cognome:String,
-        birthdate:String,
+        birthdate:Number,
         email:String,
         username:String,
         password:String,
@@ -68,11 +69,13 @@ async function compareDB(cc) {
         
         if (!user) {
             return false;
+            //var w=await hashPassword(cc.password);
+            //console.log(w);
         }
         else{
 
-        var w= await hashPassword(cc.password)
-        console.log(w);
+        //var w= await hashPassword(cc.password)
+        //console.log(w);
         return comparePassword(cc.password,user.password)
         
         }
@@ -87,7 +90,6 @@ app.use(express.json()); // Per dati JSON (opzionale ma utile)
 
 // Pagina principale
 app.get('/', (req, res) => {
-
     popola();
     res.send(`
     <!DOCTYPE html>
@@ -99,21 +101,21 @@ app.get('/', (req, res) => {
         <style>
             body {
                 font-family: Arial, sans-serif;
-                background-color: #f0fff0; /* verde molto chiaro */
+                background-color: #f0fff0;
                 margin: 0;
                 padding: 20px;
-                color: #006400; /* verde scuro */
+                color: #006400;
             }
             .container {
                 max-width: 600px;
                 margin: 0 auto;
-                background-color: #e0ffe0; /* verde chiaro */
+                background-color: #e0ffe0;
                 padding: 20px;
                 border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0, 100, 0, 0.1); /* ombra verde */
+                box-shadow: 0 0 10px rgba(0, 100, 0, 0.1);
             }
             h1 {
-                color: #008000; /* verde */
+                color: #008000;
                 text-align: center;
             }
             .description {
@@ -137,7 +139,35 @@ app.get('/', (req, res) => {
                 border-radius: 4px;
                 box-sizing: border-box;
             }
-            button {
+            .login-btn {
+                background-color: #008000;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .login-btn:hover {
+                background-color: #006400;
+            }
+            .register-btn {
+                background-color: white;
+                color: #008000;
+                padding: 8px 15px;
+                border: 1px solid #008000;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .register-btn:hover {
+                background-color: #f0fff0;
+            }
+            .guest-btn {
                 background-color: #008000;
                 color: white;
                 padding: 10px 15px;
@@ -147,7 +177,7 @@ app.get('/', (req, res) => {
                 font-size: 16px;
                 width: 100%;
             }
-            button:hover {
+            .guest-btn:hover {
                 background-color: #006400;
             }
         </style>
@@ -155,7 +185,7 @@ app.get('/', (req, res) => {
     <body>
         <div class="container">
             <h1>MarkeTrento - Pagina login</h1>
-            <p class="description"Accedi alla web app con i tuoi dati personali.</p>
+            <p class="description">Accedi alla web app con i tuoi dati personali.</p>
             
             <form action="/login" method="POST">
                 <div class="form-group">
@@ -168,7 +198,13 @@ app.get('/', (req, res) => {
                     <input type="password" id="password" name="password" required>
                 </div>
                 
-                <button type="submit">Accedi</button>
+                <button type="submit" class="login-btn">Accedi</button>
+            </form>
+            
+            <button class="register-btn" onclick="window.location.href='/registrazione'">Registrati</button>
+            
+            <form action="/mercato" method="GET">
+                <button type="submit" class="guest-btn">Accedi senza registrazione</button>
             </form>
         </div>
     </body>
@@ -179,7 +215,7 @@ app.get('/', (req, res) => {
 // Gestione del login (POST)
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    var c=new Cliente(username,password,'nd')
+    var c=new Cliente('n','n',2,'nd',username,password)
     var au= await compareDB(c);
     if (au) {
         res.send(`
@@ -295,8 +331,8 @@ app.get('/mercato', (req, res) => {
 
 
 
-
-mongoose.connect('mongodb+srv://luciangorie:Ciambella2021+@cluster0.uty9hib.mongodb.net/AuthNams').then( ()=> {
+//Va su tutti gli IP solo oggi 07/05, se non funziona chiedetemi che sblocco, Luzzani A
+mongoose.connect(dbUrl).then( ()=> {
     console.log("Connected!")
 })
 .catch(err => {
