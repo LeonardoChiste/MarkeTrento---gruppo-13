@@ -1,4 +1,5 @@
 const express =require( 'express');
+const path = require('path');
 const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
 const{ Cliente} = require( "./App.cjs");
@@ -13,6 +14,7 @@ const PORT = 3000;
 
 
 // Middleware
+//app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
@@ -259,7 +261,10 @@ app.post('/login', async (req, res) => {
     }
     else res.send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`)
 });
-
+/*
+app.get('/agenda', (req, res)=> {
+    res.sendFile(path.join(__dirname, 'public', 'frontend/Agenda.html'));
+});*/
 
 app.get('/mercato', (req, res) => {
     res.send(`
@@ -320,7 +325,7 @@ app.get('/mercato', (req, res) => {
                 <div class="nav-links">
                     <a href="/prodotti">tasto1</a>
                     <a href="/venditori">tasto2</a>
-                    <a href="../frontend/Agenda.html">tasto3</a>
+                    <a href="/agenda.html">tasto3</a>
                 </div>
             </div>
         </body>
@@ -328,7 +333,7 @@ app.get('/mercato', (req, res) => {
     `);
 });
 
-
+//C:\Users\leona\OneDrive\Desktop\MarkeTrento---gruppo-13\frontend\Agenda.html
 
 
 //Va su tutti gli IP solo oggi 07/05, se non funziona chiedetemi che sblocco, Luzzani A
