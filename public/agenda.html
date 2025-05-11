@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Weekly Agenda</title>
+  <title>Agenda</title>
   <style>
     body {
       font-family: sans-serif;
@@ -123,6 +123,7 @@
     <div class="modal-close" id="closeModal">&times;</div>
     <div class="modal-content" id="modalContent">
       <h3 id="modalTitle"></h3>
+      <p id="modalUser"></p>
       <p id="modalDescription"></p>
       <img id="modalImage" src="" alt="Event Image" />
     </div>
@@ -133,6 +134,7 @@
     const weekRange = document.getElementById('weekRange');
     const modal = document.getElementById('eventModal');
     const modalTitle = document.getElementById('modalTitle');
+    const modalUser = document.getElementById('modalUser');
     const modalDescription = document.getElementById('modalDescription');
     const modalImage = document.getElementById('modalImage');
     const closeModal = document.getElementById('closeModal');
@@ -159,10 +161,10 @@
         ]
       */
       return Promise.resolve([
-        { date: '2025-05-12', title: 'Team Sync', description: 'Weekly team sync', image: 'https://via.placeholder.com/300' },
-        { date: '2025-05-13', title: 'Demo Day', description: 'Project demo', image: 'https://via.placeholder.com/300' },
-        { date: '2025-05-14', title: 'Client Call', description: 'Call with client', image: 'https://via.placeholder.com/300' },
-        { date: '2025-05-14', title: 'Lunch', description: 'Team lunch', image: 'https://via.placeholder.com/300' }
+        { date: '2025-05-12', title: 'Sagra del pesce', user: 'Giovanni Giorgio', description: 'Mmmhhhhh pesce..', image: 'https://via.placeholder.com/300' },
+        { date: '2025-05-13', title: 'Fiera della castora', user: 'Franco detto "la lepre"', description: 'Castagnata con alcol', image: 'https://via.placeholder.com/300' },
+        { date: '2025-05-14', title: 'Promo 50%-off tuberi', user: 'Negozio di vegetali', description: 'Patate a metà prezzo per tutti', image: 'https://via.placeholder.com/300' },
+        { date: '2025-05-14', title: 'Sagra del contadino', user: 'Associazione vinicoltori', description: 'Degustazione vini', image: 'https://via.placeholder.com/300' }
       ]);
     }
 
@@ -198,6 +200,7 @@
             eventDiv.textContent = event.title;
             eventDiv.addEventListener('click', () => {
               modalTitle.textContent = event.title;
+              modalUser.textContent = event.user;
               modalDescription.textContent = event.description;
               modalImage.src = event.image;
               modal.style.display = 'flex';
