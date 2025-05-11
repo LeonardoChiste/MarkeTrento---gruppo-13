@@ -320,7 +320,7 @@ app.get('/mercato', (req, res) => {
                 <div class="nav-links">
                     <a href="/prodotti">tasto1</a>
                     <a href="/venditori">tasto2</a>
-                    <a href="Agenda.vue">tasto3</a>
+                    <a href="../frontend/Agenda.html">tasto3</a>
                 </div>
             </div>
         </body>
