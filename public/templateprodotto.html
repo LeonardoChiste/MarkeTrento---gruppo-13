@@ -114,6 +114,22 @@
         .nav-link:hover {
             background-color: var(--text-dark);
         }
+        
+        .error-message {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 1rem;
+            margin: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
     </style>
 </head>
 <body>
@@ -123,16 +139,78 @@
     </header>
     
     <div class="container">
-        <h2>PRODOTTI_DISPONIBILI_TITLE</h2>
+        <h2>PRODOTTI DISPONIBILI</h2>
         
-        <div class="products-grid">
-            <!-- PRODUCTS_PLACEHOLDER -->
+        <div class="products-grid" id="products-container">
+            <div class="loading">Caricamento prodotto in corso...</div>
         </div>
         
         <div class="nav-links">
-            <a href="/" class="nav-link">Torna alla home</a>
-            <a href="/mercato" class="nav-link">Vedi tutti i prodotti</a>
+            <a href="/mercato" class="nav-link">Torna alla home</a>
+            <a href="/agenda.html" class="nav-link">Vedi agenda</a>
         </div>
     </div>
+
+    <script>
+        // Funzione per recuperare un prodotto dall'API
+        async function getProductById(id) {
+            //QUI CI VUOLE API CHE PRENDE UN PRODOTTO!
+             };
+                
+                if (!response.ok) {
+                    throw new Error('Prodotto non trovato');
+                }
+                
+                return await response.json();
+            
+        
+        
+        // Funzione per visualizzare errori
+        function showError(message) {
+            const container = document.getElementById('products-container');
+            container.innerHTML = `<div class="error-message">${message}</div>`;
+        }
+        
+        // Funzione per creare la card del prodotto
+        function createProductCard(prodotto) {
+            const initials = prodotto.nome.split(' ')
+                              .map(word => word[0])
+                              .join('')
+                              .toUpperCase();
+            
+            // Usa il colore dell'immagine se presente, altrimenti un colore di default
+            const imageColor = prodotto.imageColor || '#81c784';
+
+            return `
+                <div class="product-card">
+                    <div class="product-image" style="background-color: ${imageColor}">
+                        ${initials}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${prodotto.nome}</h3>
+                        <p class="product-description">${prodotto.descrizione}</p>
+                        <p class="product-price">€${prodotto.prezzo.toFixed(2)}</p>
+                        <span class="product-tag">${prodotto.tag}</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Funzione per caricare e visualizzare il prodotto
+        async function loadProduct() {
+            
+            
+            // Recupera il prodotto dal server
+            const prodotto = await getProductById('682252f0a5469b8b944503ba');
+            
+            if (prodotto) {
+                const container = document.getElementById('products-container');
+                container.innerHTML = createProductCard(prodotto);
+                console.log('Prodotto caricato:', prodotto);
+            }
+        }
+        
+        loadProduct();
+    </script>
 </body>
 </html>

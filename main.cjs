@@ -5,6 +5,7 @@ const mongoose = require ('mongoose');
 const{ Cliente} = require( "./App.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
 require('dotenv').config({ path: 'process.env' });
+const {Prodotto,Product} = require('./prodotto.cjs');
 
 const dbUrl = process.env.DB_URL;
 
@@ -60,7 +61,18 @@ const cs=new mongoose.Schema(
 function popola()
 {
     insertUsernames();
+
+
 }
+
+function generaProdotto() {
+            return new Prodotto(
+                '1 kg di Mele Golden', 
+                'Mele golden coltivate senza uso di fitofarmaci in Val di Non',
+                2.20,
+                'Mele',
+            );
+        }
 
 async function compareDB(cc) {
     try {
@@ -114,6 +126,8 @@ app.get('/agenda', (req, res)=> {
 app.get('/mercato', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', `/mercato.html`));
 });
+
+
 
 
 

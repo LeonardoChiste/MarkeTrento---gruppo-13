@@ -1,3 +1,5 @@
+const mongoose = require ('mongoose');
+
 class Prodotto{
     constructor(nome, descrizione,prezzo,tag){
         this.nome=nome;
@@ -18,5 +20,19 @@ class Prodotto{
 
 }
 
-module.exports = {Prodotto};
+const pr=new mongoose.Schema(
+{
+     
+            id:Number,
+            nome:String,
+            descrizione:String,
+            costo:Number,
+            tag:String,}
+           
+        
+        );
+        const Product =mongoose.model('Prodotto',pr);
+
+
+module.exports = {Prodotto,Product};
 
