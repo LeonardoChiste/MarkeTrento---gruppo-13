@@ -1,5 +1,6 @@
 //import the client from app.cjs 
-import Utente from "./App.cjs"
+
+/*import Utente from "./App.cjs"
 
 class Cliente extends Utente {
     constructor(name, surname, birthdate, email, username, password){
@@ -19,5 +20,5 @@ class Cliente extends Utente {
 
     visualizzaCarrello(){ }
 
-    
-}
+
+}*/
