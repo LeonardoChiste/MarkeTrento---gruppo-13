@@ -32,8 +32,15 @@ class Cliente extends Utente {
         this.email=email;
         this.password=password;
     }
-    acquista(){ }
+    acquistaProdotto(){ }
+
+    visualizzaProdotto(){ }
+
+    visualizzaOrdini(){ }
+
+    visualizzaCarrello(){ }
 }
+
 //intanto non specifico nulla ma cambio solo ereditarietà
 class Imprenditore extends Cliente{
     constructor(name, surname, birthdate, email, password,sede,descrizione,tipo){
@@ -46,6 +53,8 @@ class Imprenditore extends Cliente{
     eliminaAnnuncio(annuncio){ }
 }
 
+//Ridondante visto che abbiamo il file dedicato per i venditori
+/*
 class Venditore extends Imprenditore{
     constructor(name, surname, birthdate, email, password, datiPagamento){
         super(name, surname, birthdate, email, password);
@@ -54,7 +63,7 @@ class Venditore extends Imprenditore{
     pubblicaProdotto(prod){ }
     eliminaProdotto(prod){ }
 }
-
+*/
 class Admin extends Utente{
     constructor(name, surname, birthdate, email, username, password){
         super()
