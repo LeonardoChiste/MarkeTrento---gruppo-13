@@ -1,10 +1,3 @@
-
-class Prodotto{
-    constructor(nome, descrizione){
-        this.nome=nome;
-        this.descrizione=descrizione;
-    }
-}
 class PagaDati{
     constructor(idConto){
         this.idConto=idConto;
@@ -53,8 +46,6 @@ class Imprenditore extends Cliente{
     eliminaAnnuncio(annuncio){ }
 }
 
-//Ridondante visto che abbiamo il file dedicato per i venditori
-/*
 class Venditore extends Imprenditore{
     constructor(name, surname, birthdate, email, password, datiPagamento){
         super(name, surname, birthdate, email, password);
@@ -63,7 +54,7 @@ class Venditore extends Imprenditore{
     pubblicaProdotto(prod){ }
     eliminaProdotto(prod){ }
 }
-*/
+
 class Admin extends Utente{
     constructor(name, surname, birthdate, email, username, password){
         super()
