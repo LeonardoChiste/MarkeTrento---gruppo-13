@@ -7,10 +7,9 @@ class Venditore extends Imprenditore{
         
     }
     pubblicaProdotto(prod){ 
-         
+        //funzione che aggiunge su database, la api grafica la fai da un altra parte
     }
-    
     eliminaProdotto(prod){ 
-        
+        //togli da database
     }
 }
