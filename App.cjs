@@ -1,10 +1,5 @@
 
-class Prodotto{
-    constructor(nome, descrizione){
-        this.nome=nome;
-        this.descrizione=descrizione;
-    }
-}
+
 class PagaDati{
     constructor(idConto){
         this.idConto=idConto;
