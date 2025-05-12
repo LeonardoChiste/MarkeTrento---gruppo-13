@@ -1,5 +1,3 @@
-
-
 class PagaDati{
     constructor(idConto){
         this.idConto=idConto;
@@ -41,14 +39,6 @@ class Imprenditore extends Cliente{
     eliminaAnnuncio(annuncio){ }
 }
 
-class Venditore extends Imprenditore{
-    constructor(name, surname, birthdate, email, password, datiPagamento){
-        super(name, surname, birthdate, email, password);
-        this.datiPagamento=datiPagamento;
-    }
-    pubblicaProdotto(prod){ }
-    eliminaProdotto(prod){ }
-}
 
 class Admin extends Utente{
     constructor(name, surname, birthdate, email, username, password){
