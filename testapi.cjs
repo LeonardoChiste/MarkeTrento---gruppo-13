@@ -275,7 +275,7 @@ app.get('/mercato', (req, res) => {
     const prodotto = generateProduct(); // Assicurati che questa funzione restituisca un oggetto Prodotto
     
     // 2. Leggi il template HTML
-    const templatePath = path.join(__dirname, 'templateprodotto.html');
+    const templatePath = path.join(__dirname,'public','templateprodotto.html');
     let html = fs.readFileSync(templatePath, 'utf8');
     
     // 3. Crea la card del prodotto
