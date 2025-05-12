@@ -1,4 +1,4 @@
-import Imprenditore from "./App.cjs"
+const Imprenditore = require('./Imprenditore.cjs');
 
 class Venditore extends Imprenditore{
     constructor(name, surname, birthdate, email, password, datiPagamento){
@@ -14,3 +14,5 @@ class Venditore extends Imprenditore{
         
     }
 }
+
+module.exports = Venditore;
