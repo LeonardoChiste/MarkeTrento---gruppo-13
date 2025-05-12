@@ -1,4 +1,5 @@
 const express =require( 'express');
+const path = require('path');
 const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
 const{ Cliente} = require( "./App.cjs");
@@ -13,6 +14,7 @@ const PORT = 3000;
 
 
 // Middleware
+//app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
@@ -91,125 +93,7 @@ app.use(express.json()); // Per dati JSON (opzionale ma utile)
 // Pagina principale
 app.get('/', (req, res) => {
     popola();
-    res.send(`
-    <!DOCTYPE html>
-    <html lang="it">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>MarkeTrento Official Webapp</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f0fff0;
-                margin: 0;
-                padding: 20px;
-                color: #006400;
-            }
-            .container {
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #e0ffe0;
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0, 100, 0, 0.1);
-            }
-            h1 {
-                color: #008000;
-                text-align: center;
-            }
-            .description {
-                margin-bottom: 20px;
-                text-align: center;
-                font-style: italic;
-            }
-            .form-group {
-                margin-bottom: 15px;
-            }
-            label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: bold;
-            }
-            input[type="text"],
-            input[type="password"] {
-                width: 100%;
-                padding: 8px;
-                border: 1px solid #008000;
-                border-radius: 4px;
-                box-sizing: border-box;
-            }
-            .login-btn {
-                background-color: #008000;
-                color: white;
-                padding: 10px 15px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 16px;
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            .login-btn:hover {
-                background-color: #006400;
-            }
-            .register-btn {
-                background-color: white;
-                color: #008000;
-                padding: 8px 15px;
-                border: 1px solid #008000;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 14px;
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            .register-btn:hover {
-                background-color: #f0fff0;
-            }
-            .guest-btn {
-                background-color: #008000;
-                color: white;
-                padding: 10px 15px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 16px;
-                width: 100%;
-            }
-            .guest-btn:hover {
-                background-color: #006400;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>MarkeTrento - Pagina login</h1>
-            <p class="description">Accedi alla web app con i tuoi dati personali.</p>
-            
-            <form action="/login" method="POST">
-                <div class="form-group">
-                    <label for="username">Nome utente:</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                
-                <button type="submit" class="login-btn">Accedi</button>
-            </form>
-            
-            <button class="register-btn" onclick="window.location.href='/registrazione'">Registrati</button>
-            
-            <form action="/mercato" method="GET">
-                <button type="submit" class="guest-btn">Accedi senza registrazione</button>
-            </form>
-        </div>
-    </body>
-    </html>
-    `);
+    res.sendFile(path.join(__dirname, 'public', `/default.html`));
 });
 
 // Gestione del login (POST)
@@ -218,116 +102,18 @@ app.post('/login', async (req, res) => {
     var c=new Cliente('n','n',2,'nd',username,password)
     var au= await compareDB(c);
     if (au) {
-        res.send(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Accesso effettuato</title>
-                <style>
-                    .progress-container {
-                        width: 100%;
-                        background-color: #ddd;
-                        border-radius: 5px;
-                        margin: 20px 0;
-                    }
-                    .progress-bar {
-                        height: 20px;
-                        background-color: #4CAF50;
-                        border-radius: 5px;
-                        width: 0%;
-                        transition: width 3s linear;
-                    }
-                </style>
-                <script>
-                    window.onload = function() {
-                        document.getElementById('progress').style.width = '100%';
-                        setTimeout(function() {
-                            window.location.href = '/mercato';
-                        }, 3000);
-                    };
-                </script>
-            </head>
-            <body>
-                <h1 style="color: #008000;">Accesso effettuato come ${username}</h1>
-                <div class="progress-container">
-                    <div id="progress" class="progress-bar"></div>
-                </div>
-                <p>Reindirizzamento in corso...</p>
-            </body>
-            </html>
-        `);
+        res.sendFile(path.join(__dirname, 'public', '/login.html'));
     }
     else res.send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`)
 });
-
+/*
+app.get('/agenda', (req, res)=> {
+    res.sendFile(path.join(__dirname, 'public', '/agenda.html'));
+});*/
 
 app.get('/mercato', (req, res) => {
-    res.send(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Mercato</title>
-            <style>
-                body { 
-                    font-family: Arial, sans-serif; 
-                    margin: 40px;
-                    line-height: 1.6;
-                }
-                h1 { 
-                    color: #0066cc; 
-                    border-bottom: 2px solid #0066cc;
-                    padding-bottom: 10px;
-                }
-                .container {
-                    max-width: 800px;
-                    margin: 0 auto;
-                }
-                .description {
-                    background-color: #f5f5f5;
-                    padding: 15px;
-                    border-radius: 5px;
-                    margin-bottom: 20px;
-                }
-                .nav-links {
-                    display: flex;
-                    gap: 15px;
-                    margin-top: 20px;
-                }
-                a {
-                    color: #0066cc;
-                    text-decoration: none;
-                    padding: 8px 15px;
-                    border: 1px solid #0066cc;
-                    border-radius: 5px;
-                    transition: all 0.3s;
-                }
-                a:hover {
-                    background-color: #0066cc;
-                    color: white;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>TITOLO: MERCATO</h1>
-                
-                <div class="description">
-                    <p>Questo è il mercato. Qui si possono selezionare i prodotti dai diversi venditori o reindirizzarsi alla sezione promozioni. Per ora ci sono 3 link vuoti</p>
-                </div>
-                
-                <h2>Azioni disponibili:</h2>
-                
-                <div class="nav-links">
-                    <a href="/prodotti">tasto1</a>
-                    <a href="/venditori">tasto2</a>
-                    <a href="/promozioni">tasto3</a>
-                </div>
-            </div>
-        </body>
-        </html>
-    `);
+    res.sendFile(path.join(__dirname, 'public', `/mercato.html`));
 });
-
 
 
 
