@@ -2,7 +2,7 @@ const express =require( 'express');
 const path = require('path');
 const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
-const{ Cliente} = require( "./App.cjs");
+const Cliente = require( "./classes/Cliente.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
 require('dotenv').config({ path: 'process.env' });
 
