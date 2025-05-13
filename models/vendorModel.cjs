@@ -11,6 +11,6 @@ module.exports = mongoose.model('DBVendor', new Schema({
     password:String,
     sede:String,
     descrizione:String,
-    tipoAzienda:String,
+    tipo:String,
     datiPagamento:String,
 }));

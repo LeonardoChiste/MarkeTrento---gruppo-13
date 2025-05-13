@@ -11,7 +11,7 @@ const Prodotto = require('./classes/prodotto.cjs')
 
 const dbUrl = process.env.DB_URL;
 const DBVendor=require('./models/vendorModel.cjs');
-const DBPromoter=require('./models/promoterModel.cjs');
+const DBEntrepeneur=require('./models/promoterModel.cjs');
 const Productv2=require('./models/productModel.cjs');  
 const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
@@ -30,8 +30,10 @@ app.use(express.static('public'));
     
     //FUNZIONE PER GENERARE COSE DA INSERIRE NEL DB PER TEST, con copilot su VSC SI FA MOLTO VELOCEMENTE
     async function insert(){
-        var venditore=new Venditore('Mario','Tonina',131270,'b@gm.com','fattori2','12345678','Via Roma 111', 'alleviamo mucche e coltiviamo mele male', 'fattoria', '128867890123456');
+       /* var venditore=new Venditore('Mario','Tonina',21111947,'b@gm.com','fattori2','12345678','Via Roma 111', 'alleviamo mucche e coltiviamo mele male', 'fattoria', '128867890123456');
         DBVendor.create(venditore);
+        var prodotto=new Prodotto('Mele','mele rosse',venditore.username,2.5,10,'frutta');
+        Productv2.create(prodotto);*/
     
     
 

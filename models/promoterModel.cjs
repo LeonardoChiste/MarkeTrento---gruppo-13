@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // set up a mongoose model
-module.exports = mongoose.model('DBPromoter', new Schema({ 
+module.exports = mongoose.model('DBEntrepeneur', new Schema({ 
     nome:String,
     cognome:String,
     birthdate:Date,
@@ -11,5 +11,5 @@ module.exports = mongoose.model('DBPromoter', new Schema({
     password:String,
     sede:String,
     descrizione:String,
-    tipoAzienda:String,
+    tipo:String,
 }));
