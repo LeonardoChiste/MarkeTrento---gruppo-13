@@ -5,7 +5,7 @@ const mongoose = require ('mongoose');
 const Cliente = require( "./classes/Cliente.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
 require('dotenv').config({ path: 'process.env' });
-const {Prodotto,Product} = require('./prodotto.cjs');
+const {Prodotto,Product} = require('./classes/prodotto.cjs');
 
 const dbUrl = process.env.DB_URL;
 
