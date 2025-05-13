@@ -1,9 +1,11 @@
 const mongoose = require ('mongoose');
 
 class Prodotto{
-    constructor(nome, descrizione,prezzo,tag){
+    constructor(nome, descrizione,venditore,prezzo,qq,tag){
         this.nome=nome;
         this.descrizione=descrizione;
+        this.venditore=venditore;
+        this.quantita=qq;
         this.costo=prezzo;
         this.tag=tag;
         //tag come enum ossia array di valore impostato a tipologia prodotto scelta
@@ -19,19 +21,7 @@ class Prodotto{
 
 
 }
-/*const pr=new mongoose.Schema(
-{
-     
-            id:Number,
-            nome:String,
-            descrizione:String,
-            costo:Number,
-            tag:String,}
-           
-        
-        );
-        const Product =mongoose.model('Prodotto',pr);
 
 
-module.exports = {Prodotto,Product};*/
+module.exports = Prodotto;
 

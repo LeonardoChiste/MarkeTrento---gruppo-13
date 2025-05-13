@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dettagli Venditore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .venditore-info {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .venditore-info h2 {
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .info-item {
+            margin: 10px 0;
+        }
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dettagli Venditore</h1>
+    <div id="venditore-container" class="venditore-info">
+        <h2 id="nome-venditore">Caricamento...</h2>
+        <div class="info-item">
+            <span class="info-label">Email:</span>
+            <span id="email-venditore"></span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Username:</span>
+            <span id="username-venditore"></span>
+        </div>
+        <!-- Aggiungi altri campi qui se necessario -->
+    </div>
+
+    <script>
+        const vendorname = 'Ezio'
+        
+        // Fetch dei dati del venditore
+        fetch(`/api/venditore/${vendorname}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Venditore non trovato');
+                }
+                return response.json();
+            })
+            .then(venditore => {
+                // Popola la pagina con i dati del venditore
+                document.getElementById('nome-venditore').textContent = `${venditore.nome} ${venditore.cognome}`;
+                document.getElementById('email-venditore').textContent = venditore.email;
+                document.getElementById('username-venditore').textContent = venditore.username;
+                
+                // Aggiungi qui altri campi se necessario
+            })
+            .catch(error => {
+                document.getElementById('venditore-container').innerHTML = `
+                    <h2>Errore</h2>
+                    <p>${error.message}</p>
+                `;
+            });
+    </script>
+</body>
+</html>
