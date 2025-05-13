@@ -143,6 +143,11 @@ app.get('/venditore/:nome', async (req, res) => {
 });
 
 
+app.get('/carrello', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'carrello.html'));
+});
+
+
 
 
 //Va su tutti gli IP solo oggi 07/05, se non funziona chiedetemi che sblocco, Luzzani A
