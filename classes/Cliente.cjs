@@ -1,5 +1,7 @@
 const Utente = require('./Utente.cjs');
 const Carrello = require('./Carrello.cjs');
+const { addProductToCarrello, removeProductFromCarrello } = require('../services/clienteService.cjs');
+
 
 class Cliente extends Utente {
     constructor(name, surname, birthdate, email, username, password) {
@@ -13,7 +15,20 @@ class Cliente extends Utente {
         this.carrello = new Carrello();
     }
 
-    acquistaProdotto() { }
+    //Aggiunge un prodotto al carrello e lo salva nel database
+    async aggiungiProdottoAlCarrello(prodotto) {
+        // Aggiorna carrello locale
+        this.carrello.aggiungiProdotto(prodotto);
+
+        // Aggiorna carrello nel database
+        await addProductToCarrello(this.id, prodotto);
+    }
+
+    // Rimuove un prodotto dal carrello e aggiorna il database (stessa logica di aggiungiProdottoAlCarrello)
+    async rimuoviProdottoDalCarrello(nomeProdotto) {
+        this.carrello.rimuoviProdotto(nomeProdotto);
+        await removeProductFromCarrello(this.id, nomeProdotto);
+    }
 
     visualizzaProdotto() { }
 
