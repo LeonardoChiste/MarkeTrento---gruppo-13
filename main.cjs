@@ -127,6 +127,17 @@ app.get('/mercato', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', `/mercato.html`));
 });
 
+app.get('/api/prodotti/:id', async (req, res) => {
+    try {
+        const prodotto = await Product.findById(req.params.id);// vedere se sintassi corretta
+        if (!prodotto) {
+            return res.status(404).json({ errore: 'Prodotto non trovato' });
+        }
+        res.json(prodotto);
+    } catch (error) {
+        res.status(500).json({ errore: 'Errore server', dettagli: error.message });
+    }
+});
 
 
 
