@@ -19,8 +19,7 @@ class Prodotto{
 
 
 }
-
-const pr=new mongoose.Schema(
+/*const pr=new mongoose.Schema(
 {
      
             id:Number,
@@ -34,5 +33,5 @@ const pr=new mongoose.Schema(
         const Product =mongoose.model('Prodotto',pr);
 
 
-module.exports = {Prodotto,Product};
+module.exports = {Prodotto,Product};*/
 

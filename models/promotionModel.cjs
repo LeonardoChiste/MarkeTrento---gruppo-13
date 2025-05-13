@@ -3,10 +3,9 @@ var Schema = mongoose.Schema;
 
 // set up a mongoose model
 module.exports = mongoose.model('Product', new Schema({ 
-    id:Number,
-    titolo:String,
-    descrizione:String,
     data:Date,
-    tipo:Tannuncio,
+    titolo:String,
     promotore:{type: Schema.Types.ObjectId, ref: 'Promoter'},
+    descrizione:String,
+    img: {data: Buffer, type: String },
 }));

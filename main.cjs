@@ -5,10 +5,15 @@ const mongoose = require ('mongoose');
 const Cliente = require( "./classes/Cliente.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
 require('dotenv').config({ path: 'process.env' });
-const {Prodotto,Product} = require('./prodotto.cjs');
+const {Prodotto} = require('./classes/prodotto.cjs');
 
 const dbUrl = process.env.DB_URL;
-
+const Vendor=require('./models/vendorModel.cjs');
+const Promoter=require('./models/promoterModel.cjs');
+//const Product=require('./models/productModel.cjs');  //Product è già definito, ma manca immagine, quantità, venditore etc.
+const Promotion=require('./models/promotionModel.cjs');
+//const Order=require('./models/orderModel.cjs');     //Orders contiene un product
+const Client=require('./models/clientModel.cjs');
 
 const app = express();
 const PORT = 3000;
@@ -18,20 +23,6 @@ const PORT = 3000;
 //app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-
-/*const cs=new mongoose.Schema(
-    {
-        id:Number,
-        nome:String,
-        cognome:String,
-        birthdate:Number,
-        email:String,
-        username:String,
-        password:String,
-    
-    });
-    const Utente =mongoose.model('Clienti',cs);*/
-    
     
     let Clienti = [
         new Cliente('Nome','Cognome',151103,'a@gmail.com','cliente', '$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa'),
@@ -39,18 +30,16 @@ app.use(express.static('public'));
     ];
     
     
-    
-    
     async function insertUsernames(){
     
     var ce=0;
     while(ce<2){
     
-    const sameUsername = await Utente.findOne({ 
+    const sameUsername = await Client.findOne({ 
         username: Clienti[ce].username 
 
     });
-    if(!sameUsername)await Utente.create(Clienti[ce])
+    if(!sameUsername)await Client.create(Clienti[ce])
 
 
     ++ce;
@@ -108,6 +97,22 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', `/default.html`));
 });
 
+app.get('/products', async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+app.get('/promotions', async (req, res) => {
+    try {
+        const promotions = await Promotion.find();
+        res.json(promotions);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 // Gestione del login (POST)
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
