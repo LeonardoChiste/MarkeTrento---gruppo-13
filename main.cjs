@@ -10,12 +10,12 @@ require('dotenv').config({ path: 'process.env' });
 const Prodotto = require('./classes/prodotto.cjs')
 
 const dbUrl = process.env.DB_URL;
-const Vendor=require('./models/vendorModel.cjs');
-const Promoter=require('./models/promoterModel.cjs');
-const Productv2=require('./models/productModel.cjs');  //Product è già definito, ma manca immagine, quantità, venditore etc.
-const Promotion=require('./models/promotionModel.cjs');
+const DBVendor=require('./models/vendorModel.cjs');
+const DBPromoter=require('./models/promoterModel.cjs');
+const Productv2=require('./models/productModel.cjs');  
+const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
-const Client=require('./models/clientModel.cjs');
+const DBClient=require('./models/clientModel.cjs');
 
 const app = express();
 const PORT = 3000;
@@ -26,35 +26,21 @@ const PORT = 3000;
 app.use(bodyParser.json());
 app.use(express.static('public'));
     
-    let Clienti = [
-        new Cliente('Nome','Cognome',151103,'a@gmail.com','cliente', '$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa'),
-        new Cliente('Nome','Cognome',12062000,'b@alicemail,com','cliente2', '$2b$10$VX38pk7kmY/Re4QpLWvJZ.QcfgFJgkLBPxRquiQd.9BKZFcvRenpa'),
-    ];
     
     
-    async function insertUsernames(){
+    //FUNZIONE PER GENERARE COSE DA INSERIRE NEL DB PER TEST, con copilot su VSC SI FA MOLTO VELOCEMENTE
+    async function insert(){
+        var venditore=new Venditore('Mario','Tonina',131270,'b@gm.com','fattori2','12345678','Via Roma 111', 'alleviamo mucche e coltiviamo mele male', 'fattoria', '128867890123456');
+        DBVendor.create(venditore);
     
-    var ce=0;
-    while(ce<2){
-    
-    const sameUsername = await Client.findOne({ 
-        username: Clienti[ce].username 
-
-    });
-    if(!sameUsername)await Client.create(Clienti[ce])
-
-
-    ++ce;
-    }
-   // var p=generaProdotto();
-    //Productv2.create(p);
     
 
 }
 
+
 function popola()
 {
-    insertUsernames();
+    insert();
 
 }
 
@@ -132,7 +118,7 @@ app.get('/mercato', (req, res) => {
 
 app.get('/venditore/:nome', async (req, res) => {
     try {
-        const venditore = await Vendor.findOne({nome: req.params.nome});
+        const venditore = await DBVendor.findOne({username: req.params.nome});
         if (!venditore) {
             return res.status(404).send('Venditore non trovato');
         }

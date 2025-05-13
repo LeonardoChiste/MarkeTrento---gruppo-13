@@ -48,10 +48,10 @@
     </div>
 
     <script>
-        const vendorname = 'Ezio'
+        const vendorname = 'fattoriafelice'
         
         // Fetch dei dati del venditore
-        fetch(`/api/venditore/${vendorname}`)
+        fetch(`http://localhost:3000/venditore/${vendorname}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Venditore non trovato');
