@@ -19,7 +19,7 @@ const PORT = 3000;
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-const cs=new mongoose.Schema(
+/*const cs=new mongoose.Schema(
     {
         id:Number,
         nome:String,
@@ -30,7 +30,7 @@ const cs=new mongoose.Schema(
         password:String,
     
     });
-    const Utente =mongoose.model('Clienti',cs);
+    const Utente =mongoose.model('Clienti',cs);*/
     
     
     let Clienti = [
