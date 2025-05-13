@@ -1,4 +1,5 @@
 const Imprenditore = require('./Imprenditore.cjs');
+const {Prodotto} = require('./classes/prodotto.cjs');
 
 class Venditore extends Imprenditore{
     constructor(name, surname, birthdate, email, password, datiPagamento){
@@ -6,11 +7,16 @@ class Venditore extends Imprenditore{
         this.datiPagamento=datiPagamento;
         
     }
-    pubblicaProdotto(prod){ 
-        //funzione che aggiunge su database, la api grafica la fai da un altra parte
+    async pubblicaProdotto(prod) {
+       
     }
-    eliminaProdotto(prod){ 
-        //togli da database
+
+    async eliminaProdotto(nomeProdotto) {
+    }
+
+    async mostraProdotti() {
+        //return await Prodotto.find({ venditore: this.name });
+        return await Prodotto.find({ venditore: this.name });
     }
 }
 
