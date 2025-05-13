@@ -8,4 +8,5 @@ module.exports = mongoose.model('Product', new Schema({
     venditore:{type: Schema.Types.ObjectId, ref: 'Vendor'},
     cliente:{type: Schema.Types.ObjectId, ref: 'Client'},
     pubblicazione:Date,
+    stato:String,
 }));

@@ -8,4 +8,5 @@ module.exports = mongoose.model('Product', new Schema({
     promotore:{type: Schema.Types.ObjectId, ref: 'Promoter'},
     descrizione:String,
     img: {data: Buffer, type: String },
+    tipoAnnuncio:String,
 }));

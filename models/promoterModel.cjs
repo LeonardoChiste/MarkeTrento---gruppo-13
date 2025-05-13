@@ -10,5 +10,6 @@ module.exports = mongoose.model('Promoter', new Schema({
     email:String,
     username:String,
     password:String,
-    promozioni:[{type: Schema.Types.ObjectId, ref: 'Promotion'}]
+    promozioni:[{type: Schema.Types.ObjectId, ref: 'Promotion'}],
+    tipoAzienda:String,
 }));

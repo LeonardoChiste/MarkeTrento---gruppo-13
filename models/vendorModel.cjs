@@ -11,4 +11,5 @@ module.exports = mongoose.model('Vendor', new Schema({
     username:String,
     password:String,
     prodotti:[{type: Schema.Types.ObjectId, ref: 'Product'}],
+    tipoAzienda:String,
 }));

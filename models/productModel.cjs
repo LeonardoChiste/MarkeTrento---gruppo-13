@@ -11,4 +11,5 @@ module.exports = mongoose.model('Product', new Schema({
     quantita:Number,
     Prezzo:Number,
     img: {data: Buffer, type: String },
+    tipoProdotto:String,
 }));

@@ -51,7 +51,6 @@ function popola()
 {
     insertUsernames();
 
-
 }
 
 function generaProdotto() {
