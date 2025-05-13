@@ -1,5 +1,5 @@
 const Imprenditore = require('./Imprenditore.cjs');
-const {Prodotto} = require('./classes/prodotto.cjs');
+
 
 class Venditore extends Imprenditore{
     constructor(name, surname, birthdate, email, password, datiPagamento){

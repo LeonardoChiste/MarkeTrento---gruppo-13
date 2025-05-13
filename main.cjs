@@ -3,15 +3,16 @@ const path = require('path');
 const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
 const Cliente = require( "./classes/Cliente.cjs");
+const Venditore = require( "./classes/Venditore.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
 require('dotenv').config({ path: 'process.env' });
 
-const {Prodotto} = require('./classes/prodotto.cjs')
+const Prodotto = require('./classes/prodotto.cjs')
 
 const dbUrl = process.env.DB_URL;
 const Vendor=require('./models/vendorModel.cjs');
 const Promoter=require('./models/promoterModel.cjs');
-//const Product=require('./models/productModel.cjs');  //Product è già definito, ma manca immagine, quantità, venditore etc.
+const Productv2=require('./models/productModel.cjs');  //Product è già definito, ma manca immagine, quantità, venditore etc.
 const Promotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
 const Client=require('./models/clientModel.cjs');
@@ -45,6 +46,9 @@ app.use(express.static('public'));
 
     ++ce;
     }
+   // var p=generaProdotto();
+    //Productv2.create(p);
+    
 
 }
 
@@ -54,14 +58,6 @@ function popola()
 
 }
 
-function generaProdotto() {
-            return new Prodotto(
-                '1 kg di Mele Golden', 
-                'Mele golden coltivate senza uso di fitofarmaci in Val di Non',
-                2.20,
-                'Mele',
-            );
-        }
 
 async function compareDB(cc) {
     try {
@@ -132,15 +128,17 @@ app.get('/mercato', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', `/mercato.html`));
 });
 
-app.get('/api/prodotti/:id', async (req, res) => {
+
+
+app.get('/venditore/:nome', async (req, res) => {
     try {
-        const prodotto = await Product.findById(req.params.id);// vedere se sintassi corretta
-        if (!prodotto) {
-            return res.status(404).json({ errore: 'Prodotto non trovato' });
+        const venditore = await Vendor.findOne({nome: req.params.nome});
+        if (!venditore) {
+            return res.status(404).send('Venditore non trovato');
         }
-        res.json(prodotto);
+        res.sendFile(path.join(__dirname, 'public', 'venditore.html'));
     } catch (error) {
-        res.status(500).json({ errore: 'Errore server', dettagli: error.message });
+        res.status(500).send('Errore del server');
     }
 });
 
