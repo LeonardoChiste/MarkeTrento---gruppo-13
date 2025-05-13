@@ -7,6 +7,7 @@ module.exports = mongoose.model('Product', new Schema({
     titolo:String,
     descrizione:String,
     pubblicazione:Date,
+    tag: Tprodotto,
     venditore:{type: Schema.Types.ObjectId, ref: 'Client'},
     quantita:Number,
     Prezzo:Number,

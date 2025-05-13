@@ -7,5 +7,6 @@ module.exports = mongoose.model('Product', new Schema({
     titolo:String,
     descrizione:String,
     data:Date,
+    tipo:Tannuncio,
     promotore:{type: Schema.Types.ObjectId, ref: 'Promoter'},
 }));
