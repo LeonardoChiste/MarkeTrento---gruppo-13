@@ -41,7 +41,7 @@
             gap: 16px;
             margin-bottom: 20px;
         }
-        .controls input, .controls select {
+        .controls input {
             padding: 6px 10px;
             border-radius: 4px;
             border: 1px solid #b2f2b2;
@@ -90,7 +90,6 @@
                 const venditori = await res.json();
                 venditoriGlobal = Array.isArray(venditori) ? venditori : [];
                 aggiornaLista();
-                popolaSedi();
             } catch (err) {
                 lista.innerHTML = '<span style="color:red;">Errore nel caricamento dei venditori.</span>';
             }
@@ -98,11 +97,9 @@
 
         function aggiornaLista() {
             const lista = document.getElementById('listaVenditori');
-            const filtro = document.getElementById('filtroNome').value.toLowerCase();
-            const sedeSel = document.getElementById('filtroSede').value;
+            const filtro = document.getElementById('filtroUsername').value.toLowerCase();
             let filtrati = venditoriGlobal.filter(v => 
-                (`${v.nome} ${v.cognome}`.toLowerCase().includes(filtro)) &&
-                (sedeSel === '' || (v.sede || '-') === sedeSel)
+                v.username.toLowerCase().includes(filtro)
             );
             if (filtrati.length === 0) {
                 lista.innerHTML = '<em>Nessun venditore trovato.</em>';
@@ -128,13 +125,6 @@
             window.location.href = `/venditore/${id}`;
         }
 
-        function popolaSedi() {
-            const select = document.getElementById('filtroSede');
-            const sedi = Array.from(new Set(venditoriGlobal.map(v => v.sede || '-')));
-            select.innerHTML = '<option value="">Tutte le sedi</option>' +
-                sedi.map(s => `<option value="${s}">${s}</option>`).join('');
-        }
-
         function apriDettagliVenditoreTest() {
             window.location.href = '/dettaglivenditore.html';
         }
@@ -148,10 +138,7 @@
     </div>
     <h1>Venditori registrati</h1>
     <div class="controls">
-        <input type="text" id="filtroNome" placeholder="Cerca per nome/cognome" oninput="aggiornaLista()">
-        <select id="filtroSede" onchange="aggiornaLista()">
-            <option value="">Tutte le sedi</option>
-        </select>
+        <input type="text" id="filtroUsername" placeholder="Cerca per nome_azienda" oninput="aggiornaLista()">
     </div>
     <div id="listaVenditori"></div>
 </body>

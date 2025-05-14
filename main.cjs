@@ -165,13 +165,13 @@ app.get('/mercato', (req, res) => {
 
 
 
-app.get('/venditore/:id', async (req, res) => {
+app.get('/api/venditore/:id', async (req, res) => {
     try {
         const venditore = await VenditoreServizio.getVendorById(req.params.id);
         if (!venditore) {
             return res.status(404).send('Venditore non trovato');
         }
-        res.sendFile(path.join(__dirname, 'public', '/dettaglivenditore.html'));
+        res.json(venditore);
     } catch (error) {
         res.status(500).send('Errore del server');
     }

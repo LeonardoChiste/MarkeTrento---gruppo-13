@@ -33,26 +33,81 @@
             border-radius: 22px;
             box-shadow: 0 6px 32px #b2f2b2;
             padding: 48px 38px;
-            min-width: 350px;
-            max-width: 90vw;
+            min-width: 370px;
+            max-width: 95vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        h1 {
+        .venditore-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+        .venditore-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #d4f5d4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
             color: #218838;
-            text-align: center;
-            margin-bottom: 32px;
+            font-weight: bold;
+            border: 2px solid #28a745;
+        }
+        .venditore-nome {
+            font-size: 2em;
+            color: #218838;
+            font-weight: bold;
             letter-spacing: 1px;
         }
-        .dettaglio {
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 32px;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+        .info-item {
             background: #e6ffe6;
-            border-left: 8px solid #28a745;
-            margin-bottom: 22px;
-            padding: 18px 22px;
+            border-left: 6px solid #28a745;
             border-radius: 10px;
             box-shadow: 0 1px 6px #d4f5d4;
-            font-size: 1.15em;
+            padding: 14px 18px;
+            font-size: 1.08em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .dettaglio strong {
+        .info-label {
             color: #155724;
+            font-weight: bold;
+            min-width: 90px;
+        }
+        .info-value {
+            color: #333;
+            word-break: break-all;
+        }
+        .descrizione-section {
+            width: 100%;
+            margin-top: 10px;
+            background: #f6fff6;
+            border-radius: 10px;
+            border: 1px solid #b2f2b2;
+            padding: 18px 18px 10px 18px;
+            box-shadow: 0 1px 6px #d4f5d4;
+        }
+        .descrizione-title {
+            color: #218838;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 1.1em;
+        }
+        .descrizione-text {
+            color: #444;
             font-size: 1.08em;
         }
         .back-btn {
@@ -72,42 +127,77 @@
         .back-btn:hover {
             background: #218838;
         }
-    </style>
-    <script>
-        // Inserisci qui l'id del venditore che vuoi visualizzare
-        const VENDITORE_ID = '6824a50ac5b5b7b972aaa98c'; // <-- Sostituisci con l'id reale
-
-        async function caricaDettagliVenditore() {
-            const container = document.getElementById('dettagliVenditore');
-            container.innerHTML = 'Caricamento...';
-            try {
-                const res = await fetch(`/api/venditori/${VENDITORE_ID}`);
-                if (!res.ok) {
-                    container.innerHTML = '<span style="color:red;">Venditore non trovato.</span>';
-                    return;
-                }
-                const v = await res.json();
-                container.innerHTML = `
-                    <h1>Dettagli Venditore</h1>
-                    <div class="dettaglio"><strong>Nome:</strong> ${v.nome || '-'}</div>
-                    <div class="dettaglio"><strong>Cognome:</strong> ${v.cognome || '-'}</div>
-                    <div class="dettaglio"><strong>Username:</strong> ${v.username || '-'}</div>
-                    <div class="dettaglio"><strong>Email:</strong> ${v.email || '-'}</div>
-                    <div class="dettaglio"><strong>Sede:</strong> ${v.sede || '-'}</div>
-                    <div class="dettaglio"><strong>Descrizione:</strong> ${v.descrizione || '-'}</div>
-                    <div class="dettaglio"><strong>Tipo attività:</strong> ${v.tipo || '-'}</div>
-                `;
-            } catch (err) {
-                container.innerHTML = '<span style="color:red;">Errore nel caricamento dei dettagli.</span>';
+        @media (max-width: 600px) {
+            .card {
+                padding: 18px 6vw;
+                min-width: unset;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
             }
         }
-        window.onload = caricaDettagliVenditore;
-    </script>
+    </style>
 </head>
 <body>
     <div class="venditore-full">
         <div class="card" id="dettagliVenditore"></div>
         <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
     </div>
+    <script>
+        // Inserisci qui l'id del venditore che vuoi visualizzare
+        const id = '6824a50ac5b5b7b972aaa98c'; // <-- Sostituisci con l'id reale
+
+        async function getVenditorewithID() {
+            const container = document.getElementById('dettagliVenditore');
+            container.innerHTML = 'Caricamento...';
+            try {
+                const res = await fetch(`/api/venditore/${id}`);
+                if (!res.ok) {
+                    container.innerHTML = '<span style="color:red;">Venditore non trovato.</span>';
+                    return;
+                }
+                const v = await res.json();
+                return v;
+            } catch (e) {
+                container.innerHTML = '<span style="color:red;">Errore di rete.</span>';
+            }
+        }
+
+        function getInitials(nome, cognome) {
+            let n = (nome || '').trim();
+            let c = (cognome || '').trim();
+            return (n[0] || '') + (c[0] || '');
+        }
+
+        function mostraVenditore(v) {
+            const container = document.getElementById('dettagliVenditore');
+            if (!v) return;
+            container.innerHTML = `
+                <div class="venditore-header">
+                    <div class="venditore-avatar">${getInitials(v.nome, v.cognome)}</div>
+                    <div class="venditore-nome">${v.nome || 'Nome non disponibile'} ${v.cognome || ''}</div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${v.email || 'N/A'}</span></div>
+                    <div class="info-item"><span class="info-label">Username:</span> <span class="info-value">${v.username || 'N/A'}</span></div>
+                    <div class="info-item"><span class="info-label">Tipo:</span> <span class="info-value">${v.tipo || 'N/A'}</span></div>
+                    <div class="info-item"><span class="info-label">Sede:</span> <span class="info-value">${v.sede || 'N/A'}</span></div>
+                    <div class="info-item"><span class="info-label">Data nascita:</span> <span class="info-value">${v.birthdate ? (new Date(v.birthdate)).toLocaleDateString('it-IT') : 'N/A'}</span></div>
+                    <div class="info-item"><span class="info-label">Dati Pagamento:</span> <span class="info-value">${v.datiPagamento || 'N/A'}</span></div>
+                </div>
+                <div class="descrizione-section">
+                    <div class="descrizione-title">Descrizione</div>
+                    <div class="descrizione-text">${v.descrizione || 'Nessuna descrizione disponibile.'}</div>
+                </div>
+            `;
+        }
+
+        async function init() {
+            const venditore = await getVenditorewithID();
+            mostraVenditore(venditore);
+        }
+
+        init();
+    </script>
 </body>
 </html>
