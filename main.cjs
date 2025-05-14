@@ -124,7 +124,7 @@ app.post('/loginbusiness', async (req, res) => {
     const { username, password } = req.body;
     var au= await compareDBbusiness(username, password);
     if (au) {
-        res.sendFile(path.join(__dirname, 'public', '/login.html'));
+        res.sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
     }
     else
     {

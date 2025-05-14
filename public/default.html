@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarkeTrento Official Webapp</title>
     <style>
+        /* Stili invariati */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0fff0;
@@ -38,9 +39,10 @@
             font-weight: bold;
         }
         input[type="text"],
-        input[type="password"] {
+        input[type="password"],
+        select {
             width: 100%;
-            padding: 8px;
+            padding: 10px 15px;
             border: 1px solid #008000;
             border-radius: 4px;
             box-sizing: border-box;
@@ -58,20 +60,6 @@
         }
         .login-btn:hover {
             background-color: #006400;
-        }
-        .business-btn {
-            background-color: #004d00;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .business-btn:hover {
-            background-color: #003300;
         }
         .register-btn {
             background-color: white;
@@ -115,32 +103,17 @@
         
         <form action="/login" method="POST">
             <div class="form-group">
-                <label for="username">Nome utente:</label>
-                <input type="text" id="username" name="username" required>
+            <label for="username">Nome utente:</label>
+            <input type="text" id="username" name="username" required>
             </div>
             
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
             </div>
             
-            <button type="submit" class="login-btn">Accedi come Cliente</button>
-        </form>
-
-        <div class="divider">OPPURE</div>
-        
-        <form action="/loginbusiness" method="POST">
-            <div class="form-group">
-                <label for="business-username">Nome utente:</label>
-                <input type="text" id="business-username" name="username" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="business-password">Password:</label>
-                <input type="password" id="business-password" name="password" required>
-            </div>
-            
-            <button type="submit" class="business-btn">Accedi come Imprenditore/Venditore</button>
+            <button type="submit" class="login-btn" name="userType" value="cliente">Accedi come Cliente</button>
+            <button type="submit" class="login-btn" name="userType" value="business" formaction="/loginbusiness">Accedi come Imprenditore/Venditore</button>
         </form>
         
         <button class="register-btn" onclick="window.location.href='/registrazione'">Registrati</button>
