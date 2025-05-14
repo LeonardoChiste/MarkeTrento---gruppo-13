@@ -8,8 +8,8 @@ const Imprenditore = require( "./classes/Imprenditore.cjs");
 const {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2}= require ("./passwordhasher.cjs")
 require('dotenv').config({ path: 'process.env' });
 
-const Prodotto = require('./classes/prodotto.cjs')
-
+const Prodotto = require('./classes/prodotto.cjs');
+const ProdottoServizio = require('./services/ProdottoService.cjs');
 const dbUrl = process.env.DB_URL;
 const DBVendor=require('./models/vendorModel.cjs');
 const DBEntrepreneur=require('./models/promoterModel.cjs');
@@ -99,7 +99,7 @@ app.get('/products', async (req, res) => {
 
 app.get('/api/prodotti/:id', async (req, res) => {
     try {
-        const prodotto = await getProductById(req.params.id);
+        const prodotto = await ProdottoServizio.getProductById(req.params.id);
         if (!prodotto) {
             return res.status(404).send('Prodotto non trovato');
         }
