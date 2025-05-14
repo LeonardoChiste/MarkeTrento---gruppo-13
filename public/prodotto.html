@@ -152,21 +152,48 @@
     </div>
 
     <script type="module">
-        import { getProductById } from '../services/ProdottoService.cjs';
-
-        async function loadProduct() {
-            const container = document.getElementById('products-container');
-            try {
-                const prodotto = await getProductById('682252f0a5469b8b944503ba'); // Replace with the actual product ID
-                container.innerHTML = createProductCard(prodotto);
-                console.log('Prodotto caricato:', prodotto);
-            } catch (error) {
-                showError('Errore durante il caricamento del prodotto.');
-                console.error(error);
+    async function getProductById(id) {
+        try {
+            const response = await fetch(`/api/prodotti/${id}`);
+            if (!response.ok) {
+                throw new Error('Prodotto non trovato');
             }
+            return await response.json();
+        } catch (error) {
+            console.error('Errore durante il recupero del prodotto:', error);
+            throw error;
         }
+    }
 
-        window.addEventListener('DOMContentLoaded', loadProduct);
-    </script>
+    function createProductCard(prodotto) {
+        return `
+            <div class="product-card">
+                <div class="product-image">
+                    <span>${prodotto.nome.charAt(0).toUpperCase()}</span>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">${prodotto.nome}</h3>
+                    <p class="product-description">${prodotto.descrizione}</p>
+                    <p class="product-price">Prezzo: €${prodotto.costo.toFixed(2)}</p>
+                    <span class="product-tag">${prodotto.tag}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    async function loadProduct() {
+        const container = document.getElementById('products-container');
+        try {
+            const prodotto = await getProductById('6823963fe3f68207540baa2d'); 
+            container.innerHTML = createProductCard(prodotto);
+            console.log('Prodotto caricato:', prodotto);
+        } catch (error) {
+            container.innerHTML = `<div class="error-message">Errore durante il caricamento del prodotto.</div>`;
+            console.error(error);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadProduct);
+</script>
 </body>
 </html>

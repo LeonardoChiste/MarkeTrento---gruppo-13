@@ -61,19 +61,66 @@
 <body>
     <div class="container">
         <h1>Il tuo carrello</h1>
-        <ul class="product-list">
-            <!-- Example product items -->
-            <li class="product-item">
-                <span>Mela</span>
-                <span>€1.20</span>
-            </li>
-            <li class="product-item">
-                <span>Banana</span>
-                <span>€0.80</span>
-            </li>
+        <ul class="product-list" id="carrello-container">
+            <div class="loading">Caricamento carrello in corso...</div>
         </ul>
-        <p class="total">Totale: €2.00</p>
+        <p class="total" id="total-price">Totale: €0.00</p>
         <a href="/mercato" class="back-btn">Torna indietro</a>
     </div>
+
+    <script>
+        // Recupera il carrello di un cliente
+        async function getCarrello(clientId) {
+            try {
+                const response = await fetch(`/api/carrello/${clientId}`);
+                if (!response.ok) {
+                    throw new Error('Carrello non trovato');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Errore durante il recupero del carrello:', error);
+                throw error;
+            }
+        }
+
+        // Crea l'HTML per un singolo prodotto nel carrello
+        function createProductItem(prodotto) {
+            const prezzo = prodotto.prezzo || 0; // Fallback a 0 se il prezzo e' undefeined
+            return `
+            <li class="product-item">
+                <span>${prodotto.nome || 'Prodotto sconosciuto'}</span>
+                <span>€${prezzo.toFixed(2)}</span>
+            </li>
+    `       ;
+        }
+
+        // Carica il carrello e lo mostra
+        async function loadCarrello() {
+            const container = document.getElementById('carrello-container');
+            const totalPriceElement = document.getElementById('total-price');
+                try {
+                    const clientId = '68245a82ef2a089ff02b2a7b'; // ID di prova
+                    const carrello = await getCarrello(clientId);
+
+                    // Controlla se il carrello è vuoto e se si, lo stampa
+                    if (!carrello || carrello.length === 0) {
+                        container.innerHTML = `<div class="error-message">Carrello vuoto</div>`;
+                        totalPriceElement.textContent = `Totale: €0.00`;
+                        return;
+                    }
+
+                    // Popola carrello
+                    container.innerHTML = carrello.map(createProductItem).join('');
+                    const totalPrice = carrello.reduce((sum, prodotto) => sum + (prodotto.prezzo || 0), 0);
+                    totalPriceElement.textContent = `Totale: €${totalPrice.toFixed(2)}`;
+                } catch (error) {
+                container.innerHTML = `<div class="error-message">Errore durante il caricamento del carrello.</div>`;
+                console.error(error);
+    }
+}
+
+        // Carica il carrello al caricamento della pagina
+        window.addEventListener('DOMContentLoaded', loadCarrello);
+    </script>
 </body>
 </html>

@@ -6,6 +6,7 @@ const Cliente = require( "./classes/Cliente.cjs");
 const Venditore = require( "./classes/Venditore.cjs");
 const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
 const { getProductById } = require('./services/ProdottoService.cjs');
+const { getClientCarrello } = require('./services/clienteService.cjs');
 require('dotenv').config({ path: 'process.env' });
 
 const Prodotto = require('./classes/prodotto.cjs')
@@ -91,12 +92,17 @@ app.get('/products', async (req, res) => {
     }
 });
 */
+
 app.get('/api/prodotti/:id', async (req, res) => {
     try {
         const prodotto = await getProductById(req.params.id);
+        if (!prodotto) {
+            return res.status(404).send('Prodotto non trovato');
+        }
         res.json(prodotto);
     } catch (error) {
-        res.status(500).send('Errore durante il recupero del prodotto');
+        console.error('Errore durante il recupero del prodotto:', error);
+        res.status(500).send('Errore del server');
     }
 });
 
@@ -147,7 +153,19 @@ app.get('/carrello', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'carrello.html'));
 });
 
-
+app.get('/api/carrello/:clientId', async (req, res) => {
+    try {
+        const clientId = req.params.clientId;
+        const carrello = await getClientCarrello(clientId); // Usa la funzione nella cartella services
+        if (!carrello) {
+            return res.status(404).send('Carrello non trovato');
+        }
+        res.json(carrello.prodotti); // Ritorna i prodotti nel carrello
+    } catch (error) {
+        console.error('Errore durante il recupero del carrello:', error);
+        res.status(500).send('Errore del server');
+    }
+});
 
 
 //Va su tutti gli IP solo oggi 07/05, se non funziona chiedetemi che sblocco, Luzzani A
