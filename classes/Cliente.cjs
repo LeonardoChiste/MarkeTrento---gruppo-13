@@ -6,8 +6,8 @@ const { addProductToCarrello, removeProductFromCarrello } = require('../services
 class Cliente extends Utente {
     constructor(name, surname, birthdate, email, username, password) {
         super();
-        this.name = name;
-        this.surname = surname;
+        this.nome = name;
+        this.cognome = surname;
         this.username = username;
         this.birthdate = birthdate;
         this.email = email;

@@ -1,9 +1,9 @@
 const Cliente = require('./Cliente.cjs');
 
 class Imprenditore extends Cliente {
-    constructor(name, surname, birthdate, email, password, sede, descrizione, tipo) {
-        super(name, surname, birthdate, email, password);
-        this.indirizzo = sede;
+    constructor(name, surname, birthdate, email,username, password, sede, descrizione, tipo) {
+        super(name, surname, birthdate, email, username, password);
+        this.sede = sede;
         this.descrizione = descrizione;
         this.tipo = tipo;
     }
