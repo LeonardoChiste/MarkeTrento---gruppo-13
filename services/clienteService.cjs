@@ -26,9 +26,11 @@ async function addProductToCarrello(clientId, product) {
 async function getClientCarrello(clientId) {
     const client = await Client.findById(clientId);
     if (client) {
-        // database a oggetto
         const carrello = new Carrello();
-        carrello.prodotti = client.carrello;
+        carrello.prodotti = client.carrello.map(prodotto => ({
+            nome: prodotto.nome || 'Prodotto sconosciuto',
+            prezzo: prodotto.prezzo || 0
+        }));
 
         console.log("Carrello:", carrello);
         return carrello;
