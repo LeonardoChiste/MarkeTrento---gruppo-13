@@ -151,36 +151,22 @@
         </div>
     </div>
 
-    <script>
-        async function getProductById(id) {
-    try {
-        const response = await fetch(`/api/prodotti/${id}`);
-        if (!response.ok) {
-            throw new Error('Prodotto non trovato');
+    <script type="module">
+        import { getProductById } from '../services/ProdottoService.cjs';
+
+        async function loadProduct() {
+            const container = document.getElementById('products-container');
+            try {
+                const prodotto = await getProductById('682252f0a5469b8b944503ba'); // Replace with the actual product ID
+                container.innerHTML = createProductCard(prodotto);
+                console.log('Prodotto caricato:', prodotto);
+            } catch (error) {
+                showError('Errore durante il caricamento del prodotto.');
+                console.error(error);
+            }
         }
-        const data = await response.json();
-        console.log('funzionaapi');
-        return data;
-    } catch (error) {
-        console.error('Errore durante il recupero del prodotto:', error.message);
-        throw error;
-    }
-}
 
-async function loadProduct() {
-    const container = document.getElementById('products-container');
-    try {
-        const prodotto = await getProductById('682252f0a5469b8b944503ba');//id prodotto su database
-        container.innerHTML = createProductCard(prodotto);
-        console.log('Prodotto caricato:', prodotto);
-    } catch (error) {
-        showError('Errore durante il caricamento del prodotto.');
-        console.error(error);
-    }
-}
-
-window.addEventListener('DOMContentLoaded', loadProduct);
-
-</script>
+        window.addEventListener('DOMContentLoaded', loadProduct);
+    </script>
 </body>
 </html>
