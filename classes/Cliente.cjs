@@ -15,6 +15,7 @@ class Cliente extends Utente {
         this.carrello = new Carrello();
     }
 
+
     //Aggiunge un prodotto al carrello e lo salva nel database
     async aggiungiProdottoAlCarrello(prodotto) {
         // Aggiorna carrello locale
