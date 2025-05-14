@@ -19,11 +19,8 @@
     </style>
     <script>
         window.onload = function() {
-            // Retrieve the username from localStorage
-            const username = window.localStorage.getItem("username");
-            if (username) {
-                document.getElementById('welcome-message').textContent = `Bentornato, ${username}!`;
-            }
+            // Update the welcome message
+            document.getElementById('welcome-message').textContent = 'Accesso per attività business in corso!';
 
             // Animate the progress bar
             document.getElementById('progress').style.width = '100%';

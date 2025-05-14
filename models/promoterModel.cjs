@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // set up a mongoose model
-module.exports = mongoose.model('DBEntrepeneur', new Schema({ 
+module.exports = mongoose.model('DBEntrepreneur', new Schema({ 
     nome:String,
     cognome:String,
     birthdate:Date,

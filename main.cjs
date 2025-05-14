@@ -4,16 +4,15 @@ const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
 const Cliente = require( "./classes/Cliente.cjs");
 const Venditore = require( "./classes/Venditore.cjs");
-const {hashPassword,comparePassword}= require ("./passwordhasher.cjs")
-const { getProductById } = require('./services/ProdottoService.cjs');
-const { getClientCarrello } = require('./services/clienteService.cjs');
+const Imprenditore = require( "./classes/Imprenditore.cjs");
+const {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2}= require ("./passwordhasher.cjs")
 require('dotenv').config({ path: 'process.env' });
 
 const Prodotto = require('./classes/prodotto.cjs')
 
 const dbUrl = process.env.DB_URL;
 const DBVendor=require('./models/vendorModel.cjs');
-const DBEntrepeneur=require('./models/promoterModel.cjs');
+const DBEntrepreneur=require('./models/promoterModel.cjs');
 const Productv2=require('./models/productModel.cjs');  
 const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
@@ -32,11 +31,13 @@ app.use(express.static('public'));
     
     //FUNZIONE PER GENERARE COSE DA INSERIRE NEL DB PER TEST, con copilot su VSC SI FA MOLTO VELOCEMENTE
     async function insert(){
-       /* var venditore=new Venditore('Mario','Tonina',21111947,'b@gm.com','fattori2','12345678','Via Roma 111', 'alleviamo mucche e coltiviamo mele male', 'fattoria', '128867890123456');
-        DBVendor.create(venditore);
-        var prodotto=new Prodotto('Mele','mele rosse',venditore.username,2.5,10,'frutta');
+       /* var venditore=new Venditore('Antonello','Piscitelli',20021990,'p@gm.com','venditore','$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa','Via Lodrone 11', 'Antonello ha le galline', 'fattoria', '33');
+        DBVendor.create(venditore);*/
+        /*var prodotto=new Prodotto('Mele','mele rosse',venditore.username,2.5,10,'frutta');
         Productv2.create(prodotto);*/
-    
+        /*var Cliente1=new Cliente('Pecco','Bagnaia',121299,'bagnaia@bagnaia.it','cliente','$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa');
+        await DBClient.create(Cliente1);*/
+        
     
 
 }
@@ -44,15 +45,18 @@ app.use(express.static('public'));
 
 function popola()
 {
-    insert();
+     insert();
 
 }
 
 
-async function compareDB(cc) {
+async function compareDB(username, password) {
+    // Create a new instance of the Client class
+
+    const cc = new Cliente('a','b',10102000,'a',username, password);
     try {
         // Find user by username
-        const user = await Utente.findOne({ 
+        const user = await DBClient.findOne({ 
             username: cc.username 
         });
         
@@ -117,12 +121,35 @@ app.get('/promotions', async (req, res) => {
 // Gestione del login (POST)
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    var c=new Cliente('n','n',2,'nd',username,password)
-    var au= await compareDB(c);
+    var au = await compareDB(username, password);
     if (au) {
-        res.sendFile(path.join(__dirname, 'public', '/login.html'));
+        res.send(`
+            <script>
+                window.username = "${username}";
+                window.localStorage.setItem("username", window.username);
+                window.location.href = "/login.html";
+            </script>
+        `);
+    } else {
+        res.send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`);
     }
-    else res.send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`)
+});
+
+app.post('/loginbusiness', async (req, res) => {
+    const { username, password } = req.body;
+    var au= await compareDBbusiness(username, password);
+    if (au) {
+        res.sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
+    }
+    else
+    {
+        au= await compareDBbusinessv2(username, password);
+        if (au) {
+            res.sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
+        }
+        else res.send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`)
+    }
+
 });
 
 /*

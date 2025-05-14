@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarkeTrento Official Webapp</title>
     <style>
+        /* Stili invariati */
         body {
             font-family: Arial, sans-serif;
             background-color: #f0fff0;
@@ -38,9 +39,10 @@
             font-weight: bold;
         }
         input[type="text"],
-        input[type="password"] {
+        input[type="password"],
+        select {
             width: 100%;
-            padding: 8px;
+            padding: 10px 15px;
             border: 1px solid #008000;
             border-radius: 4px;
             box-sizing: border-box;
@@ -86,6 +88,12 @@
         .guest-btn:hover {
             background-color: #006400;
         }
+        .divider {
+            text-align: center;
+            margin: 15px 0;
+            color: #008000;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -95,16 +103,17 @@
         
         <form action="/login" method="POST">
             <div class="form-group">
-                <label for="username">Nome utente:</label>
-                <input type="text" id="username" name="username" required>
+            <label for="username">Nome utente:</label>
+            <input type="text" id="username" name="username" required>
             </div>
             
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
             </div>
             
-            <button type="submit" class="login-btn">Accedi</button>
+            <button type="submit" class="login-btn" name="userType" value="cliente">Accedi come Cliente</button>
+            <button type="submit" class="login-btn" name="userType" value="business" formaction="/loginbusiness">Accedi come Imprenditore/Venditore</button>
         </form>
         
         <button class="register-btn" onclick="window.location.href='/registrazione'">Registrati</button>
