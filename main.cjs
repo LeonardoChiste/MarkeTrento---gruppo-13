@@ -10,6 +10,7 @@ require('dotenv').config({ path: 'process.env' });
 
 const Prodotto = require('./classes/prodotto.cjs');
 const ProdottoServizio = require('./services/ProdottoService.cjs');
+const clienteService = require('./services/clienteService.cjs');
 const dbUrl = process.env.DB_URL;
 const DBVendor=require('./models/vendorModel.cjs');
 const DBEntrepreneur=require('./models/promoterModel.cjs');
@@ -183,7 +184,7 @@ app.get('/carrello', (req, res) => {
 app.get('/api/carrello/:clientId', async (req, res) => {
     try {
         const clientId = req.params.clientId;
-        const carrello = await getClientCarrello(clientId); // Usa la funzione nella cartella services
+        const carrello = await clienteService.getClientCarrello(clientId); // Usa la funzione nella cartella services
         if (!carrello) {
             return res.status(404).send('Carrello non trovato');
         }
