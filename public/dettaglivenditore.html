@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettagli Venditore</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #e6ffe6 0%, #b2f2b2 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .venditore-full {
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(120deg, #e6ffe6 60%, #d4f5d4 100%);
+        }
+        .card {
+            background: #f6fff6;
+            border-radius: 22px;
+            box-shadow: 0 6px 32px #b2f2b2;
+            padding: 48px 38px;
+            min-width: 350px;
+            max-width: 90vw;
+        }
+        h1 {
+            color: #218838;
+            text-align: center;
+            margin-bottom: 32px;
+            letter-spacing: 1px;
+        }
+        .dettaglio {
+            background: #e6ffe6;
+            border-left: 8px solid #28a745;
+            margin-bottom: 22px;
+            padding: 18px 22px;
+            border-radius: 10px;
+            box-shadow: 0 1px 6px #d4f5d4;
+            font-size: 1.15em;
+        }
+        .dettaglio strong {
+            color: #155724;
+            font-size: 1.08em;
+        }
+        .back-btn {
+            display: block;
+            margin: 0 auto;
+            margin-top: 36px;
+            padding: 12px 32px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #218838;
+        }
+    </style>
+    <script>
+        // Inserisci qui l'id del venditore che vuoi visualizzare
+        const VENDITORE_ID = '6824a50ac5b5b7b972aaa98c'; // <-- Sostituisci con l'id reale
+
+        async function caricaDettagliVenditore() {
+            const container = document.getElementById('dettagliVenditore');
+            container.innerHTML = 'Caricamento...';
+            try {
+                const res = await fetch(`/api/venditori/${VENDITORE_ID}`);
+                if (!res.ok) {
+                    container.innerHTML = '<span style="color:red;">Venditore non trovato.</span>';
+                    return;
+                }
+                const v = await res.json();
+                container.innerHTML = `
+                    <h1>Dettagli Venditore</h1>
+                    <div class="dettaglio"><strong>Nome:</strong> ${v.nome || '-'}</div>
+                    <div class="dettaglio"><strong>Cognome:</strong> ${v.cognome || '-'}</div>
+                    <div class="dettaglio"><strong>Username:</strong> ${v.username || '-'}</div>
+                    <div class="dettaglio"><strong>Email:</strong> ${v.email || '-'}</div>
+                    <div class="dettaglio"><strong>Sede:</strong> ${v.sede || '-'}</div>
+                    <div class="dettaglio"><strong>Descrizione:</strong> ${v.descrizione || '-'}</div>
+                    <div class="dettaglio"><strong>Tipo attività:</strong> ${v.tipo || '-'}</div>
+                `;
+            } catch (err) {
+                container.innerHTML = '<span style="color:red;">Errore nel caricamento dei dettagli.</span>';
+            }
+        }
+        window.onload = caricaDettagliVenditore;
+    </script>
+</head>
+<body>
+    <div class="venditore-full">
+        <div class="card" id="dettagliVenditore"></div>
+        <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
+    </div>
+</body>
+</html>

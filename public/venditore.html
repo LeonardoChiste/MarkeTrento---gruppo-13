@@ -2,76 +2,157 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dettagli Venditore</title>
+    <title>Lista Venditori</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f6fff6;
         }
-        .venditore-info {
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 5px;
+        .top-right-btn {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+        }
+        .venditoretest-btn {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 6px #f5b2b2;
+            transition: background 0.2s;
+        }
+        .venditoretest-btn:hover {
+            background: #b52a37;
+        }
+        h1 {
+            color: #218838;
+            background: #e6ffe6;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
             margin-bottom: 20px;
         }
-        .venditore-info h2 {
-            color: #333;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+        .controls input, .controls select {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid #b2f2b2;
         }
-        .info-item {
-            margin: 10px 0;
+        .venditore-row {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #b2f2b2;
+            padding: 12px 0;
+            background: #f0fff0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px #d4f5d4;
         }
-        .info-label {
+        .venditore-info {
+            flex: 1;
+            color: #155724;
+        }
+        .dettagli-btn {
+            margin-left: 16px;
+            padding: 6px 14px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
             font-weight: bold;
-            display: inline-block;
-            width: 150px;
+            box-shadow: 0 2px 6px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .dettagli-btn:hover {
+            background: #218838;
+        }
+        #listaVenditori em {
+            color: #218838;
         }
     </style>
+    <script>
+        let venditoriGlobal = [];
+
+        async function caricaVenditori() {
+            const lista = document.getElementById('listaVenditori');
+            lista.innerHTML = 'Caricamento...';
+            try {
+                const res = await fetch('/api/venditori');
+                const venditori = await res.json();
+                venditoriGlobal = Array.isArray(venditori) ? venditori : [];
+                aggiornaLista();
+                popolaSedi();
+            } catch (err) {
+                lista.innerHTML = '<span style="color:red;">Errore nel caricamento dei venditori.</span>';
+            }
+        }
+
+        function aggiornaLista() {
+            const lista = document.getElementById('listaVenditori');
+            const filtro = document.getElementById('filtroNome').value.toLowerCase();
+            const sedeSel = document.getElementById('filtroSede').value;
+            let filtrati = venditoriGlobal.filter(v => 
+                (`${v.nome} ${v.cognome}`.toLowerCase().includes(filtro)) &&
+                (sedeSel === '' || (v.sede || '-') === sedeSel)
+            );
+            if (filtrati.length === 0) {
+                lista.innerHTML = '<em>Nessun venditore trovato.</em>';
+                return;
+            }
+            lista.innerHTML = '';
+            filtrati.forEach(v => {
+                const row = document.createElement('div');
+                row.className = 'venditore-row';
+                row.innerHTML = `
+                    <div class="venditore-info">
+                        <strong>${v.nome} ${v.cognome}</strong> | 
+                        <b>Username:</b> ${v.username} | 
+                        <b>Sede:</b> ${v.sede || '-'}
+                    </div>
+                    <button class="dettagli-btn" onclick="mostraDettagli('${v.id}')">DETTAGLI</button>
+                `;
+                lista.appendChild(row);
+            });
+        }
+
+        function mostraDettagli(id) {
+            window.location.href = `/venditore/${id}`;
+        }
+
+        function popolaSedi() {
+            const select = document.getElementById('filtroSede');
+            const sedi = Array.from(new Set(venditoriGlobal.map(v => v.sede || '-')));
+            select.innerHTML = '<option value="">Tutte le sedi</option>' +
+                sedi.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+
+        function apriDettagliVenditoreTest() {
+            window.location.href = '/dettaglivenditore.html';
+        }
+
+        window.onload = caricaVenditori;
+    </script>
 </head>
 <body>
-    <h1>Dettagli Venditore</h1>
-    <div id="venditore-container" class="venditore-info">
-        <h2 id="nome-venditore">Caricamento...</h2>
-        <div class="info-item">
-            <span class="info-label">Email:</span>
-            <span id="email-venditore"></span>
-        </div>
-        <div class="info-item">
-            <span class="info-label">Username:</span>
-            <span id="username-venditore"></span>
-        </div>
-        <!-- Aggiungi altri campi qui se necessario -->
+    <div class="top-right-btn">
+        <button class="venditoretest-btn" onclick="apriDettagliVenditoreTest()">venditoretestspecifico</button>
     </div>
-
-    <script>
-        const vendorname = 'fattoriafelice'
-        
-        // Fetch dei dati del venditore
-        fetch(`http://localhost:3000/venditore/${vendorname}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Venditore non trovato');
-                }
-                return response.json();
-            })
-            .then(venditore => {
-                // Popola la pagina con i dati del venditore
-                document.getElementById('nome-venditore').textContent = `${venditore.nome} ${venditore.cognome}`;
-                document.getElementById('email-venditore').textContent = venditore.email;
-                document.getElementById('username-venditore').textContent = venditore.username;
-                
-                // Aggiungi qui altri campi se necessario
-            })
-            .catch(error => {
-                document.getElementById('venditore-container').innerHTML = `
-                    <h2>Errore</h2>
-                    <p>${error.message}</p>
-                `;
-            });
-    </script>
+    <h1>Venditori registrati</h1>
+    <div class="controls">
+        <input type="text" id="filtroNome" placeholder="Cerca per nome/cognome" oninput="aggiornaLista()">
+        <select id="filtroSede" onchange="aggiornaLista()">
+            <option value="">Tutte le sedi</option>
+        </select>
+    </div>
+    <div id="listaVenditori"></div>
 </body>
 </html>

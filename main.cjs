@@ -10,7 +10,7 @@ require('dotenv').config({ path: 'process.env' });
 
 const Prodotto = require('./classes/prodotto.cjs');
 const ProdottoServizio = require('./services/ProdottoService.cjs');
-const clienteService = require('./services/clienteService.cjs');
+const ClienteServizio = require('./services/clienteService.cjs');
 const dbUrl = process.env.DB_URL;
 const DBVendor=require('./models/vendorModel.cjs');
 const DBEntrepreneur=require('./models/promoterModel.cjs');
@@ -18,6 +18,7 @@ const Productv2=require('./models/productModel.cjs');
 const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
 const DBClient=require('./models/clientModel.cjs');
+const VenditoreServizio = require('./services/VenditoreService.cjs');
 
 const app = express();
 const PORT = 3000;
@@ -164,13 +165,13 @@ app.get('/mercato', (req, res) => {
 
 
 
-app.get('/venditore/:nome', async (req, res) => {
+app.get('/venditore/:id', async (req, res) => {
     try {
-        const venditore = await DBVendor.findOne({username: req.params.nome});
+        const venditore = await VenditoreServizio.getVendorById(req.params.id);
         if (!venditore) {
             return res.status(404).send('Venditore non trovato');
         }
-        res.sendFile(path.join(__dirname, 'public', 'venditore.html'));
+        res.sendFile(path.join(__dirname, 'public', '/dettaglivenditore.html'));
     } catch (error) {
         res.status(500).send('Errore del server');
     }
@@ -179,6 +180,15 @@ app.get('/venditore/:nome', async (req, res) => {
 
 app.get('/carrello', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'carrello.html'));
+});
+
+app.get('/api/venditori', async (req, res) => {
+    try {
+        const venditori = await VenditoreServizio.getAllVenditori();
+        res.json(venditori);
+    } catch (error) {
+        res.status(500).json({ error: 'Errore nel recupero dei venditori' });
+    }
 });
 
 app.get('/api/carrello/:clientId', async (req, res) => {
