@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Prodotti del Venditore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e6ffe6 0%, #b2f2b2 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #f6fff6;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #b2f2b2;
+            padding: 32px 28px;
+        }
+        h1 {
+            color: #218838;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .prodotto {
+            background: #e6ffe6;
+            border-left: 6px solid #28a745;
+            margin-bottom: 18px;
+            padding: 14px 18px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px #d4f5d4;
+        }
+        .prodotto strong {
+            color: #155724;
+        }
+        .back-btn {
+            display: block;
+            margin: 0 auto;
+            margin-top: 30px;
+            padding: 8px 22px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #218838;
+        }
+    </style>
+    <script>
+        function getIdFromQuery() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        async function caricaProdotti() {
+            const id = getIdFromQuery();
+            const container = document.getElementById('prodottiVenditore');
+            const titolo = document.getElementById('titoloVenditore');
+            if (!id) {
+                container.innerHTML = '<span style="color:red;">ID venditore non specificato.</span>';
+                titolo.textContent = "Prodotti";
+                return;
+            }
+
+            // chiamo API
+            let username = id;
+            try {
+                const resVend = await fetch(`/api/venditore/${id}`);
+                if (resVend.ok) {
+                    const venditore = await resVend.json();
+                    if (venditore && venditore.username) {
+                        username = venditore.username;
+                    }
+                }
+            } catch (e) {
+                // lascia id come username
+            }
+            titolo.textContent = `Prodotti di ${username} disponibili`;
+            try {
+                const res = await fetch(`/api/prodotti/venditore/${id}`);
+                if (!res.ok) {
+                    container.innerHTML = '<span style="color:red;">Nessun prodotto trovato o errore server.</span>';
+                    return;
+                }
+                const prodotti = await res.json();
+                if (!Array.isArray(prodotti) || prodotti.length === 0) {
+                    container.innerHTML = '<em>Nessun prodotto trovato per questo venditore.</em>';
+                    return;
+                }
+                container.innerHTML = '';
+                prodotti.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'prodotto';
+                    div.innerHTML = `
+                        <strong>${p.nome}</strong><br>
+                        <b>Descrizione:</b> ${p.descrizione || '-'}<br>
+                        <b>Prezzo:</b> ${p.costo} €<br>
+                        <b>Quantità:</b> ${p.quantita || '-'}<br>
+                        <b>Tag:</b> ${p.tag || '-'}
+                    `;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                container.innerHTML = '<span style="color:red;">Errore nel caricamento dei prodotti.</span>';
+            }
+        }
+
+        window.onload = caricaProdotti;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 id="titoloVenditore">Prodotti</h1>
+        <div id="prodottiVenditore"></div>
+        <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
+    </div>
+</body>
+</html>
