@@ -7,9 +7,17 @@ class Carrello {
 
     // Aggiunge un prodotto al carrello
     aggiungiProdotto(prodotto) {
-        this.prodotti.push(prodotto);
-        console.log(`Prodotto aggiunto: ${prodotto.nome}`);
+    const existing = this.prodotti.find(p => p.nome === prodotto.nome);
+    if (existing) {
+        existing.quantity += 1; 
+    } else {
+        this.prodotti.push({
+            nome: prodotto.nome,
+            prezzo: prodotto.prezzo,
+            quantity: 1 // Valore di default per la quantità
+        });
     }
+}
 
     // Mostra i prodotti nel carrello
     visualizzaProdotti() {
