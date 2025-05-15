@@ -82,10 +82,9 @@ async function compareDB(username, password) {
 
 app.use(express.urlencoded({ extended: true })); // Per form HTML
 app.use(express.json()); // Per dati JSON (opzionale ma utile)
-
+//app.use('/default.html');
 // Pagina principale
 app.get('/', (req, res) => {
-    popola();
     res.sendFile(path.join(__dirname, 'public', `/default.html`));
 });
 /*
