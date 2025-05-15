@@ -39,8 +39,28 @@ app.use(express.static('public'));
         Productv2.create(prodotto);*/
         /*var Cliente1=new Cliente('Pecco','Bagnaia',121299,'bagnaia@bagnaia.it','cliente','$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa');
         await DBClient.create(Cliente1);*/
-        
-    
+        /*
+        const client = await DBClient.findOne({ _id: "68245a82ef2a089ff02b2a7b"}); // o usa l'email se preferisci
+
+        if (!client) {
+            console.log("Cliente non trovato!");
+        return;
+        }
+
+        // Aggiungi le mele al carrello
+        client.carrello.push({
+            nome: "Mele",
+            prezzo: 2.5,
+            quantity: 3 // Ad esempio, 3 mele nel carrello
+        });
+        client.carrello.push({
+            nome: "Banane",
+            prezzo: 1.5,
+            quantity: 5 // Ad esempio, 3 mele nel carrello
+        });
+        console.log("Prodotti aggiunti al carrello:", client.carrello);
+        await client.save();
+        */
 
 }
 
@@ -176,11 +196,11 @@ app.get('/api/venditore/:id', async (req, res) => {
     }
 });
 
-
+/*
 app.get('/carrello', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'carrello.html'));
 });
-
+*/
 app.get('/api/venditori', async (req, res) => {
     try {
         const venditori = await VenditoreServizio.getAllVenditori();
@@ -193,7 +213,7 @@ app.get('/api/venditori', async (req, res) => {
 app.get('/api/carrello/:clientId', async (req, res) => {
     try {
         const clientId = req.params.clientId;
-        const carrello = await clienteService.getClientCarrello(clientId); // Usa la funzione nella cartella services
+        const carrello = await ClienteServizio.getClientCarrello(clientId); // Usa la funzione nella cartella services
         if (!carrello) {
             return res.status(404).send('Carrello non trovato');
         }

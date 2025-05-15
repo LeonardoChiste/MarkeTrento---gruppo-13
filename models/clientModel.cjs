@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 //Schema per i prodotti 
 var ProductSchema = new Schema({
     nome: String,
-    prezzo: Number
+    prezzo: Number,
+    quantity: Number
 });
 
 // set up a mongoose model

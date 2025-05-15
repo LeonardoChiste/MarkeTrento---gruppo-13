@@ -34,6 +34,10 @@
             padding: 10px 0;
             border-bottom: 1px solid #ddd;
         }
+        .product-qty {
+            margin: 0 10px;
+            color: #555;
+        }
         .product-item:last-child {
             border-bottom: none;
         }
@@ -85,39 +89,41 @@
 
         // Crea l'HTML per un singolo prodotto nel carrello
         function createProductItem(prodotto) {
-            const prezzo = prodotto.prezzo || 0; // Fallback a 0 se il prezzo e' undefeined
+            const prezzo = prodotto.prezzo || 0;
+            const quantity = prodotto.quantity || 1;
+            const totale = prezzo * quantity;
             return `
-            <li class="product-item">
-                <span>${prodotto.nome || 'Prodotto sconosciuto'}</span>
-                <span>€${prezzo.toFixed(2)}</span>
-            </li>
-    `       ;
+                <li class="product-item">
+                    <span>${prodotto.nome || 'Prodotto sconosciuto'}</span>
+                    <span class="product-qty">x${quantity}</span>
+                    <span>€${totale.toFixed(2)}</span>
+                </li>
+            `;
         }
 
         // Carica il carrello e lo mostra
         async function loadCarrello() {
             const container = document.getElementById('carrello-container');
             const totalPriceElement = document.getElementById('total-price');
-                try {
-                    const clientId = '68245a82ef2a089ff02b2a7b'; // ID di prova
-                    const carrello = await getCarrello(clientId);
+            try {
+                const clientId = '68245a82ef2a089ff02b2a7b'; // Id cliente di prova
+                const carrello = await getCarrello(clientId);
 
-                    // Controlla se il carrello è vuoto e se si, lo stampa
-                    if (!carrello || carrello.length === 0) {
-                        container.innerHTML = `<div class="error-message">Carrello vuoto</div>`;
-                        totalPriceElement.textContent = `Totale: €0.00`;
-                        return;
-                    }
+                if (!carrello || carrello.length === 0) {
+                    container.innerHTML = `<div class="error-message">Carrello vuoto</div>`;
+                    totalPriceElement.textContent = `Totale: €0.00`;
+                    return;
+                }
 
-                    // Popola carrello
-                    container.innerHTML = carrello.map(createProductItem).join('');
-                    const totalPrice = carrello.reduce((sum, prodotto) => sum + (prodotto.prezzo || 0), 0);
-                    totalPriceElement.textContent = `Totale: €${totalPrice.toFixed(2)}`;
-                } catch (error) {
+                container.innerHTML = carrello.map(createProductItem).join('');
+                const totalPrice = carrello.reduce((sum, prodotto) =>
+                    sum + ((prodotto.prezzo || 0) * (prodotto.quantity || 1)), 0);
+                totalPriceElement.textContent = `Totale: €${totalPrice.toFixed(2)}`;
+            } catch (error) {
                 container.innerHTML = `<div class="error-message">Errore durante il caricamento del carrello.</div>`;
-                console.error(error);
-    }
-}
+                totalPriceElement.textContent = `Totale: €0.00`;
+            }
+        }
 
         // Carica il carrello al caricamento della pagina
         window.addEventListener('DOMContentLoaded', loadCarrello);
