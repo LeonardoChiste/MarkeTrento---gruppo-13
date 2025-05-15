@@ -194,7 +194,7 @@ app.get('/api/venditori', async (req, res) => {
 app.get('/api/carrello/:clientId', async (req, res) => {
     try {
         const clientId = req.params.clientId;
-        const carrello = await clienteService.getClientCarrello(clientId); // Usa la funzione nella cartella services
+        const carrello = await ClienteServizio.getClientCarrello(clientId); // Usa la funzione nella cartella services
         if (!carrello) {
             return res.status(404).send('Carrello non trovato');
         }
