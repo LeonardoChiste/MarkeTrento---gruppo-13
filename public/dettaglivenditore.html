@@ -41,8 +41,9 @@
         }
         .venditore-header {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 18px;
+            gap: 10px;
             margin-bottom: 18px;
         }
         .venditore-avatar {
@@ -57,6 +58,12 @@
             color: #218838;
             font-weight: bold;
             border: 2px solid #28a745;
+        }
+        .venditore-username {
+            font-size: 1.5em;
+            color: #218838;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
         .venditore-nome {
             font-size: 2em;
@@ -144,8 +151,13 @@
         <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
     </div>
     <script>
-        // Inserisci qui l'id del venditore che vuoi visualizzare
-        const id = '6824a50ac5b5b7b972aaa98c'; // <-- Sostituisci con l'id reale
+        //estrai l'id del venditore dalla query string
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        if (!id) {
+            document.getElementById('dettagliVenditore').innerHTML = '<span style="color:red;">ID venditore non specificato.</span>';
+            throw new Error('ID venditore non specificato');
+        }
 
         async function getVenditorewithID() {
             const container = document.getElementById('dettagliVenditore');
@@ -163,10 +175,9 @@
             }
         }
 
-        function getInitials(nome, cognome) {
-            let n = (nome || '').trim();
-            let c = (cognome || '').trim();
-            return (n[0] || '') + (c[0] || '');
+        function getUsernameInitial(username) {
+            let u = (username || '').trim();
+            return u[0] ? u[0].toUpperCase() : '';
         }
 
         function mostraVenditore(v) {
@@ -174,12 +185,12 @@
             if (!v) return;
             container.innerHTML = `
                 <div class="venditore-header">
-                    <div class="venditore-avatar">${getInitials(v.nome, v.cognome)}</div>
-                    <div class="venditore-nome">${v.nome || 'Nome non disponibile'} ${v.cognome || ''}</div>
+                    <div class="venditore-avatar">${getUsernameInitial(v.username)}</div>
+                    <div class="venditore-username">${v.username || 'N/A'}</div>
                 </div>
                 <div class="info-grid">
+                    <div class="info-item"><span class="info-label">Nome:</span> <span class="info-value">${v.nome || 'N/A'} ${v.cognome || ''}</span></div>
                     <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${v.email || 'N/A'}</span></div>
-                    <div class="info-item"><span class="info-label">Username:</span> <span class="info-value">${v.username || 'N/A'}</span></div>
                     <div class="info-item"><span class="info-label">Tipo:</span> <span class="info-value">${v.tipo || 'N/A'}</span></div>
                     <div class="info-item"><span class="info-label">Sede:</span> <span class="info-value">${v.sede || 'N/A'}</span></div>
                     <div class="info-item"><span class="info-label">Data nascita:</span> <span class="info-value">${v.birthdate ? (new Date(v.birthdate)).toLocaleDateString('it-IT') : 'N/A'}</span></div>

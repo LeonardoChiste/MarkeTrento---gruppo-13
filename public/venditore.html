@@ -8,25 +8,6 @@
             font-family: Arial, sans-serif; 
             background: #f6fff6;
         }
-        .top-right-btn {
-            position: absolute;
-            top: 24px;
-            right: 32px;
-        }
-        .venditoretest-btn {
-            background: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 18px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 2px 6px #f5b2b2;
-            transition: background 0.2s;
-        }
-        .venditoretest-btn:hover {
-            background: #b52a37;
-        }
         h1 {
             color: #218838;
             background: #e6ffe6;
@@ -75,8 +56,27 @@
         .dettagli-btn:hover {
             background: #218838;
         }
+        .venditoretest-btn {
+            margin-left: 10px;
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 6px #f5b2b2;
+            transition: background 0.2s;
+        }
+        .venditoretest-btn:hover {
+            background: #b52a37;
+        }
         #listaVenditori em {
             color: #218838;
+        }
+        .venditore-actions {
+            display: flex;
+            align-items: center;
         }
     </style>
     <script>
@@ -115,27 +115,27 @@
                         <b>Username:</b> ${v.username} | 
                         <b>Sede:</b> ${v.sede || '-'}
                     </div>
-                    <button class="dettagli-btn" onclick="mostraDettagli('${v.id}')">DETTAGLI</button>
+                    <div class="venditore-actions">
+                        <button class="dettagli-btn" onclick="mostraDettagli('${v._id}')">PRODOTTI</button>
+                        <button class="venditoretest-btn" onclick="apriDettagliVenditoreTest('${v._id}')">venditoretestspecifico</button>
+                    </div>
                 `;
                 lista.appendChild(row);
             });
         }
 
         function mostraDettagli(id) {
-            window.location.href = `/venditore/${id}`;
+            window.location.href = `/tuttiprodotti.html?id=${encodeURIComponent(id)}`;
         }
 
-        function apriDettagliVenditoreTest() {
-            window.location.href = '/dettaglivenditore.html';
+        function apriDettagliVenditoreTest(id) {
+            window.location.href = `/dettaglivenditore.html?id=${encodeURIComponent(id)}` ;
         }
 
         window.onload = caricaVenditori;
     </script>
 </head>
 <body>
-    <div class="top-right-btn">
-        <button class="venditoretest-btn" onclick="apriDettagliVenditoreTest()">venditoretestspecifico</button>
-    </div>
     <h1>Venditori registrati</h1>
     <div class="controls">
         <input type="text" id="filtroUsername" placeholder="Cerca per nome_azienda" oninput="aggiornaLista()">

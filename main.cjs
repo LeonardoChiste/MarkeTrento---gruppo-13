@@ -35,8 +35,8 @@ app.use(express.static('public'));
     async function insert(){
        /* var venditore=new Venditore('Antonello','Piscitelli',20021990,'p@gm.com','venditore','$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa','Via Lodrone 11', 'Antonello ha le galline', 'fattoria', '33');
         DBVendor.create(venditore);*/
-        /*var prodotto=new Prodotto('Mele','mele rosse',venditore.username,2.5,10,'frutta');
-        Productv2.create(prodotto);*/
+        /*var prodotto=new Prodotto('Mele','mele verdi','6824a50ac5b5b7b972aaa98c',2.2,10,'frutta');
+        await Productv2.create(prodotto);*/
         /*var Cliente1=new Cliente('Pecco','Bagnaia',121299,'bagnaia@bagnaia.it','cliente','$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa');
         await DBClient.create(Cliente1);*/
         
@@ -206,7 +206,21 @@ app.get('/api/carrello/:clientId', async (req, res) => {
 });
 
 
-//Va su tutti gli IP solo oggi 07/05, se non funziona chiedetemi che sblocco, Luzzani A
+app.get('/api/prodotti/venditore/:id', async (req, res) => {
+    try {
+        const prodotto = await ProdottoServizio.getProductByVendor(req.params.id);
+        if (!prodotto) {
+            return res.status(404).send('Prodotto non trovato');
+        }
+        res.json(prodotto);
+    } catch (error) {
+        console.error('Errore durante il recupero del prodotto:', error);
+        res.status(500).send('Errore del server');
+    }
+});
+
+
+
 mongoose.connect(dbUrl).then( ()=> {
     console.log("Connected!")
 })
