@@ -219,6 +219,59 @@ app.get('/api/carrello/:clientId', async (req, res) => {
     }
 });
 
+app.post('/api/carrello/:clientId/add', async (req, res) => {
+    try {
+        const clientId = req.params.clientId;
+        const { nome, prezzo, quantity } = req.body;
+        const client = await DBClient.findById(clientId);
+        if (!client) return res.status(404).json({ error: 'Cliente non trovato' });
+
+        // Recupera il prodotto dal database
+        const prodotto = await Productv2.findOne({ nome });
+        if (!prodotto) return res.status(404).json({ error: 'Prodotto non trovato' });
+
+        // Recupera la quantita nel carrello
+        const item = client.carrello.find(p => p.nome === nome);
+        const currentQuantity = item ? item.quantity : 0;
+
+        if (currentQuantity + quantity > prodotto.quantita) {
+            return res.status(400).json({ error: 'Quantità totale nel carrello eccede la quantità disponibile' });
+        }
+
+        // Aggiungi il prodotto al carrello
+        if (item) {
+            item.quantity += quantity;
+        } else {
+            client.carrello.push({ nome, prezzo, quantity });
+        }
+        await client.save();
+        res.status(200).json({ message: 'Prodotto aggiunto al carrello' });
+    } catch (error) {
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
+app.post('/api/carrello/:clientId/removeOne', async (req, res) => {
+    try {
+        const clientId = req.params.clientId;
+        const { nome } = req.body;
+        const client = await DBClient.findById(clientId);
+        if (!client) return res.status(404).json({ error: 'Cliente non trovato' });
+        const item = client.carrello.find(p => p.nome === nome);
+        if (item) {
+            if (item.quantity > 1) {
+                item.quantity -= 1;
+            } else {
+                client.carrello = client.carrello.filter(p => p.nome !== nome);
+            }
+            await client.save();
+        }
+        res.status(200).json({ message: 'Prodotto aggiornato' });
+    } catch (error) {
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
 
 app.get('/api/prodotti/venditore/:id', async (req, res) => {
     try {
@@ -246,4 +299,5 @@ mongoose.connect(dbUrl).then( ()=> {
 // Avvio del server
 app.listen(PORT, () => {
     console.log(`Server in ascolto su http://localhost:${PORT}`);
-});});
+});
+});
