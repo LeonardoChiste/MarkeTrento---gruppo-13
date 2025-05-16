@@ -71,7 +71,7 @@
             // chiamo API
             let username = id;
             try {
-                const resVend = await fetch(`/api/venditore/${id}`);
+                const resVend = await fetch(`/api/v1/venditore/${id}`);
                 if (resVend.ok) {
                     const venditore = await resVend.json();
                     if (venditore && venditore.username) {
@@ -83,7 +83,7 @@
             }
             titolo.textContent = `${username}, Prodotti disponibili`;
             try {
-                const res = await fetch(`/api/prodotti/venditore/${id}`);
+                const res = await fetch(`/api/v1/prodotti/venditore/${id}`);
                 if (!res.ok) {
                     container.innerHTML = '<span style="color:red;">Nessun prodotto trovato o errore server.</span>';
                     return;

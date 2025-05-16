@@ -76,7 +76,7 @@
         // Recupera il carrello di un cliente
         async function getCarrello(clientId) {
             try {
-                const response = await fetch(`/api/carrello/${clientId}`);
+                const response = await fetch(`/api/v1/carrello/${clientId}`);
                 if (!response.ok) {
                     throw new Error('Carrello non trovato');
                 }

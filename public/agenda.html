@@ -152,23 +152,27 @@
     }
 
     function fetchEvents(startDate) {
-      // Replace this with real API call to MongoDB backend
-      // API should return an array like:
-      /*
-        [
-          { date: '2025-05-12', title: 'Meeting', description: '...', image: 'url.jpg' },
-          ...
-        ]
-      */
-      
-      return Promise.resolve([
-        { date: '2025-05-12', title: 'Sagra del pesce', user: 'Giovanni Giorgio', description: 'Mmmhhhhh pesce..', image: 'https://c02.purpledshub.com/uploads/sites/41/2021/03/Blobfish_Kerryn-Parkinson-thumb-0293dac.jpg?w=1200' },
-        { date: '2025-05-13', title: 'Fiera della castora', user: 'Franco', description: 'Castagnata con alcol', image: 'https://www.salepepe.it/files/2022/10/CASTAGNE-CALDARROSTE-COVER-1140x636.jpg' },
-        { date: '2025-05-14', title: 'Promo 50%-off tuberi', user: 'Negozio di vegetali', description: 'Patate a metà prezzo per tutti', image: 'https://st4.depositphotos.com/1439888/31456/i/450/depositphotos_314565988-stock-photo-potatoes-in-the-wooden-crate.jpg' },
-        { date: '2025-05-14', title: 'Sagra del contadino', user: 'Associazione vinicoltori', description: 'Degustazione vini', image: 'https://media.istockphoto.com/id/1030932114/it/foto/due-bicchieri-di-vino-rosso-in-vigna.jpg?s=612x612&w=0&k=20&c=efMaHA1extn30mGkm_dgAM6lggMikg1eDKkJDhrV73Y=' }
-      ]);
+      fetch('/api/v1/promozioni').then((res) => {
+        //console.log("fetched");
+        return res.json();
+      }).catch(function(error){
+        console.log(error);
+      });
+      /*return Promise.resolve([
+        { data: '2025-05-12', titolo: 'Sagra del pesce', promotore: 'Giovanni Giorgio', descrizione: 'Mmmhhhhh pesce..', img: 'https://c02.purpledshub.com/uploads/sites/41/2021/03/Blobfish_Kerryn-Parkinson-thumb-0293dac.jpg?w=1200' },
+        { data: '2025-05-13', titolo: 'Fiera della castora', promotore: 'Franco', descrizione: 'Castagnata con alcol', img: 'https://www.salepepe.it/files/2022/10/CASTAGNE-CALDARROSTE-COVER-1140x636.jpg' },
+        { data: '2025-05-14', titolo: 'Promo 50%-off tuberi', promotore: 'Negozio di vegetali', descrizione: 'Patate a metà prezzo per tutti', img: 'https://st4.depositphotos.com/1439888/31456/i/450/depositphotos_314565988-stock-photo-potatoes-in-the-wooden-crate.jpg' },
+        { data: '2025-05-14', titolo: 'Sagra del contadino', promotore: 'Associazione vinicoltori', descrizione: 'Degustazione vini', img: 'https://media.istockphoto.com/id/1030932114/it/foto/due-bicchieri-di-vino-rosso-in-vigna.jpg?s=612x612&w=0&k=20&c=efMaHA1extn30mGkm_dgAM6lggMikg1eDKkJDhrV73Y=' }
+      ]);*/
     }
-
+    /*
+    data:Date,
+    titolo:String,
+    promotore:String,
+    descrizione:String,
+    img: {data: Buffer, type: String },
+    tipoAnnuncio:String,
+    */
     function renderWeek(startDate) {
       const days = [];
       for (let i = 0; i < 7; i++) {
@@ -183,7 +187,7 @@
       fetchEvents(startDate).then(events => {
         days.forEach(day => {
           const dayStr = day.toISOString().split('T')[0];
-          const dayEvents = events.filter(e => e.date === dayStr).slice(0, 3);
+          const dayEvents = events.filter(e => e.data === dayStr).slice(0, 3);
 
           const dayDiv = document.createElement('div');
           dayDiv.classList.add('day');
@@ -198,12 +202,12 @@
           dayEvents.forEach(event => {
             const eventDiv = document.createElement('div');
             eventDiv.classList.add('event');
-            eventDiv.textContent = event.title;
+            eventDiv.textContent = event.titolo;
             eventDiv.addEventListener('click', () => {
-              modalTitle.textContent = event.title;
-              modalUser.textContent = event.user;
-              modalDescription.textContent = event.description;
-              modalImage.src = event.image;
+              modalTitle.textContent = event.titolo;
+              modalUser.textContent = event.promotore;
+              modalDescription.textContent = event.descrizione;
+              modalImage.src = event.img;
               modal.style.display = 'flex';
             });
             eventsDiv.appendChild(eventDiv);
