@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Venditori</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f6fff6;
+        }
+        h1 {
+            color: #218838;
+            background: #e6ffe6;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: flex-end; 
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            margin-top: 18px;
+        }
+        .top-bar .filter-btn {
+            padding: 7px 18px;
+            background: #218838;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 6px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .top-bar .filter-btn.active,
+        .top-bar .filter-btn:focus {
+            background: #155724;
+            outline: none;
+        }
+        .top-bar .filter-btn:disabled {
+            background: #bdbdbd !important;
+            color: #f3f3f3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .controls input {
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid #b2f2b2;
+        }
+        .venditore-row {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #b2f2b2;
+            padding: 12px 0;
+            background: #f0fff0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px #d4f5d4;
+        }
+        .venditore-info {
+            flex: 1;
+            color: #155724;
+            display: flex;
+            flex-direction: column;
+        }
+        .venditore-username {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #218838;
+            margin-bottom: 2px;
+        }
+        .venditore-details {
+            font-size: 0.98em;
+            color: #155724;
+        }
+        .dettagli-btn {
+            margin-left: 16px;
+            padding: 6px 14px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 6px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .dettagli-btn:hover {
+            background: #218838;
+        }
+        .dettagli-btn:disabled {
+            background: #bdbdbd !important;
+            color: #f3f3f3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .venditoretest-btn {
+            margin-left: 10px;
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 6px #f5b2b2;
+            transition: background 0.2s;
+        }
+        .venditoretest-btn:hover {
+            background: #b52a37;
+        }
+        .venditoretest-btn:disabled {
+            background: #bdbdbd !important;
+            color: #f3f3f3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        #listaVenditori em {
+            color: #218838;
+        }
+        .venditore-actions {
+            display: flex;
+            align-items: center;
+        }
+        @media (max-width: 600px) {
+            .venditore-row { flex-direction: column; align-items: flex-start; }
+            .venditore-actions { margin-top: 10px; }
+            .top-bar { flex-direction: column; align-items: flex-end; gap: 8px; }
+        }
+    </style>
+    <script>
+        let venditoriGlobal = [];
+        let filtroTipo = 'tutti'; 
+
+        async function caricaVenditori() {
+            const lista = document.getElementById('listaVenditori');
+            lista.innerHTML = 'Caricamento...';
+            try {
+                // Utilizzo Api per caricare i venditori
+                const res = await fetch('/api/venditori');
+                const venditori = await res.json();
+                venditoriGlobal = Array.isArray(venditori) ? venditori : [];
+                await aggiungiTagsAVenditori();
+                aggiornaLista();
+            } catch (err) {
+                lista.innerHTML = '<span style="color:red;">Errore nel caricamento dei venditori.</span>';
+            }
+        }
+
+        async function caricaProdottidaVenditore(id) {
+            // Utilizzo Api per caricare i prodotti del venditore
+            const res = await fetch(`/api/prodotti/venditore/${id}`);
+            if (res.ok) {
+                const prodotti = await res.json();
+                return prodotti;
+            } else {
+                throw new Error('Errore nel caricamento dei prodotti.');
+            }
+        }
+
+        async function aggiungiTagsAVenditori() {
+            await Promise.all(venditoriGlobal.map(async (v) => {
+                try {
+                    const prodotti = await caricaProdottidaVenditore(v._id);
+                    let allTags = [];
+                    prodotti.forEach(p => {
+                        if (Array.isArray(p.tag)) {
+                            allTags = allTags.concat(p.tag);
+                        } else if (typeof p.tag === "string" && p.tag.trim() !== "") {
+                            allTags.push(p.tag.trim());
+                        }
+                    });
+                    v.tagsProdotti = [...new Set(allTags.filter(Boolean))];
+                } catch {
+                    v.tagsProdotti = [];
+                }
+            }));
+        }
+
+        function aggiornaLista() {
+            const lista = document.getElementById('listaVenditori');
+            const filtroTag = document.getElementById('filtroTag').value.toLowerCase().trim();
+            let filtrati = venditoriGlobal;
+
+            
+            if (filtroTipo === 'conTag') {
+                filtrati = filtrati.filter(v => Array.isArray(v.tagsProdotti) && v.tagsProdotti.length > 0);
+            }
+
+            
+            if (filtroTag) {
+                filtrati = filtrati.filter(v =>
+                    Array.isArray(v.tagsProdotti) &&
+                    v.tagsProdotti.some(tag => tag.toLowerCase().includes(filtroTag))
+                );
+            }
+
+            if (filtrati.length === 0) {
+                lista.innerHTML = '<em>Nessun venditore trovato.</em>';
+                return;
+            }
+            lista.innerHTML = '';
+            filtrati.forEach(v => {
+                const row = document.createElement('div');
+                row.className = 'venditore-row';
+                
+                let tagsHtml = '';
+                if (Array.isArray(v.tagsProdotti) && v.tagsProdotti.length > 0) {
+                    tagsHtml = `<div style="margin-top:6px;font-size:0.95em;">
+                        <b>Tag prodotti:</b> 
+                        <span>
+                            ${v.tagsProdotti.map(tag => `
+                                <span style="
+                                    display:inline-block;
+                                    background:#155724;
+                                    color:#fff;
+                                    border-radius:18px;
+                                    padding:4px 14px;
+                                    margin-right:6px;
+                                    font-size:0.97em;
+                                    font-weight:500;
+                                    box-shadow:0 1px 4px #b2f2b2;
+                                    letter-spacing:0.01em;
+                                ">${tag}</span>
+                            `).join('')}
+                        </span>
+                    </div>`;
+                }
+                row.innerHTML = `
+                    <div class="venditore-info">
+                        <span class="venditore-username">${v.username}</span>
+                        <span class="venditore-details">
+                            <strong>${v.nome} ${v.cognome}</strong> | <b>Sede:</b> ${v.sede || '-'}
+                        </span>
+                        ${tagsHtml}
+                    </div>
+                    <div class="venditore-actions">
+                        <button class="dettagli-btn" onclick="mostraDettagli('${v._id}')">PRODOTTI</button>
+                        <button class="venditoretest-btn" onclick="apriDettagliVenditoreTest('${v._id}')">apri dettagli</button>
+                    </div>
+                `;
+                lista.appendChild(row);
+            });
+        }
+
+        function mostraDettagli(id) {
+            window.location.href = `/tuttiprodotti.html?id=${encodeURIComponent(id)}`;
+        }
+
+        function apriDettagliVenditoreTest(id) {
+            window.location.href = `/dettaglivenditore.html?id=${encodeURIComponent(id)}`;
+        }
+
+        function setFiltroTipo(tipo) {
+            filtroTipo = tipo;
+            // Aggiorna 
+            document.getElementById('btnTutti').classList.toggle('active', tipo === 'tutti');
+            document.getElementById('btnConTag').classList.toggle('active', tipo === 'conTag');
+            document.getElementById('btnTutti').disabled = (tipo === 'tutti');
+            document.getElementById('btnConTag').disabled = (tipo === 'conTag');
+            aggiornaLista();
+        }
+
+        window.onload = function() {
+            caricaVenditori();
+            setFiltroTipo('tutti');
+        };
+    </script>
+</head>
+<body>
+    <div class="top-bar">
+        <button id="btnTutti" class="filter-btn" onclick="setFiltroTipo('tutti')">tutti</button>
+        <button id="btnConTag" class="filter-btn" onclick="setFiltroTipo('conTag')">con prodotti in vendita</button>
+    </div>
+    <h1>Venditori registrati</h1>
+    <div class="controls">
+        <input type="text" id="filtroTag" placeholder="Cerca per tag prodotto" oninput="aggiornaLista()">
+    </div>
+    <div id="listaVenditori"></div>
+</body>
+</html>
