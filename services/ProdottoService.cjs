@@ -27,4 +27,14 @@ async function getProductByVendor(vend) {
     }
 }
 
-module.exports = { getProductById,getProductByVendor};
+async function addProduct(prodotto) {
+    try {
+        const nuovoProdotto = new Productv2(prodotto);
+        await nuovoProdotto.save();
+    } catch (error) {
+        console.error('Errore durante l\'aggiunta del prodotto:', error.message);
+        throw error;
+    }
+}
+
+module.exports = { getProductById,getProductByVendor,addProduct };

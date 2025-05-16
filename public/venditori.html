@@ -27,6 +27,11 @@
         }
         .filter-group {
             display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .filter-btn-row {
+            display: flex;
             gap: 12px;
         }
         .top-bar .filter-btn {
@@ -141,6 +146,7 @@
             .venditore-row { flex-direction: column; align-items: flex-start; }
             .venditore-actions { margin-top: 10px; }
             .top-bar { flex-direction: column; align-items: flex-end; gap: 8px; }
+            .filter-group { align-items: stretch !important; }
         }
         .carrello-btn {
             position: absolute;
@@ -159,6 +165,23 @@
         }
         .carrello-btn:hover {
             background: #218838;
+        }
+        /* Back button styles */
+        .back-btn {
+            margin-top: 2px;
+            padding: 7px 18px;
+            background: #218838;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 6px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .back-btn:hover, .back-btn:focus {
+            background: #155724;
+            outline: none;
         }
     </style>
     <script>
@@ -215,12 +238,10 @@
             const filtroTag = document.getElementById('filtroTag').value.toLowerCase().trim();
             let filtrati = venditoriGlobal;
 
-            
             if (filtroTipo === 'conTag') {
                 filtrati = filtrati.filter(v => Array.isArray(v.tagsProdotti) && v.tagsProdotti.length > 0);
             }
 
-            
             if (filtroTag) {
                 filtrati = filtrati.filter(v =>
                     Array.isArray(v.tagsProdotti) &&
@@ -294,6 +315,10 @@
             aggiornaLista();
         }
 
+        function tornaIndietro() {
+            window.history.back();
+        }
+
         window.onload = function() {
             caricaVenditori();
             setFiltroTipo('tutti');
@@ -303,8 +328,11 @@
 <body>
     <div class="top-bar">
         <div class="filter-group">
-            <button id="btnTutti" class="filter-btn" onclick="setFiltroTipo('tutti')">tutti</button>
-            <button id="btnConTag" class="filter-btn" onclick="setFiltroTipo('conTag')">con prodotti in vendita</button>
+            <div class="filter-btn-row">
+                <button id="btnTutti" class="filter-btn" onclick="setFiltroTipo('tutti')">tutti</button>
+                <button id="btnConTag" class="filter-btn" onclick="setFiltroTipo('conTag')">con prodotti in vendita</button>
+            </div>
+            <button class="back-btn" onclick="tornaIndietro()">&#8592; Torna indietro</button>
         </div>
         <a href="carrello.html" class="carrello-btn" title="Vai al carrello">
             Carrello

@@ -33,9 +33,9 @@ app.use(express.static('public'));
     
     //FUNZIONE PER GENERARE COSE DA INSERIRE NEL DB PER TEST, con copilot su VSC SI FA MOLTO VELOCEMENTE
     async function insert(){
-       /*var v=new Venditore('MariaElena','Boschi',19091990,'e@gmail.com','OrtofruttaAmico', '$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa','Via Sommarive,3','vendiamo frutta e verdura','alimentari','1LTREW0998');
+       var v=new Venditore('Caio','Borghese',19091990,'iosono@caioBorghese.com','CAIO', '$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa','Via Dani Pedrosa,26','vendo Pere, le pere sono il mio special','agricoltore','P9876');
        await DBVendor.create(v);
-       console.log("Venditore inserito con successo!");*/
+       console.log("Venditore inserito con successo!");
         /*
         const client = await DBClient.findOne({ _id: "68245a82ef2a089ff02b2a7b"}); // o usa l'email se preferisci
 
@@ -102,7 +102,7 @@ app.use(express.json()); // Per dati JSON (opzionale ma utile)
 //app.use('/default.html');
 // Pagina principale
 app.get('/', (req, res) => {
-    /*popola();*/
+    //popola();
     res.sendFile(path.join(__dirname, 'public', `/default.html`));
 });
 /*
@@ -283,6 +283,19 @@ app.get('/api/prodotti/venditore/:id', async (req, res) => {
     } catch (error) {
         console.error('Errore durante il recupero del prodotto:', error);
         res.status(500).send('Errore del server');
+    }
+});
+
+
+app.post('/api/prodotto', async (req, res) => {
+    try {
+        const { nome, descrizione, venditore, costo, quantita, tag } = req.body;
+        const prodotto = new Prodotto(nome, descrizione, venditore, costo, quantita, tag);
+        await ProdottoServizio.addProduct(prodotto);
+        res.status(201).json({ message: 'Prodotto aggiunto con successo' });
+    } catch (error) {
+        console.error('Errore durante l\'aggiunta del prodotto:', error);
+        res.status(500).json({ error: 'Errore del server' });
     }
 });
 
