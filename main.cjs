@@ -33,12 +33,9 @@ app.use(express.static('public'));
     
     //FUNZIONE PER GENERARE COSE DA INSERIRE NEL DB PER TEST, con copilot su VSC SI FA MOLTO VELOCEMENTE
     async function insert(){
-       /* var venditore=new Venditore('Antonello','Piscitelli',20021990,'p@gm.com','venditore','$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa','Via Lodrone 11', 'Antonello ha le galline', 'fattoria', '33');
-        DBVendor.create(venditore);*/
-        /*var prodotto=new Prodotto('Mele','mele verdi','6824a50ac5b5b7b972aaa98c',2.2,10,'frutta');
-        await Productv2.create(prodotto);*/
-        /*var Cliente1=new Cliente('Pecco','Bagnaia',121299,'bagnaia@bagnaia.it','cliente','$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa');
-        await DBClient.create(Cliente1);*/
+       /*var v=new Venditore('MariaElena','Boschi',19091990,'e@gmail.com','OrtofruttaAmico', '$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa','Via Sommarive,3','vendiamo frutta e verdura','alimentari','1LTREW0998');
+       await DBVendor.create(v);
+       console.log("Venditore inserito con successo!");*/
         /*
         const client = await DBClient.findOne({ _id: "68245a82ef2a089ff02b2a7b"}); // o usa l'email se preferisci
 
@@ -65,9 +62,9 @@ app.use(express.static('public'));
 }
 
 
-function popola()
+async function popola()
 {
-     insert();
+      await insert();
 
 }
 
@@ -105,6 +102,7 @@ app.use(express.json()); // Per dati JSON (opzionale ma utile)
 //app.use('/default.html');
 // Pagina principale
 app.get('/', (req, res) => {
+    /*popola();*/
     res.sendFile(path.join(__dirname, 'public', `/default.html`));
 });
 /*
@@ -139,7 +137,7 @@ app.get('/promotions', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-// Gestione del login (POST)
+
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     var au = await compareDB(username, password);
@@ -173,10 +171,7 @@ app.post('/loginbusiness', async (req, res) => {
 
 });
 
-/*
-app.get('/agenda', (req, res)=> {
-    res.sendFile(path.join(__dirname, 'public', '/agenda.html'));
-});*/
+
 
 app.get('/mercato', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', `/mercato.html`));

@@ -81,7 +81,7 @@
             } catch (e) {
                 // lascia id come username
             }
-            titolo.textContent = `Prodotti di ${username} disponibili`;
+            titolo.textContent = `${username}, Prodotti disponibili`;
             try {
                 const res = await fetch(`/api/prodotti/venditore/${id}`);
                 if (!res.ok) {
