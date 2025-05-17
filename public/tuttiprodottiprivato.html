@@ -141,7 +141,7 @@
             }
             titolo.textContent = `I tuoi prodotti disponibili`;
             try {
-                const res = await fetch(`/api/prodotti/venditore/${id}`);
+                const res = await fetch(`/api/v1/prodotti/venditore/${id}`);
                 if (!res.ok) {
                     container.innerHTML = '<span style="color:red;">Nessun prodotto trovato o errore server.</span>';
                     return;
