@@ -18,11 +18,16 @@
         }
         .top-bar {
             display: flex;
-            justify-content: flex-end; 
+            justify-content: space-between;
             align-items: center;
             gap: 12px;
             margin-bottom: 18px;
             margin-top: 18px;
+            position: relative;
+        }
+        .filter-group {
+            display: flex;
+            gap: 12px;
         }
         .top-bar .filter-btn {
             padding: 7px 18px;
@@ -136,6 +141,24 @@
             .venditore-row { flex-direction: column; align-items: flex-start; }
             .venditore-actions { margin-top: 10px; }
             .top-bar { flex-direction: column; align-items: flex-end; gap: 8px; }
+        }
+        .carrello-btn {
+            position: absolute;
+            top: 5px;
+            right: 32px;
+            background: #28a745;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 22px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+            z-index: 100;
+        }
+        .carrello-btn:hover {
+            background: #218838;
         }
     </style>
     <script>
@@ -279,8 +302,13 @@
 </head>
 <body>
     <div class="top-bar">
-        <button id="btnTutti" class="filter-btn" onclick="setFiltroTipo('tutti')">tutti</button>
-        <button id="btnConTag" class="filter-btn" onclick="setFiltroTipo('conTag')">con prodotti in vendita</button>
+        <div class="filter-group">
+            <button id="btnTutti" class="filter-btn" onclick="setFiltroTipo('tutti')">tutti</button>
+            <button id="btnConTag" class="filter-btn" onclick="setFiltroTipo('conTag')">con prodotti in vendita</button>
+        </div>
+        <a href="carrello.html" class="carrello-btn" title="Vai al carrello">
+            Carrello
+        </a>
     </div>
     <h1>Venditori registrati</h1>
     <div class="controls">

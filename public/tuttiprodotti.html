@@ -51,6 +51,38 @@
         .back-btn:hover {
             background: #218838;
         }
+        .add-cart-btn {
+            margin-top: 8px;
+            background: #218838;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+        }
+        .add-cart-btn:hover {
+            background: #155724;
+        }
+        .carrello-btn {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            background: #28a745;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 22px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+            z-index: 100;
+        }
+        .carrello-btn:hover {
+            background: #218838;
+        }
     </style>
     <script>
         function getIdFromQuery() {
@@ -98,23 +130,78 @@
                     const div = document.createElement('div');
                     div.className = 'prodotto';
                     div.innerHTML = `
-                        <strong>${p.nome}</strong><br>
-                        <b>Descrizione:</b> ${p.descrizione || '-'}<br>
-                        <b>Prezzo:</b> ${p.costo} €<br>
-                        <b>Quantità:</b> ${p.quantita || '-'}<br>
-                        <b>Tag:</b> ${p.tag || '-'}
+                        <div style="display:flex;align-items:center;gap:18px;">
+                            <img src="${(p.immagine && p.immagine.startsWith('http')) ? p.immagine : 'https://placehold.co/100x100?text=No+Image'}"
+                                alt="${p.nome}" 
+                                style="width:100px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;">
+                            <div style="flex:1;">
+                                <strong>${p.nome}</strong><br>
+                                <b>Descrizione:</b> ${p.descrizione || '-'}<br>
+                                <b>Prezzo:</b> ${p.costo} €<br>
+                                <b>Quantità:</b> ${p.quantita || '-'}<br>
+                                <b>Tag:</b> ${p.tag || '-'}
+                            </div>
+                            <div style="display:flex;align-items:center;justify-content:flex-end;height:100%;">
+                                <button class="add-cart-btn" data-nome="${p.nome}" data-prezzo="${p.costo}" data-quantita="${p.quantita}">Aggiungi al carrello</button>
+                            </div>
+                        </div>
                     `;
                     container.appendChild(div);
                 });
             } catch (err) {
                 container.innerHTML = '<span style="color:red;">Errore nel caricamento dei prodotti.</span>';
             }
+            // ID di test per il carrello
+            const clientId =  '68245a82ef2a089ff02b2a7b';
+
+            container.querySelectorAll('.add-cart-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const nome = this.getAttribute('data-nome');
+                    const prezzo = parseFloat(this.getAttribute('data-prezzo'));
+                    const maxQuantita = parseInt(this.getAttribute('data-quantita'), 10);
+                    let quantity = prompt('Quante unità vuoi aggiungere al carrello?', '1');
+                    if (quantity === null) return; // Utente ha annullato
+                    quantity = parseInt(quantity, 10);
+                    if (isNaN(quantity) || quantity < 1) {
+                        alert('Quantità non valida!');
+                        return;
+                    }
+                    if (quantity > maxQuantita) {
+                        alert('Quantità non disponibile!');
+                        return;
+                    }
+                    const prodotto = {
+                        nome: nome,
+                        prezzo: prezzo,
+                        quantity: quantity
+                    };
+                    try {
+                        const res = await fetch(`/api/carrello/${clientId}/add`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(prodotto)
+                        });
+                        if (res.ok) {
+                            alert('Prodotto aggiunto al carrello!');
+                        } else {
+                            const data = await res.json();
+                            alert(data.error || 'Errore durante l\'aggiunta al carrello');
+                        }
+                    } catch (e) {
+                        alert('Errore di rete durante l\'aggiunta al carrello');
+                    }
+                });
+            });
         }
 
         window.onload = caricaProdotti;
+
     </script>
 </head>
 <body>
+    <a href="carrello.html" class="carrello-btn" title="Vai al carrello">
+     Carrello
+    </a>
     <div class="container">
         <h1 id="titoloVenditore">Prodotti</h1>
         <div id="prodottiVenditore"></div>

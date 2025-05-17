@@ -62,4 +62,4 @@ async function removeProductFromCarrello(clientId, nomeProdotto) {
     }
 }
 
-module.exports = { addProductToCarrello, getClientCarrello, removeProductFromCarrello };
+module.exports = { addProductToCarrello, getClientCarrello, removeProductFromCarrello, removeProductFromCarrello };

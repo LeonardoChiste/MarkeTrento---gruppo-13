@@ -69,7 +69,7 @@
             <div class="loading">Caricamento carrello in corso...</div>
         </ul>
         <p class="total" id="total-price">Totale: €0.00</p>
-        <a href="/mercato" class="back-btn">Torna indietro</a>
+        <button class="back-btn" onclick="window.history.back()">Torna indietro</button>
     </div>
 
     <script>
@@ -94,8 +94,11 @@
             const totale = prezzo * quantity;
             return `
                 <li class="product-item">
-                    <span>${prodotto.nome || 'Prodotto sconosciuto'}</span>
-                    <span class="product-qty">x${quantity}</span>
+                    <span>${prodotto.nome || 'Prodotto sconosciuto'}</span> 
+                    <span class="product-qty">
+                        x${quantity}
+                        <button class="remove-btn" data-nome="${prodotto.nome}" title="Rimuovi dal carrello" style="margin-left:8px;background:#e74c3c;color:white;border:none;border-radius:4px;cursor:pointer;padding:2px 8px;">✕</button>
+                    </span>
                     <span>€${totale.toFixed(2)}</span>
                 </li>
             `;
@@ -119,6 +122,28 @@
                 const totalPrice = carrello.reduce((sum, prodotto) =>
                     sum + ((prodotto.prezzo || 0) * (prodotto.quantity || 1)), 0);
                 totalPriceElement.textContent = `Totale: €${totalPrice.toFixed(2)}`;
+
+                // Event listener per i pulsanti di rimozione
+                container.querySelectorAll('.remove-btn').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        const nome = this.getAttribute('data-nome');
+                        try {
+                            const res = await fetch(`/api/carrello/${clientId}/removeOne`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ nome })
+                            });
+                            if (res.ok) {
+                                loadCarrello(); // Ricarica il carrello dopo la rimozione
+                            } else {
+                                alert('Errore durante la rimozione dal carrello');
+                            }
+                        } catch (e) {
+                            alert('Errore di rete durante la rimozione dal carrello');
+                        }
+                    });
+                });
+
             } catch (error) {
                 container.innerHTML = `<div class="error-message">Errore durante il caricamento del carrello.</div>`;
                 totalPriceElement.textContent = `Totale: €0.00`;
