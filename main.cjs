@@ -299,6 +299,17 @@ app.post('/api/prodotto', async (req, res) => {
     }
 });
 
+app.delete('/api/v1/prodotto/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        await ProdottoServizio.deleteProduct(id);
+        res.status(200).json({ message: 'Prodotto eliminato con successo' });
+    } catch (error) {
+        console.error('Errore durante l\'eliminazione del prodotto:', error);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
 
 
 mongoose.connect(dbUrl).then( ()=> {

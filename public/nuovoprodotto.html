@@ -51,9 +51,49 @@
         button:hover {
             background: #218838;
         }
+        .annulla-btn {
+            margin-top: 12px;
+            background: #6c757d;
+        }
+        .annulla-btn:hover {
+            background: #495057;
+        }
+        .torna-indietro-top {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            background: #145a32;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+            max-width: 180px;
+            white-space: nowrap;
+        }
+        .torna-indietro-top:hover {
+            background: #0b3d1c;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 24px 8px;
+                padding: 18px 8px;
+            }
+            .torna-indietro-top {
+                top: 10px;
+                left: 10px;
+                padding: 7px 12px;
+                font-size: 0.95em;
+            }
+        }
     </style>
 </head>
 <body>
+    <button class="torna-indietro-top" onclick="window.history.back()">Torna indietro</button>
     <div class="container">
         <h1>Pubblica un nuovo prodotto</h1>
         <form id="prodottoForm">
@@ -62,9 +102,6 @@
 
             <label for="descrizione">Descrizione</label>
             <textarea id="descrizione" name="descrizione" rows="3" required></textarea>
-
-            <label for="venditore">ID Venditore</label>
-            <input type="text" id="venditore" name="venditore" required>
 
             <label for="costo">Prezzo (€)</label>
             <input type="number" id="costo" name="costo" min="0" step="0.01" required>
@@ -80,6 +117,7 @@
 
             <button type="submit">Pubblica Prodotto</button>
         </form>
+        <button class="annulla-btn" onclick="document.getElementById('prodottoForm').reset();document.getElementById('esito').innerHTML='';">cancella campi</button>
         <div id="esito" style="margin-top:20px;text-align:center;"></div>
     </div>
     <script>
@@ -88,7 +126,7 @@
             const dati = {
                 nome: this.nome.value,
                 descrizione: this.descrizione.value,
-                venditore: this.venditore.value,
+                venditore: '682794e1cf5e37c6f8526f3f',
                 costo: parseFloat(this.costo.value),
                 quantita: parseInt(this.quantita.value),
                 tag: this.tag.value,

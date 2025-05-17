@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Prodotti del Venditore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e6ffe6 0%, #b2f2b2 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #f6fff6;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #b2f2b2;
+            padding: 32px 28px;
+        }
+        h1 {
+            color: #218838;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .prodotto {
+            background: #e6ffe6;
+            border-left: 6px solid #28a745;
+            margin-bottom: 18px;
+            padding: 14px 18px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px #d4f5d4;
+            position: relative;
+        }
+        .prodotto strong {
+            color: #155724;
+        }
+        .back-btn {
+            display: block;
+            margin: 0 auto;
+            margin-top: 30px;
+            padding: 8px 22px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #218838;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .remove-btn:hover {
+            background: #b21f2d;
+        }
+        .update-btn {
+            position: absolute;
+            top: 10px;
+            right: 48px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .update-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+    <script>
+        // Ottieni id venditore da query string o usa default
+        function getVenditoreId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id') || '682794e1cf5e37c6f8526f3f';
+        }
+
+        function aggiornaProdotto(idProdotto) {
+            alert('Funzione di aggiornamento per prodotto ID: ' + idProdotto);
+            // window.location.href = `/update-prodotto.html?id=${idProdotto}`;
+        }
+
+        async function rimuoviProdotto(idProdotto, btn) {
+            if (!confirm('Sei sicuro di voler rimuovere questo prodotto?')) return;
+            btn.disabled = true;
+            try {
+                const res = await fetch(`/api/v1/prodotto/${idProdotto}`, {
+                    method: 'DELETE'
+                });
+                if (res.ok) {
+                    btn.parentElement.remove();
+                } else {
+                    alert('Errore nella rimozione del prodotto.');
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                alert('Errore di rete nella rimozione del prodotto.');
+                btn.disabled = false;
+            }
+        }
+
+        async function caricaProdotti(id) {
+            const container = document.getElementById('prodottiVenditore');
+            const titolo = document.getElementById('titoloVenditore');
+            let username = id;
+            try {
+                const resVend = await fetch(`/api/venditore/${id}`);
+                if (resVend.ok) {
+                    const venditore = await resVend.json();
+                    if (venditore && venditore.username) {
+                        username = venditore.username;
+                    }
+                }
+            } catch (e) {
+                // lascia id come username
+            }
+            titolo.textContent = `I tuoi prodotti disponibili`;
+            try {
+                const res = await fetch(`/api/prodotti/venditore/${id}`);
+                if (!res.ok) {
+                    container.innerHTML = '<span style="color:red;">Nessun prodotto trovato o errore server.</span>';
+                    return;
+                }
+                const prodotti = await res.json();
+                if (!Array.isArray(prodotti) || prodotti.length === 0) {
+                    container.innerHTML = '<em>Nessun prodotto trovato per questo venditore.</em>';
+                    return;
+                }
+                container.innerHTML = '';
+                prodotti.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'prodotto';
+                    div.innerHTML = `
+                        <button class="update-btn" title="Aggiorna prodotto" onclick="aggiornaProdotto('${p._id}')">&#9998;</button>
+                        <button class="remove-btn" title="Rimuovi prodotto">&#10006;</button>
+                        <div style="display:flex;align-items:center;gap:18px;">
+                            <img src="${(p.immagine && p.immagine.startsWith('http')) ? p.immagine : 'https://placehold.co/100x100?text=No+Image'}"
+                                alt="${p.nome}" 
+                                style="width:100px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;">
+                            <div style="flex:1;">
+                                <strong>${p.nome}</strong><br>
+                                <b>Descrizione:</b> ${p.descrizione || '-'}<br>
+                                <b>Prezzo:</b> ${p.costo} €<br>
+                                <b>Quantità:</b> ${p.quantita || '-'}<br>
+                                <b>Tag:</b> ${p.tag || '-'}
+                            </div>
+                        </div>
+                    `;
+                    // Attach remove event
+                    const removeBtn = div.querySelector('.remove-btn');
+                    removeBtn.onclick = function() {
+                        rimuoviProdotto(p._id, removeBtn);
+                    };
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                container.innerHTML = '<span style="color:red;">Errore nel caricamento dei prodotti.</span>';
+            }
+        }
+
+        window.aggiornaProdotto = aggiornaProdotto;
+
+        window.onload = function() {
+            const id = getVenditoreId();
+            caricaProdotti(id);
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 id="titoloVenditore">Prodotti</h1>
+        <div id="prodottiVenditore"></div>
+        <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
+    </div>
+</body>
+</html>
