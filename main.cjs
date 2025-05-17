@@ -58,7 +58,8 @@ app.use(express.static('public'));
         console.log("Prodotti aggiunti al carrello:", client.carrello);
         await client.save();
         */
-        await DBPromotion.create({ data: 17-5-2025, titolo: 'Castagnata', promotore: 'Dario Lampa', descrizione: 'Una castagnata a Mezzocorona dalle 16.00 fino a mezza notte',
+       /*
+        await DBPromotion.create({ data: 2025-5-20, titolo: 'Castagnata', promotore: 'Dario Lampa', descrizione: 'Una castagnata a Mezzocorona dalle 16.00 fino a mezza notte',
             img: 'https://pbs.twimg.com/media/FbbTu_sWIAEIR9T.jpg', tipoAnnuncio: 'Evento'}).catch(err => console.error('Error:', err));
 
         console.log("Promozione inserita con successo!");
@@ -66,7 +67,7 @@ app.use(express.static('public'));
         if(!copia){
             console.log("non aggiunta");
             return;
-        }
+        }*/
 }
 
 
@@ -169,7 +170,7 @@ app.get('/api/v1/promozioni', async (req, res) => {
     try {
         const promotions = await DBPromotion.find();
         res.json(promotions);
-        console.log(res.body);
+        //console.log("Fetched promotions: ", promotions);
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
