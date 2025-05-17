@@ -176,7 +176,7 @@
                         quantity: quantity
                     };
                     try {
-                        const res = await fetch(`/api/carrello/${clientId}/add`, {
+                        const res = await fetch(`/api/v1/carrello/${clientId}/add`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(prodotto)

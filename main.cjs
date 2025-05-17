@@ -209,7 +209,7 @@ app.get('/api/v1/carrello/:clientId', async (req, res) => {
     }
 });
 
-app.post('/api/carrello/:clientId/add', async (req, res) => {
+app.post('/api/v1/carrello/:clientId/add', async (req, res) => {
     try {
         const clientId = req.params.clientId;
         const { nome, prezzo, quantity } = req.body;
@@ -241,7 +241,7 @@ app.post('/api/carrello/:clientId/add', async (req, res) => {
     }
 });
 
-app.post('/api/carrello/:clientId/removeOne', async (req, res) => {
+app.post('/api/v1/carrello/:clientId/removeOne', async (req, res) => {
     try {
         const clientId = req.params.clientId;
         const { nome } = req.body;
@@ -263,7 +263,7 @@ app.post('/api/carrello/:clientId/removeOne', async (req, res) => {
 });
 
 
-app.get('/api/prodotti/venditore/:id', async (req, res) => {
+app.get('/api/v1/prodotti/venditore/:id', async (req, res) => {
     try {
         const prodotto = await ProdottoServizio.getProductByVendor(req.params.id);
         if (!prodotto) {
