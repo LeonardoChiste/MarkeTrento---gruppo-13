@@ -179,19 +179,25 @@ app.get('/api/v1/promozioni', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-/*app.post('/api/v1/promozioni', async (req, res) => {
+app.post('/api/v1/promozioni', async (req, res) => {
     const data = req.body;
-    try {
-        try{
-            DBPromotion.create(data);
-        } catch (error) {
-            res.status(500).json({ error });
-        }
-        
-    } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});*/
+    //console.log(data);
+    const promozione = DBPromotion({
+        data: data.startdate,
+        titolo: data.title,
+        promotore: data.promoter,
+        descrizione: data.description,
+        img: data.image,
+        tipoAnnuncio: data.tipo
+    });
+    console.log(promozione);
+    await DBPromotion.create(promozione).then(() => {
+        console.log('Promozione creata con successo');
+    }).catch((error) => {   
+        console.error('Errore durante la creazione della promozione:', error);
+        res.status(500).json({ error: 'Errore durante la creazione della promozione' });
+    });
+});
 
 
 //api carrello

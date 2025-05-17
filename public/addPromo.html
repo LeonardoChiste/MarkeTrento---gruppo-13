@@ -18,10 +18,27 @@
   </style>
 </head>
 <body>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0fff0;
+        margin: 0;
+        padding: 20px;
+        color: #006400;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+  </style>
   <h1>Aggiungi promozione</h1>
-  <form action="/api/v1/...." method="POST" enctype="dati promozione">
+  <form enctype="dati promozione">
     <label for="title">Titolo:</label><br>
     <input type="text" id="title" name="title" required><br><br>
+
+    <label for="description">Promotore:</label><br>
+    <textarea id="promoter" name="promoter" rows="1" required></textarea><br><br>
 
     <label for="description">Descrizione:</label><br>
     <textarea id="description" name="description" rows="4" required></textarea><br><br>
@@ -33,9 +50,42 @@
     <input type="date" id="enddate" name="enddate" required><br><br>
 
     <label for="image">Immagine:</label><br>
-    <input type="file" id="image" name="image" accept="image/*" required><br><br>
+    <input type="text" id="image" name="image" accept="image/*" ><br><br>
+    
+    <input type="radio" id="evento" name="tipo" value="Evento">
+    <label for="evento">Evento</label><br>
+    <input type="radio" id="promozione" name="tipo" value="Promozione">
+    <label for="promozione">Promozione</label><br>
 
     <button type="submit">Aggiungi</button>
   </form>
+  <div class ="nav-links">
+    <a href="/mercato.html">Torna al Mercato</a>
+  </div>
+  <script>
+    document.querySelector('form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      // Convert FormData to JSON
+      const data = {};
+      formData.forEach((value, key) => { data[key] = value; });
+      if(data.image == null){
+        data.image = "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
+      }
+      const response = await fetch('/api/v1/promozioni', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        window.location.href = '/mercato.html';
+      } else {
+        alert('Errore durante la creazione della promozione');
+      }
+    });
+</script>
 </body>
 </html>
