@@ -41,5 +41,5 @@ const Tprodotto = {
     Dolci, 
     Salumi, 
     Funghi, 
-    AltraFrutta
+    AltraFrutta,
 }
