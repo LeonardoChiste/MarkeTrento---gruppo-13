@@ -163,7 +163,7 @@
             const container = document.getElementById('dettagliVenditore');
             container.innerHTML = 'Caricamento...';
             try {
-                const res = await fetch(`/api/venditore/${id}`);
+                const res = await fetch(`/api/v1/venditore/${id}`);
                 if (!res.ok) {
                     container.innerHTML = '<span style="color:red;">Venditore non trovato.</span>';
                     return;

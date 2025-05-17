@@ -154,7 +154,7 @@
     <script type="module">
     async function getProductById(id) {
         try {
-            const response = await fetch(`/api/prodotti/${id}`);
+            const response = await fetch(`/api/v1/prodotti/${id}`);
             if (!response.ok) {
                 throw new Error('Prodotto non trovato');
             }
