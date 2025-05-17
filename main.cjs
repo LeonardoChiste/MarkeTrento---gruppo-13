@@ -58,8 +58,8 @@ app.use(express.static('public'));
         console.log("Prodotti aggiunti al carrello:", client.carrello);
         await client.save();
         */
-       /*
-        await DBPromotion.create({ data: 2025-5-20, titolo: 'Castagnata', promotore: 'Dario Lampa', descrizione: 'Una castagnata a Mezzocorona dalle 16.00 fino a mezza notte',
+        /*
+        await DBPromotion.create({ data: '2025-05-20', titolo: 'Castagnata', promotore: 'Dario Lampa', descrizione: 'Una castagnata a Mezzocorona dalle 16.00 fino a mezza notte',
             img: 'https://pbs.twimg.com/media/FbbTu_sWIAEIR9T.jpg', tipoAnnuncio: 'Evento'}).catch(err => console.error('Error:', err));
 
         console.log("Promozione inserita con successo!");
@@ -125,7 +125,7 @@ app.get('/products', async (req, res) => {
 });
 */
 
-
+//login stuff
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     var au = await compareDB(username, password);
@@ -160,7 +160,7 @@ app.post('/loginbusiness', async (req, res) => {
 });
 
 
-
+//api mercato
 app.get('/mercato', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', `/mercato.html`));
 });
@@ -169,13 +169,17 @@ app.get('/mercato', (req, res) => {
 app.get('/api/v1/promozioni', async (req, res) => {
     try {
         const promotions = await DBPromotion.find();
-        res.json(promotions);
-        //console.log("Fetched promotions: ", promotions);
+        // Format the data field as 'YYYY-MM-DD'
+        const formattedPromotions = promotions.map(promo => ({
+            ...promo.toObject(),
+            data: promo.data ? promo.data.toISOString().split('T')[0] : null
+        }));
+        res.json(formattedPromotions);
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-app.post('/api/v1/promozioni', async (req, res) => {
+/*app.post('/api/v1/promozioni', async (req, res) => {
     const data = req.body;
     try {
         try{
@@ -187,12 +191,8 @@ app.post('/api/v1/promozioni', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
-});
-/*
-app.get('/carrello', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'carrello.html'));
-});
-*/
+});*/
+
 
 //api carrello
 app.get('/api/v1/carrello/:clientId', async (req, res) => {
@@ -262,7 +262,7 @@ app.post('/api/v1/carrello/:clientId/removeOne', async (req, res) => {
     }
 });
 
-
+//api prodotti
 app.get('/api/v1/prodotti/venditore/:id', async (req, res) => {
     try {
         const prodotto = await ProdottoServizio.getProductByVendor(req.params.id);

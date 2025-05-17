@@ -140,7 +140,6 @@
     const closeModal = document.getElementById('closeModal');
     
     let currentDate = new Date();
-
     function getStartOfWeek(date) {
       const day = date.getDay();
       const diff = date.getDate() - day + (day === 0 ? -6 : 1);
@@ -151,37 +150,38 @@
       return `${date.getDate()}/${date.getMonth()+1}`;
     }
 
-    async function fetchEvents(startDate) {
+    async function fetchEvents() {  //chiama api, non togliere startDate perché si rompe tutto
       const res = await fetch('/api/v1/promozioni')
       if (res.ok) {
         const promo = await res.json();
+        //console.log(promo);
         return promo;
       } else {
         throw new Error('Errore nel caricamento delle promozioni.');
       }
       /*return Promise.resolve([
-        { data: '2025-05-12', titolo: 'Sagra del pesce', promotore: 'Giovanni Giorgio', descrizione: 'Mmmhhhhh pesce..', img: 'https://c02.purpledshub.com/uploads/sites/41/2021/03/Blobfish_Kerryn-Parkinson-thumb-0293dac.jpg?w=1200' },
-        { data: '2025-05-13', titolo: 'Fiera della castora', promotore: 'Franco', descrizione: 'Castagnata con alcol', img: 'https://www.salepepe.it/files/2022/10/CASTAGNE-CALDARROSTE-COVER-1140x636.jpg' },
-        { data: '2025-05-14', titolo: 'Promo 50%-off tuberi', promotore: 'Negozio di vegetali', descrizione: 'Patate a metà prezzo per tutti', img: 'https://st4.depositphotos.com/1439888/31456/i/450/depositphotos_314565988-stock-photo-potatoes-in-the-wooden-crate.jpg' },
-        { data: '2025-05-14', titolo: 'Sagra del contadino', promotore: 'Associazione vinicoltori', descrizione: 'Degustazione vini', img: 'https://media.istockphoto.com/id/1030932114/it/foto/due-bicchieri-di-vino-rosso-in-vigna.jpg?s=612x612&w=0&k=20&c=efMaHA1extn30mGkm_dgAM6lggMikg1eDKkJDhrV73Y=' }
+        { _id: '01', data: '2025-05-12', titolo: 'Sagra del pesce', promotore: 'Giovanni Giorgio', descrizione: 'Mmmhhhhh pesce..', img: 'https://c02.purpledshub.com/uploads/sites/41/2021/03/Blobfish_Kerryn-Parkinson-thumb-0293dac.jpg?w=1200' },
+        { _id: '01', data: '2025-05-13', titolo: 'Fiera della castora', promotore: 'Franco', descrizione: 'Castagnata con alcol', img: 'https://www.salepepe.it/files/2022/10/CASTAGNE-CALDARROSTE-COVER-1140x636.jpg' },
+        { _id: '01', data: '2025-05-14', titolo: 'Promo 50%-off tuberi', promotore: 'Negozio di vegetali', descrizione: 'Patate a metà prezzo per tutti', img: 'https://st4.depositphotos.com/1439888/31456/i/450/depositphotos_314565988-stock-photo-potatoes-in-the-wooden-crate.jpg' },
+        { _id: '01', data: '2025-05-14', titolo: 'Sagra del contadino', promotore: 'Associazione vinicoltori', descrizione: 'Degustazione vini', img: 'https://media.istockphoto.com/id/1030932114/it/foto/due-bicchieri-di-vino-rosso-in-vigna.jpg?s=612x612&w=0&k=20&c=efMaHA1extn30mGkm_dgAM6lggMikg1eDKkJDhrV73Y=' }
       ]);*/
     }
     
-    function renderWeek(startDate) {
+    function renderWeek(startDate) {  
       const days = [];
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 7; i++) {    //crea array di 7 giorni
         const day = new Date(startDate);
         day.setDate(day.getDate() + i);
         days.push(day);
       }
 
       calendar.innerHTML = '';
-      weekRange.textContent = `Week of ${formatDate(days[0])} - ${formatDate(days[6])}`;
+      weekRange.textContent = `Settimana del ${formatDate(days[0])} - ${formatDate(days[6])}`;
 
-      fetchEvents(startDate).then(events => {
+      fetchEvents().then(events => {
         days.forEach(day => {
           const dayStr = day.toISOString().split('T')[0];
-          const dayEvents = events.filter(e => e.data === dayStr).slice(0, 3);
+          const dayEvents = events.filter(e => e.data === dayStr ).slice(0, 3);
 
           const dayDiv = document.createElement('div');
           dayDiv.classList.add('day');
