@@ -27,4 +27,27 @@ async function getProductByVendor(vend) {
     }
 }
 
-module.exports = { getProductById,getProductByVendor};
+async function addProduct(prodotto) {
+    try {
+        const nuovoProdotto = new Productv2(prodotto);
+        await nuovoProdotto.save();
+    } catch (error) {
+        console.error('Errore durante l\'aggiunta del prodotto:', error.message);
+        throw error;
+    }
+}
+
+async function deleteProduct(id) {
+    try {
+        const prodotto = await Productv2.findByIdAndDelete(id);
+        if (!prodotto) {
+            throw new Error('Prodotto non trovato');
+        }
+        return prodotto;
+    } catch (error) {
+        console.error('Errore durante la cancellazione del prodotto:', error.message);
+        throw error;
+    }
+}
+
+module.exports = { getProductById,getProductByVendor,addProduct,deleteProduct };

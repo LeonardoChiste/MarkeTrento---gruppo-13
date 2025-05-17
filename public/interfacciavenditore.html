@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Features Venditori</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: linear-gradient(135deg, #e6ffe6 0%, #b2f2b2 100%);
+            position: relative;
+        }
+        .torna-indietro-top {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 10;
+        }
+        .torna-indietro-btn {
+            background: #155724;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 22px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px #b2f2b2;
+        }
+        .torna-indietro-btn:hover {
+            background: #0b2e13;
+            transform: translateY(-2px) scale(1.03);
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #f6fff6;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px #b2f2b2;
+            padding: 36px 28px;
+            position: relative;
+        }
+        h1 {
+            color: #218838;
+            border-bottom: 2px solid #218838;
+            padding-bottom: 12px;
+            margin-bottom: 32px;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-top: 32px;
+        }
+        .feature-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 18px 0;
+            font-size: 1.15em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px #b2f2b2;
+        }
+        .feature-btn:hover {
+            background: #218838;
+            transform: translateY(-2px) scale(1.03);
+        }
+        @media (max-width: 700px) {
+            .container {
+                padding: 20px 8px;
+            }
+            .torna-indietro-top {
+                top: 6px;
+                left: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="torna-indietro-top">
+        <button class="torna-indietro-btn" onclick="window.history.back()">Torna indietro</button>
+    </div>
+    <div class="container">
+        <h1>Features Venditori</h1>
+        <div class="features">
+            <button class="feature-btn" onclick="window.location.href='nuovoprodotto.html'">
+                Pubblica nuovo prodotto
+            </button>
+            <button class="feature-btn" onclick="window.location.href='tuttiprodottiprivato.html'">
+                Visualizza i tuoi prodotti
+            </button>
+            <button class="feature-btn" onclick="window.location.href='cambiaDatiAzienda.html'">
+                Cambia dati Azienda
+            </button>
+        </div>
+    </div>
+</body>
+</html>

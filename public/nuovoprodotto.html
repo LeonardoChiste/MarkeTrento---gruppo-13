@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuovo Prodotto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e6ffe6 0%, #b2f2b2 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #f6fff6;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #b2f2b2;
+            padding: 32px 28px;
+        }
+        h1 {
+            color: #218838;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        label {
+            display: block;
+            margin-top: 16px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 6px;
+            border-radius: 6px;
+            border: 1px solid #b2f2b2;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 24px;
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .annulla-btn {
+            margin-top: 12px;
+            background: #6c757d;
+        }
+        .annulla-btn:hover {
+            background: #495057;
+        }
+        .torna-indietro-top {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            background: #145a32;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+            max-width: 180px;
+            white-space: nowrap;
+        }
+        .torna-indietro-top:hover {
+            background: #0b3d1c;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 24px 8px;
+                padding: 18px 8px;
+            }
+            .torna-indietro-top {
+                top: 10px;
+                left: 10px;
+                padding: 7px 12px;
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="torna-indietro-top" onclick="window.history.back()">Torna indietro</button>
+    <div class="container">
+        <h1>Pubblica un nuovo prodotto</h1>
+        <form id="prodottoForm">
+            <label for="nome">Nome prodotto</label>
+            <input type="text" id="nome" name="nome" required>
+
+            <label for="descrizione">Descrizione</label>
+            <textarea id="descrizione" name="descrizione" rows="3" required></textarea>
+
+            <label for="costo">Prezzo (€)</label>
+            <input type="number" id="costo" name="costo" min="0" step="0.01" required>
+
+            <label for="quantita">Quantità disponibile</label>
+            <input type="number" id="quantita" name="quantita" min="1" required>
+
+            <label for="tag">Categoria/Tag</label>
+            <input type="text" id="tag" name="tag" placeholder="Es: frutta, verdura, pane" required>
+
+            <label for="immagine">URL Immagine (opzionale)</label>
+            <input type="url" id="immagine" name="immagine">
+
+            <button type="submit">Pubblica Prodotto</button>
+        </form>
+        <button class="annulla-btn" onclick="document.getElementById('prodottoForm').reset();document.getElementById('esito').innerHTML='';">cancella campi</button>
+        <div id="esito" style="margin-top:20px;text-align:center;"></div>
+    </div>
+    <script>
+        document.getElementById('prodottoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const dati = {
+                nome: this.nome.value,
+                descrizione: this.descrizione.value,
+                venditore: '682794e1cf5e37c6f8526f3f',
+                costo: parseFloat(this.costo.value),
+                quantita: parseInt(this.quantita.value),
+                tag: this.tag.value,
+                immagine: this.immagine.value
+            };
+            try {
+                const res = await fetch('/api/prodotto', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dati)
+                });
+                const esito = document.getElementById('esito');
+                if (res.ok) {
+                    esito.innerHTML = '<span style="color:green;">Prodotto pubblicato con successo!</span>';
+                    this.reset();
+                } else {
+                    const err = await res.text();
+                    esito.innerHTML = `<span style="color:red;">Errore: ${err}</span>`;
+                }
+            } catch (error) {
+                document.getElementById('esito').innerHTML = '<span style="color:red;">Errore di rete!</span>';
+            }
+        });
+    </script>
+</body>
+</html>
