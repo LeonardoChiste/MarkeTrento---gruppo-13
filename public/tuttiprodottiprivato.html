@@ -94,6 +94,12 @@
         }
     </style>
     <script>
+
+        window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+        window.location.reload();
+        }
+        });
         // Ottieni id venditore da query string o usa default
         function getVenditoreId() {
             const params = new URLSearchParams(window.location.search);
@@ -102,7 +108,10 @@
 
         function aggiornaProdotto(idProdotto) {
             alert('Funzione di aggiornamento per prodotto ID: ' + idProdotto);
-            // window.location.href = `/update-prodotto.html?id=${idProdotto}`;
+            // Qui puoi implementare la logica per aggiornare il prodotto
+            // Ad esempio, reindirizzare a una pagina di aggiornamento prodotto
+            
+             window.location.href = `/updateprodotto.html?id=${idProdotto}`;
         }
 
         async function rimuoviProdotto(idProdotto, btn) {
@@ -132,12 +141,10 @@
                 const resVend = await fetch(`/api/v1/venditore/${id}`);
                 if (resVend.ok) {
                     const venditore = await resVend.json();
-                    if (venditore && venditore.username) {
-                        username = venditore.username;
-                    }
+                    
                 }
             } catch (e) {
-                // lascia id come username
+                
             }
             titolo.textContent = `I tuoi prodotti disponibili`;
             try {

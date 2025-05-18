@@ -13,6 +13,8 @@ const ProdottoServizio = require('./services/ProdottoService.cjs');
 const ClienteServizio = require('./services/clienteService.cjs');
 const dbUrl = process.env.DB_URL;
 const DBVendor=require('./models/vendorModel.cjs');
+const DBTags=require('./models/tagsModel.cjs');
+const TagServizio=require('./services/tagService.cjs');
 const DBEntrepreneur=require('./models/promoterModel.cjs');
 const Productv2=require('./models/productModel.cjs');  
 const DBPromotion=require('./models/promotionModel.cjs');
@@ -33,9 +35,12 @@ app.use(express.static('public'));
     
     //FUNZIONE PER GENERARE COSE DA INSERIRE NEL DB PER TEST, con copilot su VSC SI FA MOLTO VELOCEMENTE
     async function insert(){
-       var v=new Venditore('Caio','Borghese',19091990,'iosono@caioBorghese.com','CAIO', '$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa','Via Dani Pedrosa,26','vendo Pere, le pere sono il mio special','agricoltore','P9876');
+       /*var v=new Venditore('Caio','Borghese',19091990,'iosono@caioBorghese.com','CAIO', '$2b$10$nKxnTjFuyq6JGKYuDWbq.uvJvHXV3g/JBiHmtSAL0Gxtf8Axr9kSa','Via Dani Pedrosa,26','vendo Pere, le pere sono il mio special','agricoltore','P9876');
        await DBVendor.create(v);
-       console.log("Venditore inserito con successo!");
+       console.log("Venditore inserito con successo!");*/
+
+       var tg=new DBTags({tags:['mele','pere','frutti di bosco','castagne','asparagi','ciliege','olio','alcolici','gastronomia','sughi','tuberi','carne','pesce','formaggi','miele','bevande','dolci','salumi','funghi','frutta']})
+        await DBTags.create(tg);
         /*
         const client = await DBClient.findOne({ _id: "68245a82ef2a089ff02b2a7b"}); // o usa l'email se preferisci
 
@@ -281,7 +286,32 @@ app.get('/api/v1/prodotto/venditore/:id', async (req, res) => {
         res.status(500).send('Errore del server');
     }
 });
-//api venditori
+
+app.get('/api/v1/prodotto/:id', async (req, res) => {
+    try {
+        const prodotto = await ProdottoServizio.getProductById(req.params.id);
+        if (!prodotto) {
+            return res.status(404).send('Prodotto non trovato');
+        }
+        res.json(prodotto);
+    } catch (error) {
+        console.error('Errore durante il recupero del prodotto:', error);
+        res.status(500).send('Errore del server');
+    }
+});
+
+app.put('/api/v1/prodotto/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const {  descrizione, quantita} = req.body;
+        await ProdottoServizio.updateProduct(descrizione, quantita, id);
+        res.status(200).json({ message: 'Prodotto aggiornato con successo' });
+    } catch (error) {
+        console.error('Errore durante l\'aggiornamento del prodotto:', error);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
 app.get('/api/v1/venditore', async (req, res) => {
     try {
         const venditori = await VenditoreServizio.getAllVenditori();
@@ -322,6 +352,16 @@ app.delete('/api/v1/prodotto/:id', async (req, res) => {
         res.status(200).json({ message: 'Prodotto eliminato con successo' });
     } catch (error) {
         console.error('Errore durante l\'eliminazione del prodotto:', error);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
+app.get('/api/v1/tags', async (req, res) => {
+    try {
+        const tagsDoc = await TagServizio.getTags();
+        res.json(tagsDoc ? tagsDoc.tags : []);
+    } catch (error) {
+        console.error('Errore durante il recupero dei tag:', error.message);
         res.status(500).json({ error: 'Errore del server' });
     }
 });

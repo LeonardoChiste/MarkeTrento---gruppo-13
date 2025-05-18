@@ -50,4 +50,21 @@ async function deleteProduct(id) {
     }
 }
 
-module.exports = { getProductById,getProductByVendor,addProduct,deleteProduct };
+async function updateProduct(descrizione,quantita,id) {
+    try {
+        const prodottoAggiornato = await Productv2.findByIdAndUpdate(
+            id,
+            { descrizione, quantita },
+            { new: true }
+        );
+        if (!prodottoAggiornato) {
+            throw new Error('Prodotto non trovato');
+        }
+        return prodottoAggiornato;
+    } catch (error) {
+        console.error('Errore durante l\'aggiornamento del prodotto:', error.message);
+        throw error;
+    }}
+
+
+module.exports = { getProductById,getProductByVendor,addProduct,deleteProduct,updateProduct };
