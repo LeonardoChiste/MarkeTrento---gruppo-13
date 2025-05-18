@@ -266,7 +266,7 @@
                     esito.innerHTML = `<span style="color:red;">Seleziona una categoria!</span>`;
                     return;
                 }
-                const res = await fetch('/api/prodotto', {
+                const res = await fetch('/api/v1/prodotto', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dati)
