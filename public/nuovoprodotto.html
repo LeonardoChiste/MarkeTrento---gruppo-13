@@ -37,9 +37,6 @@
             box-sizing: border-box;
             resize: none;
         }
-        select[multiple] {
-            height: 100px;
-        }
         button {
             margin-top: 24px;
             width: 100%;
@@ -82,6 +79,35 @@
         .torna-indietro-top:hover {
             background: #0b3d1c;
         }
+        
+        .tag-chip-simple {
+            display: inline-flex;
+            align-items: center;
+            background: #e6ffe6;
+            color: #218838;
+            border: 2px solid #28a745;
+            border-radius: 18px;
+            padding: 6px 16px;
+            font-size: 1em;
+            font-weight: 500;
+            margin-top: 8px;
+            margin-bottom: 4px;
+            margin-right: 8px;
+            box-shadow: 0 2px 8px #b2f2b2;
+        }
+        .tag-chip-simple .remove-tag {
+            margin-left: 8px;
+            background: none;
+            border: none;
+            color: #218838;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.2s;
+        }
+        .tag-chip-simple .remove-tag:hover {
+            color: #c82333;
+        }
         @media (max-width: 600px) {
             .container {
                 margin: 24px 8px;
@@ -97,10 +123,10 @@
     </style>
 </head>
 <body>
-    <button class="torna-indietro-top" onclick="window.history.back()">Torna indietro</button>
+    <button class="torna-indietro-top" onclick="window.history.back()">< - Torna indietro</button>
     <div class="container">
         <h1>Pubblica un nuovo prodotto</h1>
-        <form id="prodottoForm">
+        <form id="prodottoForm" autocomplete="off">
             <label for="nome">Nome prodotto</label>
             <input type="text" id="nome" name="nome" required>
 
@@ -113,71 +139,117 @@
             <label for="quantita">Quantità disponibile</label>
             <input type="number" id="quantita" name="quantita" min="1" required>
 
-            <label for="tag">Categoria/Tag</label>
-            <select id="tag" name="tag" required></select>
-                <option disabled>Caricamento...</option>
-            </select>
-            <small>Scegli una categoria</small>
+            <label for="tag">Categoria</label>
+            <div id="tagSelectWrapper">
+                <select id="tagSelect" name="tag" required>
+                    <option value="">Seleziona una categoria...</option>
+                </select>
+                <div id="selectedTagChip" style="display:none;"></div>
+            </div>
+            <small>Scegli una sola categoria</small>
 
-            <label for="immagine">URL Immagine (opzionale)</label>
-            <input type="url" id="immagine" name="immagine">
+            <label for="immagine">URL Immagini (una per riga, opzionale)</label>
+            <textarea id="immagine" name="immagine" rows="2" placeholder="https://..."></textarea>
 
             <button type="submit">Pubblica Prodotto</button>
         </form>
-        <button class="annulla-btn" onclick="document.getElementById('prodottoForm').reset();document.getElementById('esito').innerHTML='';">cancella campi</button>
+        <button class="annulla-btn" onclick="document.getElementById('prodottoForm').reset();resetTagSelect();document.getElementById('esito').innerHTML='';">cancella campi</button>
         <div id="esito" style="margin-top:20px;text-align:center;"></div>
     </div>
     <script>
-        // Carica i tag dall'API e popola il select
-        async function caricaTag() {
-            const select = document.getElementById('tag');
-            select.innerHTML = '<option disabled>Caricamento...</option>';
+        let allTagsSimple = [];
+        let selectedTagSimple = "";
+
+        async function caricaTagSimple() {
             try {
                 const res = await fetch('/api/v1/tags');
                 if (!res.ok) throw new Error('Errore nel caricamento dei tag');
                 const tags = await res.json();
-
-                // Controllo che sia un array di stringhe (o oggetti con nome)
-                if (!Array.isArray(tags) || tags.length === 0 || typeof tags.join !== 'function') {
-                    select.innerHTML = '<option disabled>Nessun tag disponibile</option>';
-                    return;
-                }
-
-                // Se è un array di stringhe, oppure oggetti con nome
-                select.innerHTML = '';
-                // Se sono oggetti con _id e nome
-                if (typeof tags[0] === 'object' && tags[0] !== null && 'nome' in tags[0]) {
-                    tags.forEach(tag => {
-                        const option = document.createElement('option');
-                        option.value = String(tag._id);
-                        option.textContent = String(tag.nome);
-                        select.appendChild(option);
-                    });
-                } else {
-                    // Se sono solo stringhe
-                    tags.forEach(tag => {
-                        const option = document.createElement('option');
-                        option.value = String(tag);
-                        option.textContent = String(tag);
-                        select.appendChild(option);
-                    });
-                }
+                allTagsSimple = Array.isArray(tags)
+                    ? (typeof tags[0] === 'object' && tags[0] !== null && 'nome' in tags[0]
+                        ? tags.map(t => String(t.nome))
+                        : tags.map(t => String(t)))
+                    : [];
             } catch (e) {
-                select.innerHTML = '<option disabled>Errore nel caricamento</option>';
+                allTagsSimple = [];
+            }
+            renderTagSelectOptions();
+        }
+
+        function renderTagSelectOptions() {
+            const select = document.getElementById('tagSelect');
+            select.innerHTML = '<option value="">Seleziona una categoria...</option>';
+            allTagsSimple.forEach(tag => {
+                const opt = document.createElement('option');
+                opt.value = tag;
+                opt.textContent = tag;
+                select.appendChild(opt);
+            });
+            
+            if (selectedTagSimple) {
+                select.value = selectedTagSimple;
+                showSelectedTagChip();
+            } else {
+                hideSelectedTagChip();
             }
         }
 
+        function showSelectedTagChip() {
+            const chipDiv = document.getElementById('selectedTagChip');
+            chipDiv.innerHTML = '';
+            if (selectedTagSimple) {
+                chipDiv.style.display = 'inline-block';
+                const chip = document.createElement('span');
+                chip.className = 'tag-chip-simple';
+                chip.textContent = selectedTagSimple;
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'remove-tag';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.title = 'Rimuovi categoria';
+                removeBtn.onclick = () => {
+                    selectedTagSimple = "";
+                    document.getElementById('tagSelect').value = "";
+                    hideSelectedTagChip();
+                };
+                chip.appendChild(removeBtn);
+                chipDiv.appendChild(chip);
+            } else {
+                chipDiv.style.display = 'none';
+            }
+        }
+
+        function hideSelectedTagChip() {
+            const chipDiv = document.getElementById('selectedTagChip');
+            chipDiv.innerHTML = '';
+            chipDiv.style.display = 'none';
+        }
+
+        function resetTagSelect() {
+            selectedTagSimple = "";
+            document.getElementById('tagSelect').value = "";
+            hideSelectedTagChip();
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            const select = document.getElementById('tag');
-            select.removeAttribute('multiple');
-            caricaTag();
+            caricaTagSimple();
+            document.getElementById('tagSelect').addEventListener('change', function() {
+                selectedTagSimple = this.value;
+                if (selectedTagSimple) {
+                    showSelectedTagChip();
+                } else {
+                    hideSelectedTagChip();
+                }
+            });
         });
 
+        
         document.getElementById('prodottoForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            // Ottieni il tag selezionato come stringa
-            const tagSelect = this.tag;
-            const selectedTag = tagSelect.value ? String(tagSelect.value) : '';
+
+            const tagString = selectedTagSimple ? selectedTagSimple : '';
+
+            const immaginiRaw = this.immagine.value.split('\n').map(s => s.trim()).filter(Boolean);
 
             const dati = {
                 nome: String(this.nome.value),
@@ -185,19 +257,24 @@
                 venditore: '682794e1cf5e37c6f8526f3f',
                 costo: parseFloat(this.costo.value),
                 quantita: parseInt(this.quantita.value),
-                tag: [selectedTag], // sempre array di stringhe
-                immagine: String(this.immagine.value)
+                tag: tagString,
+                immagine: immaginiRaw
             };
             try {
+                const esito = document.getElementById('esito');
+                if (!tagString) {
+                    esito.innerHTML = `<span style="color:red;">Seleziona una categoria!</span>`;
+                    return;
+                }
                 const res = await fetch('/api/prodotto', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dati)
                 });
-                const esito = document.getElementById('esito');
                 if (res.ok) {
                     esito.innerHTML = '<span style="color:green;">Prodotto pubblicato con successo!</span>';
                     this.reset();
+                    resetTagSelect();
                     setTimeout(() => {
                         window.history.back();
                     }, 400);
