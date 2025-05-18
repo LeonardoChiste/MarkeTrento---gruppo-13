@@ -174,14 +174,13 @@ app.get('/api/v1/promozioni', async (req, res) => {
             ...promo.toObject(),
             data: promo.data ? promo.data.toISOString().split('T')[0] : null
         }));
-        res.status(200).json(promotions);
+        res.status(200).json(formattedPromotions);
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 app.post('/api/v1/promozioni', async (req, res) => {
     const data = req.body;
-    //console.log(data);
     const promozione = DBPromotion({
         data: data.startdate,
         titolo: data.title,
@@ -270,7 +269,7 @@ app.post('/api/v1/carrello/:clientId/removeOne', async (req, res) => {
 });
 
 //api prodotti
-app.get('/api/v1/prodotti/venditore/:id', async (req, res) => {
+app.get('/api/v1/prodotto/venditore/:id', async (req, res) => {
     try {
         const prodotto = await ProdottoServizio.getProductByVendor(req.params.id);
         if (!prodotto) {

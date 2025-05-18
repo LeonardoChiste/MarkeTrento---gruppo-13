@@ -150,7 +150,7 @@
       return `${date.getDate()}/${date.getMonth()+1}`;
     }
 
-    async function fetchEvents() {  //chiama api, non togliere startDate perché si rompe tutto
+    async function fetchEvents() {  //chiama api
       const res = await fetch('/api/v1/promozioni')
       if (res.ok) {
         const promo = await res.json();
