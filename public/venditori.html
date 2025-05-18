@@ -205,7 +205,7 @@
 
         async function caricaProdottidaVenditore(id) {
             // Utilizzo Api per caricare i prodotti del venditore
-            const res = await fetch(`/api/v1/prodotti/venditore/${id}`);
+            const res = await fetch(`/api/v1/prodotto/venditore/${id}`);
             if (res.ok) {
                 const prodotti = await res.json();
                 return prodotti;

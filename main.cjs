@@ -174,7 +174,7 @@ app.get('/api/v1/promozioni', async (req, res) => {
             ...promo.toObject(),
             data: promo.data ? promo.data.toISOString().split('T')[0] : null
         }));
-        res.json(formattedPromotions);
+        res.status(200).json(promotions);
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -193,6 +193,7 @@ app.post('/api/v1/promozioni', async (req, res) => {
     console.log(promozione);
     await DBPromotion.create(promozione).then(() => {
         console.log('Promozione creata con successo');
+        res.status(201).json({ message: 'Promozione creata con successo' });
     }).catch((error) => {   
         console.error('Errore durante la creazione della promozione:', error);
         res.status(500).json({ error: 'Errore durante la creazione della promozione' });
@@ -285,7 +286,7 @@ app.get('/api/v1/prodotti/venditore/:id', async (req, res) => {
 app.get('/api/v1/venditore', async (req, res) => {
     try {
         const venditori = await VenditoreServizio.getAllVenditori();
-        res.json(venditori);
+        res.status(200).json(venditori);
     } catch (error) {
         res.status(500).json({ error: 'Errore nel recupero dei venditori' });
     }
@@ -303,7 +304,7 @@ app.get('/api/v1/venditore/:id', async (req, res) => {
 });
 //api promotore
 
-app.post('/api/prodotto', async (req, res) => {
+app.post('/api/v1/prodotto', async (req, res) => {
     try {
         const { nome, descrizione, venditore, costo, quantita, tag } = req.body;
         const prodotto = new Prodotto(nome, descrizione, venditore, costo, quantita, tag);
