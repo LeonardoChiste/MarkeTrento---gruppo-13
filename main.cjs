@@ -213,7 +213,7 @@ app.get('/api/v1/carrello/:clientId', async (req, res) => {
         if (!carrello) {
             return res.status(404).send('Carrello non trovato');
         }
-        res.json(carrello.prodotti); // Ritorna i prodotti nel carrello
+        res.status(200).json(carrello.prodotti); // Ritorna i prodotti nel carrello
     } catch (error) {
         console.error('Errore durante il recupero del carrello:', error);
         res.status(500).send('Errore del server');
@@ -280,7 +280,7 @@ app.get('/api/v1/prodotto/venditore/:id', async (req, res) => {
         if (!prodotto) {
             return res.status(404).send('Prodotto non trovato');
         }
-        res.json(prodotto);
+        res.status(200).json(prodotto);
     } catch (error) {
         console.error('Errore durante il recupero del prodotto:', error);
         res.status(500).send('Errore del server');
@@ -293,7 +293,7 @@ app.get('/api/v1/prodotto/:id', async (req, res) => {
         if (!prodotto) {
             return res.status(404).send('Prodotto non trovato');
         }
-        res.json(prodotto);
+        res.status(200).json(prodotto);
     } catch (error) {
         console.error('Errore durante il recupero del prodotto:', error);
         res.status(500).send('Errore del server');
@@ -326,7 +326,7 @@ app.get('/api/v1/venditore/:id', async (req, res) => {
         if (!venditore) {
             return res.status(404).send('Venditore non trovato');
         }
-        res.json(venditore);
+        res.status(200).json(venditore);
     } catch (error) {
         res.status(500).send('Errore del server');
     }
@@ -359,7 +359,7 @@ app.delete('/api/v1/prodotto/:id', async (req, res) => {
 app.get('/api/v1/tags', async (req, res) => {
     try {
         const tagsDoc = await TagServizio.getTags();
-        res.json(tagsDoc ? tagsDoc.tags : []);
+        res.status(200).json(tagsDoc ? tagsDoc.tags : []);
     } catch (error) {
         console.error('Errore durante il recupero dei tag:', error.message);
         res.status(500).json({ error: 'Errore del server' });

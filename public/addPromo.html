@@ -60,7 +60,7 @@
     <button type="submit">Aggiungi</button>
   </form>
   <div class ="nav-links">
-    <a href="/mercato.html">Torna al Mercato</a>
+    <a href="/home.html">Torna al Mercato</a>
   </div>
   <script>
     document.querySelector('form').addEventListener('submit', async function(e) {
@@ -81,7 +81,7 @@
       });
 
       if (response.ok) {
-        window.location.href = '/mercato.html';
+        window.location.href = '/home.html';
       } else {
         alert('Errore durante la creazione della promozione');
       }
