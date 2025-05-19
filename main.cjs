@@ -23,7 +23,7 @@ const DBClient=require('./models/clientModel.cjs');
 const VenditoreServizio = require('./services/VenditoreService.cjs');
 
 const app = express();
-const PORT = 3000;
+const port = process.env.PORT || 3000;
 
 
 // Middleware
@@ -377,7 +377,7 @@ mongoose.connect(dbUrl).then( ()=> {
 
 
 // Avvio del server
-app.listen(PORT, () => {
-    console.log(`Server in ascolto su http://localhost:${PORT}`);
+app.listen(port, () => {
+    console.log(`Server in ascolto su http://localhost:${port}`);
 });
 });
