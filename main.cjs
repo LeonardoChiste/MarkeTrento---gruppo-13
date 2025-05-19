@@ -165,9 +165,9 @@ app.post('/loginbusiness', async (req, res) => {
 });
 
 
-//api mercato
+
 app.get('/mercato', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', `/mercato.html`));
+    res.sendFile(path.join(__dirname, 'public', `/home.html`));
 });
 
 //api promozioni
