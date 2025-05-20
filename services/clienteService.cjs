@@ -28,6 +28,7 @@ async function getClientCarrello(clientId) {
     if (client) {
         const carrello = new Carrello();
         carrello.prodotti = client.carrello.map(prodotto => ({
+            _id: prodotto._id,
             nome: prodotto.nome || 'Prodotto sconosciuto',
             prezzo: prodotto.prezzo || 0,
             quantity: prodotto.quantity || 1

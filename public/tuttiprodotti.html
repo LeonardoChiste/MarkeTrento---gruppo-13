@@ -142,7 +142,7 @@
                                 <b>Tag:</b> ${p.tag || '-'}
                             </div>
                             <div style="display:flex;align-items:center;justify-content:flex-end;height:100%;">
-                                <button class="add-cart-btn" data-nome="${p.nome}" data-prezzo="${p.costo}" data-quantita="${p.quantita}">Aggiungi al carrello</button>
+                                <button class="add-cart-btn"data-id="${p._id}" data-nome="${p.nome}" data-prezzo="${p.costo}" data-quantita="${p.quantita}">Aggiungi al carrello</button>
                             </div>
                         </div>
                     `;
@@ -156,6 +156,7 @@
 
             container.querySelectorAll('.add-cart-btn').forEach(btn => {
                 btn.addEventListener('click', async function() {
+                    const pId = this.getAttribute('data-id');
                     const nome = this.getAttribute('data-nome');
                     const prezzo = parseFloat(this.getAttribute('data-prezzo'));
                     const maxQuantita = parseInt(this.getAttribute('data-quantita'), 10);
@@ -171,6 +172,7 @@
                         return;
                     }
                     const prodotto = {
+                        _id: pId,
                         nome: nome,
                         prezzo: prezzo,
                         quantity: quantity

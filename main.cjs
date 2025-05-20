@@ -231,6 +231,16 @@ app.post('/api/v1/carrello/:clientId/add', async (req, res) => {
         const prodotto = await Productv2.findOne({ nome });
         if (!prodotto) return res.status(404).json({ error: 'Prodotto non trovato' });
 
+        //Tutti i prodotti nel carrello devono appartenere allo stesso venditore
+        if (client.carrello.length > 0) {
+            // Recupera il venditore del primo prodotto nel carrello
+            const firstProduct = client.carrello[0];
+            const firstProductDb = await Productv2.findOne({ nome: firstProduct.nome });
+            if (firstProductDb && firstProductDb.venditore && prodotto.venditore && String(firstProductDb.venditore) !== String(prodotto.venditore)) {
+                return res.status(400).json({ error: 'Tutti i prodotti nel carrello devono appartenere allo stesso venditore. Svuotare il carrello per inserire prodotti di questo venditore.' });
+            }
+        }
+
         // Recupera la quantita nel carrello
         const item = client.carrello.find(p => p.nome === nome);
         const currentQuantity = item ? item.quantity : 0;
@@ -242,8 +252,15 @@ app.post('/api/v1/carrello/:clientId/add', async (req, res) => {
         // Aggiungi il prodotto al carrello
         if (item) {
             item.quantity += quantity;
+            //Aggiunge ID, se non presente
+            if (!item._id) item._id = prodotto._id;
         } else {
-            client.carrello.push({ nome, prezzo, quantity });
+            client.carrello.push({
+                _id: prodotto._id, 
+                nome, 
+                prezzo, 
+                quantity
+             });
         }
         await client.save();
         res.status(200).json({ message: 'Prodotto aggiunto al carrello' });

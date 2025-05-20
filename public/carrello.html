@@ -55,10 +55,26 @@
             text-align: center;
             text-decoration: none;
             border-radius: 5px;
+            border: 2px solid black;
             width: 150px;
         }
         .back-btn:hover {
             background-color: #006400;
+        }
+        .order-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            border: 2px solid black;
+            width: 150px;
+        }
+        .order-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -69,7 +85,10 @@
             <div class="loading">Caricamento carrello in corso...</div>
         </ul>
         <p class="total" id="total-price">Totale: €0.00</p>
-        <button class="back-btn" onclick="window.history.back()">Torna indietro</button>
+        <div style="display: flex; justify-content: center; gap: 0px;">
+            <button class="back-btn" onclick="window.history.back()">Torna indietro</button>
+            <a href="ordine.html" class="order-btn">Procedi all'ordine</a>
+        </div>
     </div>
 
     <script>
