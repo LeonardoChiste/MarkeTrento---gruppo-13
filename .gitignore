@@ -1,4 +1,5 @@
 #file contenenti password o info da coprire
 *.env
 sec.env
+node_modules/
 #la totalità degli env files
