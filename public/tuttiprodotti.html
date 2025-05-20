@@ -83,6 +83,23 @@
         .carrello-btn:hover {
             background: #218838;
         }
+        .warning-limited {
+            display: flex;
+            align-items: center;
+            background: #fffbe6;
+            color: #856404;
+            border: 1px solid #ffe066;
+            border-radius: 6px;
+            padding: 7px 13px;
+            margin-bottom: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            gap: 8px;
+        }
+        .warning-limited .excl {
+            font-size: 1.3em;
+            color: #ffc107;
+        }
     </style>
     <script>
         function getIdFromQuery() {
@@ -129,12 +146,23 @@
                 prodotti.forEach(p => {
                     const div = document.createElement('div');
                     div.className = 'prodotto';
+                    let warning = '';
+                    const quantitaNum = parseInt(p.quantita, 10);
+                    if (!isNaN(quantitaNum) && quantitaNum <= 5) {
+                        warning = `
+                            <div class="warning-limited">
+                                <span class="excl">&#9888;</span>
+                                Disponibilità limitata!
+                            </div>
+                        `;
+                    }
                     div.innerHTML = `
                         <div style="display:flex;align-items:center;gap:18px;">
                             <img src="${(p.immagine && p.immagine.startsWith('http')) ? p.immagine : 'https://placehold.co/100x100?text=No+Image'}"
                                 alt="${p.nome}" 
                                 style="width:100px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;">
                             <div style="flex:1;">
+                                ${warning}
                                 <strong>${p.nome}</strong><br>
                                 <b>Descrizione:</b> ${p.descrizione || '-'}<br>
                                 <b>Prezzo:</b> ${p.costo} €<br>

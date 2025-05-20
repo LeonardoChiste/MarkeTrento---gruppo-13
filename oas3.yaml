@@ -1,6 +1,6 @@
 openapi: '3.0.3'
 info:
-  title: API Title
+  title: API MarkeTrento
   version: '1.0'
 servers:
   - url: https://api.server.test/v1
@@ -21,7 +21,7 @@ paths:
                       type: integer
                     data:
                       type: string
-                      format: date-time
+                      description: date-time
                     titolo:
                       type: string
                     promotore:
@@ -30,7 +30,7 @@ paths:
                       type: string
                     immagine:
                       type: string
-                      format: uri
+                      description: uri
                     tipoAnnuncio:
                       type: string
         '500':
@@ -46,7 +46,7 @@ paths:
                   type: integer
                 data:
                   type: string
-                  format: date-time
+                  description: date-time
                 titolo:
                   type: string
                 promotore:
@@ -55,7 +55,7 @@ paths:
                   type: string
                 immagine:
                   type: string
-                  format: uri
+                  description: uri
                 tipoAnnuncio:
                   type: string
       responses:
@@ -91,7 +91,7 @@ paths:
                       type: string
                     immagine:
                       type: string
-                      format: uri
+                      description: uri
         '500':
           description: Internal Server Error
   /api/v1/carrello/clientId/add:
@@ -116,7 +116,7 @@ paths:
                   type: string
                 immagine:
                   type: string
-                  format: uri
+                  description: uri
       responses:
         '200':
           description: Created
@@ -148,7 +148,7 @@ paths:
                   type: string
                 immagine:
                   type: string
-                  format: uri
+                  description: uri
       responses:
         '200':
           description: Removed
@@ -180,7 +180,7 @@ paths:
                   type: string
                 immagine:
                   type: string
-                  format: uri
+                  description: uri
       responses:
         '200':
           description: A JSON array of products
@@ -205,7 +205,7 @@ paths:
                       type: string
                     immagine:
                       type: string
-                      format: uri
+                      description: uri
         '404':
           description: Prodotto non trovato
         '500':
@@ -230,10 +230,10 @@ paths:
                       type: string
                     birthdate:
                       type: string
-                      format: date-time
+                      description: date-time
                     email:
                       type: string
-                      format: email
+                      description: email
                     username:
                       type: string    
                     password:
@@ -266,10 +266,10 @@ paths:
                     type: string
                   birthdate:
                     type: string
-                    format: date-time
+                    description: date-time
                   email:
                     type: string
-                    format: email
+                    description: email
                   username:
                     type: string    
                   password:
@@ -308,7 +308,7 @@ paths:
                   type: string
                 immagine:
                   type: string
-                  format: uri
+                  description: uri
       responses:
         '201':
           description: Created
@@ -338,11 +338,9 @@ paths:
                   type: string
                 immagine:
                   type: string
-                  format: uri
+                  description: uri
       responses:
         '200':
           description: Prodotto eliminato
         '500':
           description: Internal Server Error
-
-
