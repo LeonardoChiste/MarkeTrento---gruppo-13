@@ -2,3 +2,5 @@
 *.env
 sec.env
 #la totalità degli env files
+
+node_modules/
