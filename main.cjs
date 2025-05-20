@@ -311,28 +311,6 @@ app.put('/api/v1/prodotto/:id', async (req, res) => {
         res.status(500).json({ error: 'Errore del server' });
     }
 });
-
-app.get('/api/v1/venditore', async (req, res) => {
-    try {
-        const venditori = await VenditoreServizio.getAllVenditori();
-        res.status(200).json(venditori);
-    } catch (error) {
-        res.status(500).json({ error: 'Errore nel recupero dei venditori' });
-    }
-});
-app.get('/api/v1/venditore/:id', async (req, res) => {
-    try {
-        const venditore = await VenditoreServizio.getVendorById(req.params.id);
-        if (!venditore) {
-            return res.status(404).send('Venditore non trovato');
-        }
-        res.status(200).json(venditore);
-    } catch (error) {
-        res.status(500).send('Errore del server');
-    }
-});
-//api promotore
-
 app.post('/api/v1/prodotto', async (req, res) => {
     try {
         const { nome, descrizione, venditore, costo, quantita, tag } = req.body;
@@ -355,6 +333,27 @@ app.delete('/api/v1/prodotto/:id', async (req, res) => {
         res.status(500).json({ error: 'Errore del server' });
     }
 });
+//api venditore
+app.get('/api/v1/venditore', async (req, res) => {
+    try {
+        const venditori = await VenditoreServizio.getAllVenditori();
+        res.status(200).json(venditori);
+    } catch (error) {
+        res.status(500).json({ error: 'Errore nel recupero dei venditori' });
+    }
+});
+app.get('/api/v1/venditore/:id', async (req, res) => {
+    try {
+        const venditore = await VenditoreServizio.getVendorById(req.params.id);
+        if (!venditore) {
+            return res.status(404).send('Venditore non trovato');
+        }
+        res.status(200).json(venditore);
+    } catch (error) {
+        res.status(500).send('Errore del server');
+    }
+});
+//api promotore
 
 app.get('/api/v1/tags', async (req, res) => {
     try {
