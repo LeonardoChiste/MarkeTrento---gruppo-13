@@ -1,5 +1,8 @@
 const Prodotto = require('./prodotto.cjs');
 
+/* Alla fine non usiamo la classe locale ma 
+la lasciamo per eventuali modifiche future e per completezza */
+
 class Carrello {
     constructor() {
         this.prodotti = []; // Array per contenere i prodotti nel carrello

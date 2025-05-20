@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riepilogo Ordine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .vendor-info {
+            background: #e6ffe6;
+            border-left: 6px solid #28a745;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            color: #155724;
+        }
+        .product-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .product-qty {
+            margin: 0 10px;
+            color: #555;
+        }
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+        }
+        .order-type {
+            margin: 24px 0 16px 0;
+            text-align: center;
+        }
+        .order-type label {
+            margin: 0 16px;
+            font-size: 1.1em;
+        }
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px;
+            max-width: 800px;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        .back-btn,
+        .confirm-btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background-color: #008000;
+            color: white;
+            border-radius: 5px;
+            border: 2px solid black;
+            font-size: 1.1em;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background 0.2s;
+            margin: 0;
+            width: auto;
+        }
+        .back-btn {
+            background-color: #008000;
+        }
+        .back-btn:hover {
+            background-color: #006400;
+        }
+        .confirm-btn {
+            background-color: #007bff;
+        }
+        .order-btn:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: #c00;
+            text-align: center;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Riepilogo Ordine</h1>
+        <div id="vendor-info" class="vendor-info" style="display:none;"></div>
+        <ul class="product-list" id="ordine-carrello">
+            <div class="loading">Caricamento ordine in corso...</div>
+        </ul>
+        <p class="total" id="ordine-total">Totale: €0.00</p>
+        <div class="order-type">
+            <label>
+                <input type="radio" name="orderType" value="consegna" checked>
+                Consegna 
+            </label>
+            <label>
+                <input type="radio" name="orderType" value="ritiro">
+                Ritiro 
+            </label>
+        </div>
+        <div id="indirizzo-consegna-container" style="display: block; margin-bottom: 16px;">
+            <input type="text" id="indirizzo-consegna" placeholder="Inserisci indirizzo di consegna" style="width: 60%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+        </div>
+        <div class="button-row">
+            <button class="back-btn" onclick="window.history.back()">Torna indietro</button>
+            <button class="confirm-btn" onclick="confermaOrdine()">Conferma Ordine</button>
+        </div>
+        <div id="ordine-error" class="error-message"></div>
+    </div>
+
+    <script>
+        const clientId = '68245a82ef2a089ff02b2a7b'; // Id di prova
+
+        async function getCarrello(clientId) {
+            const res = await fetch(`/api/v1/carrello/${clientId}`);
+            if (!res.ok) throw new Error('Carrello non trovato');
+            return await res.json();
+        }
+
+        async function getVendorInfo(vendorId) {
+            const res = await fetch(`/api/v1/venditore/${vendorId}`);
+            if (!res.ok) throw new Error('Venditore non trovato');
+            return await res.json();
+        }
+
+        async function loadOrdine() {
+            const carrelloContainer = document.getElementById('ordine-carrello');
+            const totalPriceElement = document.getElementById('ordine-total');
+            const vendorInfoDiv = document.getElementById('vendor-info');
+            const errorDiv = document.getElementById('ordine-error');
+            errorDiv.textContent = '';
+            try {
+                const carrello = await getCarrello(clientId);
+
+                if (!carrello || carrello.length === 0) {
+                    carrelloContainer.innerHTML = `<div class="error-message">Carrello vuoto</div>`;
+                    totalPriceElement.textContent = `Totale: €0.00`;
+                    vendorInfoDiv.style.display = 'none';
+                    return;
+                }
+
+                // Prendi le informazioni del venditore dal primo prodotto
+                const firstProduct = carrello[0];
+                const prodottoRes = await fetch(`/api/v1/prodotto/${firstProduct._id}`);
+                let venditoreId = null;
+                if (prodottoRes.ok) {
+                    const prodotto = await prodottoRes.json();
+                    venditoreId = prodotto.venditore;
+                }
+                if (venditoreId) {
+                    const venditore = await getVendorInfo(venditoreId);
+                    vendorInfoDiv.innerHTML = `<strong>Venditore:</strong> ${venditore.nome} ${venditore.cognome}<br>
+                        <strong>Indirizzo:</strong> ${venditore.sede || '-'}`;
+                    vendorInfoDiv.style.display = '';
+                } else {
+                    vendorInfoDiv.style.display = 'none';
+                }
+
+                carrelloContainer.innerHTML = carrello.map(prodotto => {
+                    const prezzo = prodotto.prezzo || 0;
+                    const quantity = prodotto.quantity || 1;
+                    const totale = prezzo * quantity;
+                    return `
+                        <li class="product-item">
+                            <span>${prodotto.nome || 'Prodotto sconosciuto'}</span>
+                            <span class="product-qty">x${quantity}</span>
+                            <span>€${totale.toFixed(2)}</span>
+                        </li>
+                    `;
+                }).join('');
+                const totalPrice = carrello.reduce((sum, prodotto) =>
+                    sum + ((prodotto.prezzo || 0) * (prodotto.quantity || 1)), 0);
+                totalPriceElement.textContent = `Totale: €${totalPrice.toFixed(2)}`;
+            } catch (err) {
+                carrelloContainer.innerHTML = '';
+                vendorInfoDiv.style.display = 'none';
+                totalPriceElement.textContent = `Totale: €0.00`;
+                errorDiv.textContent = 'Errore durante il caricamento dell\'ordine.';
+            }
+            
+        }
+
+        function confermaOrdine() {
+            const orderType = document.querySelector('input[name="orderType"]:checked').value;
+            if (orderType === 'consegna') {
+                const indirizzo = document.getElementById('indirizzo-consegna').value.trim();
+                if (!indirizzo) {
+                    alert('Per la consegna devi inserire un indirizzo!');
+                    document.getElementById('indirizzo-consegna').focus();
+                    return;
+                }
+                alert(`Ordine confermato! Tipo: Consegna\nIndirizzo: ${indirizzo}`);
+                // Da aggiungere la logica per la consegna 
+            } else {
+                alert('Ordine confermato! Tipo: Ritiro');
+                // Da aggiungere la logica per il ritiro
+            }
+        }
+
+        // Event listener per mostrare/nascondere il campo indirizzo
+        document.querySelectorAll('input[name="orderType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const container = document.getElementById('indirizzo-consegna-container');
+                if (this.value === 'consegna') {
+                    container.style.display = 'block';
+                } else {
+                    container.style.display = 'none';
+                }
+            });
+        });
+
+        window.addEventListener('DOMContentLoaded', loadOrdine);
+    </script>
+</body>
+</html>

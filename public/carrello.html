@@ -46,20 +46,43 @@
             text-align: right;
             margin-top: 20px;
         }
-        .back-btn {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #008000;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 5px;
-            width: 150px;
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 16px; /* or your preferred gap */
+            margin-top: 24px;
+            max-width: 800px;
+            margin-left: 0;
+            margin-right: auto;
         }
-        .back-btn:hover {
-            background-color: #006400;
-        }
+.back-btn,
+.order-btn {
+    display: inline-block;
+    padding: 10px 24px;
+    background-color: #008000;
+    color: white;
+    border-radius: 5px;
+    border: 2px solid black;
+    font-size: 1.1em;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s;
+    margin: 0; /* Remove extra margin */
+    width: auto; /* Remove fixed width */
+}
+.back-btn {
+    background-color: #008000;
+}
+.back-btn:hover {
+    background-color: #006400;
+}
+.order-btn {
+    background-color: #007bff;
+}
+.order-btn:hover {
+    background-color: #0056b3;
+}
     </style>
 </head>
 <body>
@@ -69,7 +92,10 @@
             <div class="loading">Caricamento carrello in corso...</div>
         </ul>
         <p class="total" id="total-price">Totale: €0.00</p>
-        <button class="back-btn" onclick="window.history.back()">Torna indietro</button>
+        <div class="button-row">
+            <button class="back-btn" onclick="window.history.back()">Torna indietro</button>
+            <a href="ordine.html" class="order-btn">Procedi all'ordine</a>
+        </div>
     </div>
 
     <script>
