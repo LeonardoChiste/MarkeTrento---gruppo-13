@@ -117,7 +117,7 @@ app.use(express.json()); // Per dati JSON (opzionale ma utile)
 // Pagina principale
 app.get('/', (req, res) => {
     //popola();
-    res.sendFile(path.join(__dirname, 'public', `/default.html`));
+    res.status(200).sendFile(path.join(__dirname, 'public', `/default.html`));
 });
 /*
 app.get('/products', async (req, res) => {
@@ -135,7 +135,7 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     var au = await compareDB(username, password);
     if (au) {
-        res.send(`
+        res.status(200).send(`
             <script>
                 window.username = "${username}";
                 window.localStorage.setItem("username", window.username);
@@ -143,7 +143,7 @@ app.post('/login', async (req, res) => {
             </script>
         `);
     } else {
-        res.send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`);
+        res.status(401).send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`);
     }
 });
 
@@ -151,15 +151,15 @@ app.post('/loginbusiness', async (req, res) => {
     const { username, password } = req.body;
     var au= await compareDBbusiness(username, password);
     if (au) {
-        res.sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
+        res.status(200).sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
     }
     else
     {
         au= await compareDBbusinessv2(username, password);
         if (au) {
-            res.sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
+            res.status(200).sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
         }
-        else res.send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`)
+        else res.status(401).send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`)
     }
 
 });
@@ -167,7 +167,7 @@ app.post('/loginbusiness', async (req, res) => {
 
 
 app.get('/mercato', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', `/home.html`));
+    res.status(200).sendFile(path.join(__dirname, 'public', `/home.html`));
 });
 
 //api promozioni
