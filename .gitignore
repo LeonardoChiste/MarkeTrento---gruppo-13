@@ -3,3 +3,5 @@
 sec.env
 node_modules/
 #la totalità degli env files
+
+node_modules/
