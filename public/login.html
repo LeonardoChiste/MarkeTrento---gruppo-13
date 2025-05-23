@@ -19,16 +19,12 @@
     </style>
     <script>
         window.onload = function() {
-            // Retrieve the username from localStorage
-            const username = window.localStorage.getItem("username");
-            if (username) {
-                document.getElementById('welcome-message').textContent = `Bentornato, ${username}!`;
+            // Retrieve the usermail from localStorage
+            const usermail = window.localStorage.getItem("usermail");
+            if (usermail) {
+                document.getElementById('welcome-message').textContent = `Bentornato, ${usermail}!`;
             }
-
-            // Animate the progress bar
             document.getElementById('progress').style.width = '100%';
-
-            // Redirect after 3 seconds
             setTimeout(function() {
                 window.location.href = '/home.html';
             }, 3000);

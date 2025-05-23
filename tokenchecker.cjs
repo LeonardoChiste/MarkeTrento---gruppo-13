@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const tokenChecker = function(req, res, next) {
 	
 	// check header or url parameters or post parameters for token
@@ -27,4 +28,24 @@ const tokenChecker = function(req, res, next) {
 	
 };
 
-module.exports = tokenChecker
+
+
+function TokenGen(email) {
+    const payload = { email };
+    const options = { expiresIn: '1h' };
+    const secret = process.env.SUPER_SECRET || 'niente'; // Usa una variabile d'ambiente sicura!
+    return jwt.sign(payload, secret, options);
+}
+
+function st(token) {
+	const decoded = jwt.decode(token);
+	// Stampa le informazioni decodificate (visibili per debugs)
+	console.log('Decoded Token:', decoded);
+}
+
+
+module.exports = {
+	tokenChecker,
+	TokenGen,
+	st,
+};
