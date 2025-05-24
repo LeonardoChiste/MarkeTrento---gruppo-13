@@ -5,7 +5,8 @@ const mongoose = require ('mongoose');
 const Cliente = require( "./classes/Cliente.cjs");
 const Venditore = require( "./classes/Venditore.cjs");
 const Imprenditore = require( "./classes/Imprenditore.cjs");
-const {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2}= require ("./passwordhasher.cjs")
+const {compareDBbusiness,compareDBbusinessv2,compareDB}= require ("./passwordmanager.cjs");
+const {tokenChecker,TokenGen,st} = require ("./tokenchecker.cjs");
 require('dotenv').config({ path: 'process.env' });
 
 const Prodotto = require('./classes/prodotto.cjs');
@@ -39,8 +40,8 @@ app.use(express.static('public'));
        await DBVendor.create(v);
        console.log("Venditore inserito con successo!");*/
 
-       var tg=new DBTags({tags:['mele','pere','frutti di bosco','castagne','asparagi','ciliege','olio','alcolici','gastronomia','sughi','tuberi','carne','pesce','formaggi','miele','bevande','dolci','salumi','funghi','frutta']})
-        await DBTags.create(tg);
+       /*var tg=new DBTags({tags:['mele','pere','frutti di bosco','castagne','asparagi','ciliege','olio','alcolici','gastronomia','sughi','tuberi','carne','pesce','formaggi','miele','bevande','dolci','salumi','funghi','frutta']})
+        await DBTags.create(tg);*/
         /*
         const client = await DBClient.findOne({ _id: "68245a82ef2a089ff02b2a7b"}); // o usa l'email se preferisci
 
@@ -82,35 +83,6 @@ async function popola()
 
 }
 
-
-async function compareDB(username, password) {
-    // Create a new instance of the Client class
-
-    const cc = new Cliente('a','b',10102000,'a',username, password);
-    try {
-        // Find user by username
-        const user = await DBClient.findOne({ 
-            username: cc.username 
-        });
-        
-        if (!user) {
-            return false;
-            //var w=await hashPassword(cc.password);
-            //console.log(w);
-        }
-        else{
-
-        //var w= await hashPassword(cc.password)
-        //console.log(w);
-        return comparePassword(cc.password,user.password)
-        
-        }
-    } catch (error) {
-        console.error("Error in compareDB:", error);
-        return false;
-    }
-};
-
 app.use(express.urlencoded({ extended: true })); // Per form HTML
 app.use(express.json()); // Per dati JSON (opzionale ma utile)
 //app.use('/default.html');
@@ -132,13 +104,19 @@ app.get('/products', async (req, res) => {
 
 //login stuff
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    var au = await compareDB(username, password);
+    const { usermail, password } = req.body;
+    var au = await compareDB(usermail, password);
     if (au) {
+          const token = TokenGen(usermail);
+        /*res.status(200).json({
+            message: "Login effettuato!",
+            token: token
+        });*/
+        st(token);
         res.status(200).send(`
             <script>
-                window.username = "${username}";
-                window.localStorage.setItem("username", window.username);
+                window.usermail = "${usermail}";
+                window.localStorage.setItem("usermail", window.usermail);
                 window.location.href = "/login.html";
             </script>
         `);
@@ -148,14 +126,14 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/loginbusiness', async (req, res) => {
-    const { username, password } = req.body;
-    var au= await compareDBbusiness(username, password);
+    const { usermail, password } = req.body;
+    var au= await compareDBbusiness(usermail, password);
     if (au) {
         res.status(200).sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
     }
     else
     {
-        au= await compareDBbusinessv2(username, password);
+        au= await compareDBbusinessv2(usermail, password);
         if (au) {
             res.status(200).sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
         }
