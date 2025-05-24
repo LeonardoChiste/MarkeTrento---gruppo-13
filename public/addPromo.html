@@ -74,7 +74,7 @@
       if(data.image == null){
         data.image = "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
       }
-      const response = await fetch('/api/v1/promozioni', {
+      const response = await fetch('/api/v1/promozione', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

@@ -22,7 +22,10 @@ const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
 const DBClient=require('./models/clientModel.cjs');
 const VenditoreServizio = require('./services/VenditoreService.cjs');
-
+const carrello = require('./carrello.cjs');
+const promozione = require('./promozione.cjs');
+const venditore = require('./venditore.cjs');
+const prodotto = require('./prodotto.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -102,6 +105,11 @@ app.get('/products', async (req, res) => {
 });
 */
 
+app.use('/api/v1/carrello', carrello);
+app.use('/api/v1/promozione', promozione);  
+app.use('/api/v1/venditore', venditore);    
+app.use('/api/v1/prodotto', prodotto);  
+
 //login stuff
 app.post('/login', async (req, res) => {
     const { usermail, password } = req.body;
@@ -147,208 +155,6 @@ app.post('/loginbusiness', async (req, res) => {
 app.get('/mercato', (req, res) => {
     res.status(200).sendFile(path.join(__dirname, 'public', `/home.html`));
 });
-
-//api promozioni
-app.get('/api/v1/promozioni', async (req, res) => {
-    try {
-        const promotions = await DBPromotion.find();
-        // Format the data field as 'YYYY-MM-DD'
-        const formattedPromotions = promotions.map(promo => ({
-            ...promo.toObject(),
-            data: promo.data ? promo.data.toISOString().split('T')[0] : null
-        }));
-        res.status(200).json(formattedPromotions);
-    } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-app.post('/api/v1/promozioni', async (req, res) => {
-    const data = req.body;
-    const promozione = DBPromotion({
-        data: data.startdate,
-        titolo: data.title,
-        promotore: data.promoter,
-        descrizione: data.description,
-        img: data.image,
-        tipoAnnuncio: data.tipo
-    });
-    console.log(promozione);
-    await DBPromotion.create(promozione).then(() => {
-        console.log('Promozione creata con successo');
-        res.status(201).json({ message: 'Promozione creata con successo' });
-    }).catch((error) => {   
-        console.error('Errore durante la creazione della promozione:', error);
-        res.status(500).json({ error: 'Errore durante la creazione della promozione' });
-    });
-});
-
-
-//api carrello
-app.get('/api/v1/carrello/:clientId', async (req, res) => {
-    try {
-        const clientId = req.params.clientId;
-        const carrello = await ClienteServizio.getClientCarrello(clientId); // Usa la funzione nella cartella services
-        if (!carrello) {
-            return res.status(404).send('Carrello non trovato');
-        }
-        res.status(200).json(carrello.prodotti); // Ritorna i prodotti nel carrello
-    } catch (error) {
-        console.error('Errore durante il recupero del carrello:', error);
-        res.status(500).send('Errore del server');
-    }
-});
-
-app.post('/api/v1/carrello/:clientId/add', async (req, res) => {
-    try {
-        const clientId = req.params.clientId;
-        const { nome, prezzo, quantity } = req.body;
-        const client = await DBClient.findById(clientId);
-        if (!client) return res.status(404).json({ error: 'Cliente non trovato' });
-
-        // Recupera il prodotto dal database
-        const prodotto = await Productv2.findOne({ nome });
-        if (!prodotto) return res.status(404).json({ error: 'Prodotto non trovato' });
-
-        //Tutti i prodotti nel carrello devono appartenere allo stesso venditore
-        if (client.carrello.length > 0) {
-            // Recupera il venditore del primo prodotto nel carrello
-            const firstProduct = client.carrello[0];
-            const firstProductDb = await Productv2.findOne({ nome: firstProduct.nome });
-            if (firstProductDb && firstProductDb.venditore && prodotto.venditore && String(firstProductDb.venditore) !== String(prodotto.venditore)) {
-                return res.status(400).json({ error: 'Tutti i prodotti nel carrello devono appartenere allo stesso venditore. Svuotare il carrello per inserire prodotti di questo venditore.' });
-            }
-        }
-
-        // Recupera la quantita nel carrello
-        const item = client.carrello.find(p => p.nome === nome);
-        const currentQuantity = item ? item.quantity : 0;
-
-        if (currentQuantity + quantity > prodotto.quantita) {
-            return res.status(400).json({ error: 'Quantità totale nel carrello eccede la quantità disponibile' });
-        }
-
-        // Aggiungi il prodotto al carrello
-        if (item) {
-            item.quantity += quantity;
-            //Aggiunge ID, se non presente
-            if (!item._id) item._id = prodotto._id;
-        } else {
-            client.carrello.push({
-                _id: prodotto._id, 
-                nome, 
-                prezzo, 
-                quantity
-             });
-        }
-        await client.save();
-        res.status(200).json({ message: 'Prodotto aggiunto al carrello' });
-    } catch (error) {
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
-
-app.post('/api/v1/carrello/:clientId/removeOne', async (req, res) => {
-    try {
-        const clientId = req.params.clientId;
-        const { nome } = req.body;
-        const client = await DBClient.findById(clientId);
-        if (!client) return res.status(404).json({ error: 'Cliente non trovato' });
-        const item = client.carrello.find(p => p.nome === nome);
-        if (item) {
-            if (item.quantity > 1) {
-                item.quantity -= 1;
-            } else {
-                client.carrello = client.carrello.filter(p => p.nome !== nome);
-            }
-            await client.save();
-        }
-        res.status(200).json({ message: 'Prodotto aggiornato' });
-    } catch (error) {
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
-
-//api prodotti
-app.get('/api/v1/prodotto/venditore/:id', async (req, res) => {
-    try {
-        const prodotto = await ProdottoServizio.getProductByVendor(req.params.id);
-        if (!prodotto) {
-            return res.status(404).send('Prodotto non trovato');
-        }
-        res.status(200).json(prodotto);
-    } catch (error) {
-        console.error('Errore durante il recupero del prodotto:', error);
-        res.status(500).send('Errore del server');
-    }
-});
-
-app.get('/api/v1/prodotto/:id', async (req, res) => {
-    try {
-        const prodotto = await ProdottoServizio.getProductById(req.params.id);
-        if (!prodotto) {
-            return res.status(404).send('Prodotto non trovato');
-        }
-        res.status(200).json(prodotto);
-    } catch (error) {
-        console.error('Errore durante il recupero del prodotto:', error);
-        res.status(500).send('Errore del server');
-    }
-});
-
-app.put('/api/v1/prodotto/:id', async (req, res) => {
-    try {
-        const id = req.params.id;
-        const {  descrizione, quantita} = req.body;
-        await ProdottoServizio.updateProduct(descrizione, quantita, id);
-        res.status(200).json({ message: 'Prodotto aggiornato con successo' });
-    } catch (error) {
-        console.error('Errore durante l\'aggiornamento del prodotto:', error);
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
-app.post('/api/v1/prodotto', async (req, res) => {
-    try {
-        const { nome, descrizione, venditore, costo, quantita, tag } = req.body;
-        const prodotto = new Prodotto(nome, descrizione, venditore, costo, quantita, tag);
-        await ProdottoServizio.addProduct(prodotto);
-        res.status(201).json({ message: 'Prodotto aggiunto con successo' });
-    } catch (error) {
-        console.error('Errore durante l\'aggiunta del prodotto:', error);
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
-
-app.delete('/api/v1/prodotto/:id', async (req, res) => {
-    try {
-        const id = req.params.id;
-        await ProdottoServizio.deleteProduct(id);
-        res.status(200).json({ message: 'Prodotto eliminato con successo' });
-    } catch (error) {
-        console.error('Errore durante l\'eliminazione del prodotto:', error);
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
-//api venditore
-app.get('/api/v1/venditore', async (req, res) => {
-    try {
-        const venditori = await VenditoreServizio.getAllVenditori();
-        res.status(200).json(venditori);
-    } catch (error) {
-        res.status(500).json({ error: 'Errore nel recupero dei venditori' });
-    }
-});
-app.get('/api/v1/venditore/:id', async (req, res) => {
-    try {
-        const venditore = await VenditoreServizio.getVendorById(req.params.id);
-        if (!venditore) {
-            return res.status(404).send('Venditore non trovato');
-        }
-        res.status(200).json(venditore);
-    } catch (error) {
-        res.status(500).send('Errore del server');
-    }
-});
-//api promotore
 
 app.get('/api/v1/tags', async (req, res) => {
     try {
