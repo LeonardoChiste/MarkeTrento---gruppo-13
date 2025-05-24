@@ -26,6 +26,7 @@ const carrello = require('./carrello.cjs');
 const promozione = require('./promozione.cjs');
 const venditore = require('./venditore.cjs');
 const prodotto = require('./prodotto.cjs');
+const tags = require('./tags.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -109,6 +110,7 @@ app.use('/api/v1/carrello', carrello);
 app.use('/api/v1/promozione', promozione);  
 app.use('/api/v1/venditore', venditore);    
 app.use('/api/v1/prodotto', prodotto);  
+app.use('/api/v1/tags', tags);
 
 //login stuff
 app.post('/login', async (req, res) => {
@@ -156,15 +158,7 @@ app.get('/mercato', (req, res) => {
     res.status(200).sendFile(path.join(__dirname, 'public', `/home.html`));
 });
 
-app.get('/api/v1/tags', async (req, res) => {
-    try {
-        const tagsDoc = await TagServizio.getTags();
-        res.status(200).json(tagsDoc ? tagsDoc.tags : []);
-    } catch (error) {
-        console.error('Errore durante il recupero dei tag:', error.message);
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
+
 
 
 
