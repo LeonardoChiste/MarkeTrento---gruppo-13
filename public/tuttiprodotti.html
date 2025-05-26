@@ -101,7 +101,19 @@
             color: #ffc107;
         }
     </style>
-    <script>
+    
+</head>
+<body>
+    <button id="carrelloBtn" class="carrello-btn" title="Vai al carrello">
+        Carrello
+    </button>
+    <div class="container">
+        <h1 id="titoloVenditore">Prodotti</h1>
+        <div id="prodottiVenditore"></div>
+        <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
+    </div>
+</body>
+<script>
         function getIdFromQuery() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
@@ -223,19 +235,22 @@
                 });
             });
         }
+         document.getElementById('carrelloBtn').addEventListener('click', async function() {
+    fetch('/check/carrello', {
+        headers: {
+            'x-access-token': localStorage.getItem('token')
+        }
+    })
+    .then(res => {
+        if (res.ok) {
+            window.location.href = '/carrello.html';
+        } else {
+            alert("Accesso negato!");
+        }
+    });
+});
 
         window.onload = caricaProdotti;
 
     </script>
-</head>
-<body>
-    <a href="carrello.html" class="carrello-btn" title="Vai al carrello">
-     Carrello
-    </a>
-    <div class="container">
-        <h1 id="titoloVenditore">Prodotti</h1>
-        <div id="prodottiVenditore"></div>
-        <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
-    </div>
-</body>
 </html>
