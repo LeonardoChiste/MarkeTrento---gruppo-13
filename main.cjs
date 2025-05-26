@@ -3,8 +3,8 @@ const path = require('path');
 const  bodyParser= require ('body-parser');
 const mongoose = require ('mongoose');
 const Cliente = require( "./classes/Cliente.cjs");
+const Imprenditore = require('./classes/Imprenditore.cjs');
 const Venditore = require( "./classes/Venditore.cjs");
-const Imprenditore = require( "./classes/Imprenditore.cjs");
 const {compareDBbusiness,compareDBbusinessv2,compareDB}= require ("./passwordmanager.cjs");
 const {tokenChecker,TokenGen,TokenGenEnt,TokenGenVend,st} = require ("./tokenchecker.cjs");
 require('dotenv').config({ path: 'process.env' });
@@ -15,6 +15,7 @@ const Prodotto = require('./classes/prodotto.cjs');
 const ProdottoServizio = require('./services/ProdottoService.cjs');
 const ClienteServizio = require('./services/clienteService.cjs');
 const dbUrl = process.env.DB_URL;
+
 const DBVendor=require('./models/vendorModel.cjs');
 const DBTags=require('./models/tagsModel.cjs');
 const TagServizio=require('./services/tagService.cjs');
@@ -23,7 +24,9 @@ const Productv2=require('./models/productModel.cjs');
 const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
 const DBClient=require('./models/clientModel.cjs');
+
 const VenditoreServizio = require('./services/VenditoreService.cjs');
+const ImprenditoreServizio = require('./services/businessService.cjs');
 const carrello = require('./carrello.cjs');
 const promozione = require('./promozione.cjs');
 const venditore = require('./venditore.cjs');
@@ -183,7 +186,7 @@ app.post('/loginbusiness', async (req, res) => {
 });
 
 app.get('/generateDevelopmentToken', (req, res) => {
-    const token = TokenGenVend('p@gmail.com');//come se fossi Piscitelli Antonello.. da usare per test
+    const token = TokenGenVend('p@gm.com');//come se fossi Piscitelli Antonello.. da usare per test
     res.send(`
         <html>
         <head><title>Token Generato</title></head>
@@ -202,6 +205,33 @@ app.get('/generateDevelopmentToken', (req, res) => {
 
 app.get('/homev1', (req, res) => {
     res.status(200).sendFile(path.join(__dirname, 'public', `/home.html`));
+});
+
+
+
+//AGGIUNTA DI API IN FONDO AL MAIN, DA ORGANIZZARE, UNA SU IMPRENDITORE, UNA SU CLIENTE
+app.put('/api/v1/imprenditore/descrizione/:id', tokenChecker('Imprenditore'), async (req, res) => {
+    try {
+        const { descrizione } = req.body;
+        const id = req.params.id;
+        const imprenditoreAggiornato = await Imprenditore.updateDescrizione(descrizione, id);
+        res.status(200).json(imprenditoreAggiornato);
+    } catch (error) {
+        console.error('Errore durante l\'aggiornamento della descrizione:', error.message);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
+app.put('/api/v1/imprenditore/sede/:id', tokenChecker('Imprenditore'), async (req, res) => {
+    try {
+        const { sede } = req.body;
+        const id = req.params.id;
+        const imprenditoreAggiornato = await Imprenditore.updateSede(sede, id);
+        res.status(200).json(imprenditoreAggiornato);
+    } catch (error) {
+        console.error('Errore durante l\'aggiornamento dell\'indirizzo:', error.message);
+        res.status(500).json({ error: 'Errore del server' });
+    }
 });
 
 
