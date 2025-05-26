@@ -17,15 +17,17 @@ function tokenChecker(accessType) {
             }
             //gestione casi di ereditarietà nelle pagine
             if (!decoded || decoded.aut !== accessType) {
-                if(decoded.aut == 'Venditore' && accessType == 'Imprenditore'){}
-                else if(decoded.aut == 'Imprenditore' && accessType == 'Cliente'){}
-                else if(decoded.aut == 'Venditore' && accessType == 'Cliente'){}
-                else{
-                console.log('Unauthorized: invalid account type.');
-                return res.status(403).json({ success: false, message: 'Unauthorized: invalid account type.' });
-                }
+            if (
+            (decoded.aut == 'Venditore' && (accessType == 'Imprenditore' || accessType == 'Cliente')) ||
+            (decoded.aut == 'Imprenditore' && accessType == 'Cliente')
+            ) {
+             return next();
+            } else {
+            console.log('Unauthorized: invalid account type.');
+            return res.status(403).json({ success: false, message: 'Unauthorized: invalid account type.' });
             }
-            //console.log('Token is valid:', decoded);
+    }
+            console.log('Token is valid!!!');
             next();
         });
     }

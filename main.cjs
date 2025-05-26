@@ -114,7 +114,7 @@ app.use('/api/v1/venditore', venditore);
 app.use('/api/v1/prodotto', prodotto);  
 app.use('/api/v1/tags', tags);
 
-app.use('/check/interfacciavenditore', authcheck);
+app.use('/check', authcheck);
 //login stuff
 app.post('/login', async (req, res) => {
     const { usermail, password } = req.body;

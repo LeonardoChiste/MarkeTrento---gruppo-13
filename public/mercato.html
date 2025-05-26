@@ -191,7 +191,25 @@
             outline: none;
         }
     </style>
-    <script>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="filter-group">
+            <div class="filter-btn-row">
+                <button id="btnTutti" class="filter-btn" onclick="setFiltroTipo('tutti')">tutti</button>
+                <button id="btnConTag" class="filter-btn" onclick="setFiltroTipo('conTag')">con prodotti in vendita</button>
+            </div>
+            <button class="back-btn" onclick="tornaIndietro()">&#8592; Torna indietro</button>
+        </div>
+        <button id="carrelloBtn">Carrello</button>
+    </div>
+    <h1>Venditori registrati</h1>
+    <div class="controls">
+        <input type="text" id="filtroTag" placeholder="Cerca per tag prodotto" oninput="aggiornaLista()">
+    </div>
+    <div id="listaVenditori"></div>
+</body>
+<script>
         let venditoriGlobal = [];
         let filtroTipo = 'tutti'; 
 
@@ -330,25 +348,20 @@
             caricaVenditori();
             setFiltroTipo('tutti');
         };
+
+        document.getElementById('carrelloBtn').addEventListener('click', async function() {
+    fetch('/check/carrello', {
+        headers: {
+            'x-access-token': localStorage.getItem('token')
+        }
+    })
+    .then(res => {
+        if (res.ok) {
+            window.location.href = '/carrello.html';
+        } else {
+            alert("Accesso negato!");
+        }
+    });
+});
     </script>
-</head>
-<body>
-    <div class="top-bar">
-        <div class="filter-group">
-            <div class="filter-btn-row">
-                <button id="btnTutti" class="filter-btn" onclick="setFiltroTipo('tutti')">tutti</button>
-                <button id="btnConTag" class="filter-btn" onclick="setFiltroTipo('conTag')">con prodotti in vendita</button>
-            </div>
-            <button class="back-btn" onclick="tornaIndietro()">&#8592; Torna indietro</button>
-        </div>
-        <a href="carrello.html" class="carrello-btn" title="Vai al carrello">
-            Carrello
-        </a>
-    </div>
-    <h1>Venditori registrati</h1>
-    <div class="controls">
-        <input type="text" id="filtroTag" placeholder="Cerca per tag prodotto" oninput="aggiornaLista()">
-    </div>
-    <div id="listaVenditori"></div>
-</body>
 </html>
