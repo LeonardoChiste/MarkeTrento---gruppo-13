@@ -9,7 +9,7 @@ const {compareDBbusiness,compareDBbusinessv2,compareDB}= require ("./passwordman
 const {tokenChecker,TokenGen,TokenGenEnt,TokenGenVend,st} = require ("./tokenchecker.cjs");
 require('dotenv').config({ path: 'process.env' });
 const {LocalStorage} = require('node-localstorage');
-const localStorage = new LocalStorage('./saves');
+const authcheck = require('./authcheck.cjs');
 
 const Prodotto = require('./classes/prodotto.cjs');
 const ProdottoServizio = require('./services/ProdottoService.cjs');
@@ -114,6 +114,7 @@ app.use('/api/v1/venditore', venditore);
 app.use('/api/v1/prodotto', prodotto);  
 app.use('/api/v1/tags', tags);
 
+app.use('/check/interfacciavenditore', authcheck);
 //login stuff
 app.post('/login', async (req, res) => {
     const { usermail, password } = req.body;
@@ -184,9 +185,7 @@ app.get('/mercato', (req, res) => {
     res.status(200).sendFile(path.join(__dirname, 'public', `/home.html`));
 });
 
-app.get('/check/interfacciavenditore', tokenChecker('Venditore'), (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', '/interfacciavenditore.html'));
-});
+
 
 
 

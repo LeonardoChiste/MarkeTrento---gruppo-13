@@ -15,9 +15,15 @@ function tokenChecker(accessType) {
                 console.log('Token verification failed:');
                 return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
             }
+            //gestione casi di ereditarietà nelle pagine
             if (!decoded || decoded.aut !== accessType) {
+                if(decoded.aut == 'Venditore' && accessType == 'Imprenditore'){}
+                else if(decoded.aut == 'Imprenditore' && accessType == 'Cliente'){}
+                else if(decoded.aut == 'Venditore' && accessType == 'Cliente'){}
+                else{
                 console.log('Unauthorized: invalid account type.');
                 return res.status(403).json({ success: false, message: 'Unauthorized: invalid account type.' });
+                }
             }
             //console.log('Token is valid:', decoded);
             next();
