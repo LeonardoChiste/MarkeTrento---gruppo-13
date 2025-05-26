@@ -61,39 +61,54 @@
             <a href="/agenda.html">Agenda_Test</a>
             <button id="carrelloBtn">Carrello</button>
             <a href="/addPromo.html">Aggiungi Promozione</a>
+            <button id="dettagliAccountBtn">DettagliAccount</button>
         </div>
     </div>
     <script>
         document.getElementById('venditoreBtn').addEventListener('click', async function() {
-            
-                
-              fetch('/check/interfacciavenditore', {
-    headers: {
-        'x-access-token': localStorage.getItem('token')
-    }
-})
-.then(res => {
-    if (res.ok) {
-        window.location.href = '/interfacciavenditore.html';
-    } else {
-        alert("Accesso negato!");
-    }
-});});
+            fetch('/check/interfacciavenditore', {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = '/interfacciavenditore.html';
+                } else {
+                    alert("Accesso negato!");
+                }
+            });
+        });
 
-document.getElementById('carrelloBtn').addEventListener('click', async function() {
-    fetch('/check/carrello', {
-        headers: {
-            'x-access-token': localStorage.getItem('token')
-        }
-    })
-    .then(res => {
-        if (res.ok) {
-            window.location.href = '/carrello.html';
-        } else {
-            alert("Accesso negato!");
-        }
-    });
-});
+        document.getElementById('carrelloBtn').addEventListener('click', async function() {
+            fetch('/check/carrello', {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = '/carrello.html';
+                } else {
+                    alert("Accesso negato!");
+                }
+            });
+        });
+
+        document.getElementById('dettagliAccountBtn').addEventListener('click', async function() {
+            fetch('/check/dettagliaccount', {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = '/dettagliaccount.html';
+                } else {
+                    alert("Accesso negato!");
+                }
+            });
+        });
     </script>
 </body>
 </html>

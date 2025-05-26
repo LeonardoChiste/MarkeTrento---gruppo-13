@@ -11,4 +11,8 @@ router.get('/carrello', tokenChecker('Cliente'), (req, res) => {
     res.sendFile(path.join(process.cwd(), 'public', 'carrello.html'));
 });
 
+router.get('/dettagliaccount', tokenChecker('Cliente'), (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'public', 'dettagliaccount.html'));
+});
+
 module.exports = router;
