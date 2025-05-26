@@ -28,15 +28,18 @@
             gap: 15px;
             margin-top: 20px;
         }
-        a {
+        a, button {
             color: #0066cc;
             text-decoration: none;
             padding: 8px 15px;
             border: 1px solid #0066cc;
             border-radius: 5px;
             transition: all 0.3s;
+            background: none;
+            cursor: pointer;
+            font-size: 1em;
         }
-        a:hover {
+        a:hover, button:hover {
             background-color: #0066cc;
             color: white;
         }
@@ -54,11 +57,28 @@
         
         <div class="nav-links">
             <a href="/mercato.html">tasto1</a>
-            <a href="/interfacciavenditore.html">tasto2</a>
+            <button id="venditoreBtn">Interfaccia Venditore</button>
             <a href="/agenda.html">Agenda_Test</a>
             <a href="/carrello.html">Carrello_Test</a>
             <a href="/addPromo.html">Aggiungi Promozione</a>
         </div>
     </div>
+    <script>
+        document.getElementById('venditoreBtn').addEventListener('click', async function() {
+            
+                // Example API call to check access or get venditore data
+              fetch('/check/interfacciavenditore', {
+    headers: {
+        'x-access-token': localStorage.getItem('token')
+    }
+})
+.then(res => {
+    if (res.ok) {
+        window.location.href = '/interfacciavenditore.html';
+    } else {
+        alert("Accesso negato!");
+    }
+});});
+    </script>
 </body>
 </html>

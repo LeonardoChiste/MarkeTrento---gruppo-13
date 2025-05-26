@@ -1,51 +1,67 @@
 const jwt = require('jsonwebtoken');
-const tokenChecker = function(req, res, next) {
-	
-	// check header or url parameters or post parameters for token
-	var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
-	// if there is no token
-	if (!token) {
-		return res.status(401).send({ 
-			success: false,
-			message: 'No token provided.'
-		});
-	}
-
-	// decode token, verifies secret and checks exp
-	jwt.verify(token, process.env.SUPER_SECRET, function(err, decoded) {			
-		if (err) {
-			return res.status(403).send({
-				success: false,
-				message: 'Failed to authenticate token.'
-			});		
-		} else {
-			// if everything is good, save to request for use in other routes
-			req.loggedUser = decoded;
-			next();
-		}
-	});
-	
-};
+function tokenChecker(accessType) {
+    return function(req, res, next)  {
+        //console.log('Checking token...');
+        const token=req.headers['x-access-token'] || req.query.token || req.body.token;
+        //console.log('Token received:', token);
+        if (!token) {
+            return res.status(401).json({ success: false, message: 'No token provided.' });
+        }
+        console.log('Token provided:', token);
+        jwt.verify(token, process.env.SUPER_SECRET, (err, decoded) => {
+            console.log('Verifying token...');
+            if (err) {
+                console.log('Token verification failed:');
+                return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
+            }
+            if (!decoded || decoded.aut !== accessType) {
+                console.log('Unauthorized: invalid account type.');
+                return res.status(403).json({ success: false, message: 'Unauthorized: invalid account type.' });
+            }
+            //console.log('Token is valid:', decoded);
+            next();
+        });
+    }
+}
 
 
 
 function TokenGen(email) {
-    const payload = { email };
+	var aut='Cliente';
+    const payload = { email, aut };
     const options = { expiresIn: '1h' };
-    const secret = process.env.SUPER_SECRET || 'niente'; // Usa una variabile d'ambiente sicura!
+    const secret = process.env.SUPER_SECRET || 'niente'; 
     return jwt.sign(payload, secret, options);
+}
+
+function TokenGenEnt(email) {
+	var aut='Imprenditore';
+	const payload = { email, aut };
+	const options = { expiresIn: '1h' };
+	const secret = process.env.SUPER_SECRET || 'niente'; 
+	return jwt.sign(payload, secret, options);
+}
+function TokenGenVend(email) {
+	var aut='Venditore';
+	const payload = { email, aut };
+	const options = { expiresIn: '1h' };
+	const secret = process.env.SUPER_SECRET || 'niente'; 
+	return jwt.sign(payload, secret, options);
 }
 
 function st(token) {
 	const decoded = jwt.decode(token);
-	// Stampa le informazioni decodificate (visibili per debugs)
 	console.log('Decoded Token:', decoded);
+	
+	
 }
 
 
 module.exports = {
 	tokenChecker,
 	TokenGen,
+	TokenGenEnt,
+	TokenGenVend,
 	st,
 };

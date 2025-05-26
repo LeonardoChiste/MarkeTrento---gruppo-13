@@ -81,22 +81,27 @@
             }
         }
     </style>
+    <script>
+        function goToPage(page) {
+            window.location.href = page;
+        }
+    </script>
 </head>
 <body>
     <div class="torna-indietro-top">
-        <button class="torna-indietro-btn" onclick="window.history.back()"> < - Torna indietro</button>
+        <button class="torna-indietro-btn" onclick="window.history.back()"> &lt; - Torna indietro</button>
     </div>
     <div class="container">
         <h1>Features Venditori</h1>
         <div class="features">
-            <button class="feature-btn" onclick="window.location.href='nuovoprodotto.html'">
+            <button class="feature-btn" onclick="goToPage('nuovoprodotto.html')">
                 Pubblica nuovo prodotto
             </button>
-            <button class="feature-btn" onclick="window.location.href='tuttiprodottiprivato.html'">
+            <button class="feature-btn" onclick="goToPage('tuttiprodottiprivato.html')">
                 Visualizza i tuoi prodotti
             </button>
-            <button class="feature-btn" onclick="window.location.href='cambiaDatiAzienda.html'">
-                Cambia dati Azienda
+            <button class="feature-btn" onclick="goToPage('cambiaDatiAzienda.html')">
+                Modifica dettagli di pagamento
             </button>
         </div>
     </div>
