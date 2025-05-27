@@ -1,6 +1,7 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
 const VenditoreServizio = require('./services/VenditoreService.cjs');
+const tokenChecker = require('./tokenchecker.cjs').tokenChecker;
 const router = express.Router();
 
 //api venditore
@@ -23,4 +24,29 @@ router.get('/:id', async (req, res) => {
         res.status(500).send('Errore del server');
     }
 });
+
+router.put('/descrizione/:id', tokenChecker('Venditore'), async (req, res) => {
+    try {
+        const { descrizione } = req.body;
+        const id = req.params.id;
+        const venditoreAggiornato = await VenditoreServizio.updateDescrizione(descrizione, id);
+        res.status(200).json(venditoreAggiornato);
+    } catch (error) {
+        console.error('Errore durante l\'aggiornamento della descrizione:', error.message);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
+router.put('/sede/:id', tokenChecker('Venditore'), async (req, res) => {
+    try {
+        const { sede } = req.body;
+        const id = req.params.id;
+        const venditoreAggiornato = await VenditoreServizio.updateSede(sede, id);
+        res.status(200).json(venditoreAggiornato);
+    } catch (error) {
+        console.error('Errore durante l\'aggiornamento dell\'indirizzo:', error.message);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
 module.exports = router;

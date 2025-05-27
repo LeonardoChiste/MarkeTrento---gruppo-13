@@ -3,6 +3,11 @@ const router = express.Router();
 const VendorModel= require('../models/vendorModel.cjs');
 const ClientModel = require('../models/clientModel.cjs');
 const EntrepreneurModel = require('../models/promoterModel.cjs');
+const { hashPassword, comparePassword } = require('../passwordmanager.cjs');
+const { tokenChecker } = require('../tokenchecker.cjs');
+const DBClient = require('../models/clientModel.cjs');
+const DBVendor = require('../models/vendorModel.cjs');
+const DBEntrepreneur = require('../models/promoterModel.cjs');
 
 router.get('/cliente/:email', async (req, res) => {
     try {
@@ -42,7 +47,36 @@ router.get('/cliente/:email', async (req, res) => {
         console.error('Errore durante il recupero del venditore:', error);
         res.status(500).json({ error: 'Errore del server' });
     }
-});
+    });
+
+    router.put('/password', tokenChecker('Cliente'), async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const token = req.headers['x-access-token'];
+        const decoded = require('jsonwebtoken').verify(token, process.env.SUPER_SECRET);
+        const ruolo = decoded.aut;
+        const email = decoded.email;
+
+        let userModel;
+        if (ruolo === 'Cliente') userModel = DBClient;
+        else if (ruolo === 'Venditore') userModel = DBVendor;
+        else if (ruolo === 'Imprenditore') userModel = DBEntrepreneur;
+        else return res.status(400).json({ error: 'Ruolo non valido' });
+
+        const user = await userModel.findOne({ email });
+        if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+
+        const isMatch = await comparePassword(oldPassword, user.password);
+        if (!isMatch) return res.status(401).json({ error: 'Vecchia password errata' });
+
+        user.password = await hashPassword(newPassword);
+        await user.save();
+
+        res.json({ success: true, message: 'Password aggiornata!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Errore del server' });
+    }
+    });
 
 module.exports = router;
 //esporto api legate a recupero account

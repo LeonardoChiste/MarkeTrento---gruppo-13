@@ -111,7 +111,7 @@
         <button id="prevWeek">&larr;</button>
         <h2 id="weekRange">Week of ...</h2>
         <button id="nextWeek">&rarr;</button>
-        <button id="Indietro">Torna al Mercato</button>
+        <button id="Indietro">Torna Indietro</button>
       </div>
     </div>
     <div class="calendar" id="calendar">
@@ -155,17 +155,10 @@
       const res = await fetch('/api/v1/promozione')
       if (res.ok) {
         const promo = await res.json();
-        //console.log(promo);
         return promo;
       } else {
         throw new Error('Errore nel caricamento delle promozioni.');
       }
-      /*return Promise.resolve([
-        { _id: '01', data: '2025-05-12', titolo: 'Sagra del pesce', promotore: 'Giovanni Giorgio', descrizione: 'Mmmhhhhh pesce..', img: 'https://c02.purpledshub.com/uploads/sites/41/2021/03/Blobfish_Kerryn-Parkinson-thumb-0293dac.jpg?w=1200' },
-        { _id: '01', data: '2025-05-13', titolo: 'Fiera della castora', promotore: 'Franco', descrizione: 'Castagnata con alcol', img: 'https://www.salepepe.it/files/2022/10/CASTAGNE-CALDARROSTE-COVER-1140x636.jpg' },
-        { _id: '01', data: '2025-05-14', titolo: 'Promo 50%-off tuberi', promotore: 'Negozio di vegetali', descrizione: 'Patate a metà prezzo per tutti', img: 'https://st4.depositphotos.com/1439888/31456/i/450/depositphotos_314565988-stock-photo-potatoes-in-the-wooden-crate.jpg' },
-        { _id: '01', data: '2025-05-14', titolo: 'Sagra del contadino', promotore: 'Associazione vinicoltori', descrizione: 'Degustazione vini', img: 'https://media.istockphoto.com/id/1030932114/it/foto/due-bicchieri-di-vino-rosso-in-vigna.jpg?s=612x612&w=0&k=20&c=efMaHA1extn30mGkm_dgAM6lggMikg1eDKkJDhrV73Y=' }
-      ]);*/
     }
     
     function renderWeek(startDate) {  
@@ -229,7 +222,7 @@
       modal.style.display = 'none';
     })
     document.getElementById('Indietro').addEventListener('click', () => {
-      window.location.href = '/home.html';
+      window.history.back();
     });
 
     // Initialize

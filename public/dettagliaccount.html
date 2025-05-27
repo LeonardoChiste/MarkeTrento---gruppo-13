@@ -4,28 +4,272 @@
     <meta charset="UTF-8">
     <title>Dettagli Account</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; }
-        .container { max-width: 600px; margin: auto; }
-        .label { font-weight: bold; }
-        .errore { color: red; }
-        .valore { margin-bottom: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f6fff7;
+        }
+        .back-btn {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: #145a32;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 9px 22px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(20,90,50,0.08);
+            transition: background 0.2s, color 0.2s;
+            z-index: 10;
+        }
+        .back-btn:hover {
+            background: #218c3a;
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0, 128, 0, 0.08);
+            padding: 32px 36px 28px 36px;
+            border-top: 8px solid #2ecc40;
+            border: 2px solid #4E342E; /* dark brown */
+            position: relative;
+        }
+        .username {
+            text-align: center;
+            color: #2ecc40;
+            margin-bottom: 32px;
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        h1 {
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #218c3a;
+            text-align: center;
+            margin-bottom: 28px;
+            letter-spacing: 1px;
+        }
+        .dati-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .valore {
+            display: flex;
+            flex-direction: row;
+            align-items: baseline;
+            gap: 10px;
+            background: #eafaf1;
+            border-radius: 6px;
+            padding: 10px 14px;
+            position: relative;
+        }
+        .label {
+            font-weight: bold;
+            color: #218c3a;
+            min-width: 120px;
+        }
+        .indirizzo-btn-container {
+            margin-left: auto;
+        }
+        .errore {
+            color: #4E342E; /* dark brown */
+            text-align: center;
+            margin-top: 18px;
+            font-weight: bold;
+        }
+        .descrizione-extra {
+            margin-top: 24px;
+            background: #f4fff4;
+            border-left: 4px solid #2ecc40;
+            border-radius: 6px;
+            padding: 14px 18px;
+            color: #218c3a;
+            font-size: 1.05rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .descrizione-label {
+            font-weight: bold;
+            color: #218c3a;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .password-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 28px;
+            background: #eafaf1;
+            border-radius: 6px;
+            padding: 12px 16px;
+        }
+        .password-label {
+            font-weight: bold;
+            color: #218c3a;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .lock-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+        }
+        .btn-red-border {
+            border: 2px solid #4E342E; /* dark brown */
+            background: #fff;
+            color: #4E342E; /* dark brown */
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 7px 16px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            margin-left: 8px;
+        }
+        .btn-red-border:hover {
+            background: #f3e7e1;
+        }
+        .descrizione-btn-container {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        /* Attenzione section */
+        .attenzione-wrapper {
+            max-width: 420px;
+            margin: 32px auto 0 auto;
+        }
+        .attenzione-section {
+            background: #fff6f6;
+            border: 2px solid #4E342E; /* dark brown */
+            border-radius: 8px;
+            padding: 22px 20px 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-sizing: border-box;
+        }
+        .attenzione-title {
+            color: #4E342E; /* dark brown */
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .attenzione-text {
+            color: #6d4c41; /* lighter brown */
+            font-size: 1.07rem;
+            line-height: 1.5;
+        }
+        .attenzione-highlight {
+            font-weight: bold;
+            color: #4E342E; /* dark brown */
+        }
+        .attenzione-space {
+            height: 24px;
+        }
+        .microinput {
+            border: 1px solid #2ecc40;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 1rem;
+            margin-right: 8px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .microinput:focus {
+            border: 2px solid #218c3a;
+        }
+        .btn-micro {
+            background: #2ecc40;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 6px;
+            transition: background 0.2s;
+        }
+        .btn-micro:hover {
+            background: #218c3a;
+        }
+        .micro-msg {
+            font-size: 0.98rem;
+            color: #218c3a;
+            margin-top: 4px;
+        }
+        .micro-err {
+            color: #b71c1c;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 18px 6px 18px 6px;
+            }
+            .attenzione-wrapper {
+                max-width: 98vw;
+                margin: 24px auto 0 auto;
+            }
+            .back-btn {
+                top: 10px;
+                left: 10px;
+                padding: 8px 14px;
+                font-size: 0.98rem;
+            }
+        }
     </style>
 </head>
 <body>
+    <button class="back-btn" onclick="window.history.back()"><- torna indietro</button>
     <div class="container">
-        <h1>Dettagli Account (Schema solamente provvisorio)</h1>
-        <div id="datiAccount"></div>
+        <div id="username" class="username"></div>
+        <h1>Dettagli Account</h1>
+        <div id="datiAccount" class="dati-list"></div>
+        <div id="descrizioneExtra"></div>
+        <div class="password-section">
+            <span class="password-label">
+                <svg class="lock-icon" viewBox="0 0 24 24" fill="none">
+                    <rect x="5" y="11" width="14" height="8" rx="2" stroke="#218c3a" stroke-width="2" fill="#fff"/>
+                    <path d="M8 11V8a4 4 0 1 1 8 0v3" stroke="#218c3a" stroke-width="2" fill="none"/>
+                    <circle cx="12" cy="15" r="1.5" fill="#218c3a"/>
+                </svg>
+                Password:
+            </span>
+            <button class="btn-red-border" id="cambiaPasswordBtn">cambia password</button>
+        </div>
         <div id="errore" class="errore"></div>
     </div>
+    <div id="attenzioneSection" class="attenzione-wrapper" style="display:none;">
+        <div class="attenzione-section">
+            <span class="attenzione-title">Attenzione:</span>
+            <span class="attenzione-text">
+                Per cambiare dati relativi all'azienda (<span class="attenzione-highlight">dati di pagamento, tipologia di attività, nome, dati del titolare</span>) occorre rivolgersi al servizio per utenti business al numero <span class="attenzione-highlight">338 37 36 355</span> o all'indirizzo e-mail <span class="attenzione-highlight">email@dominio.it</span>.
+            </span>
+        </div>
+        <div class="attenzione-space"></div>
+    </div>
     <script>
-        // Funzione per decodificare il payload del JWT
-        function parseJwt (token) {
+        function parseJwt(token) {
             try {
                 return JSON.parse(atob(token.split('.')[1]));
             } catch (e) {
                 return null;
             }
         }
+
+        let userId = null;
+        let userTipo = null;
+        let userDati = null;
 
         async function caricaDettagliAccount() {
             const token = localStorage.getItem('token');
@@ -39,7 +283,7 @@
                 return;
             }
 
-            let tipo = payload.aut.toLowerCase(); 
+            let tipo = payload.aut.toLowerCase();
             let email = encodeURIComponent(payload.email);
             let endpoint = '';
 
@@ -51,6 +295,12 @@
                 return;
             }
 
+            if (tipo === 'venditore' || tipo === 'imprenditore') {
+                document.getElementById('attenzioneSection').style.display = '';
+            } else {
+                document.getElementById('attenzioneSection').style.display = 'none';
+            }
+
             try {
                 const res = await fetch(endpoint, {
                     headers: { 'x-access-token': token }
@@ -60,37 +310,200 @@
                     return;
                 }
                 const dati = await res.json();
+                userId = dati.id || dati._id || null;
+                userTipo = tipo;
+                userDati = dati;
                 mostraDati(dati, tipo);
+                // Attach event after rendering
+                const cambiaPasswordBtn = document.getElementById('cambiaPasswordBtn');
+                if (cambiaPasswordBtn && userId) {
+                    cambiaPasswordBtn.onclick = function() {
+                        window.location.href = `updatePassword.html?id=${encodeURIComponent(userId)}`;
+                    };
+                }
+                attachMicrointeractions();
             } catch (e) {
                 document.getElementById('errore').textContent = "Errore di rete.";
             }
         }
 
         function mostraDati(dati, tipo) {
+            document.getElementById('username').textContent = dati.username || '';
+
             let html = '';
+            let descrizioneHtml = '';
+
             if (tipo === 'cliente') {
-                html += `<div class="valore"><span class="label">Nome:</span> ${dati.nome}</div>`;
-                html += `<div class="valore"><span class="label">Cognome:</span> ${dati.cognome}</div>`;
-                html += `<div class="valore"><span class="label">Email:</span> ${dati.email}</div>`;
-                html += `<div class="valore"><span class="label">Username:</span> ${dati.username}</div>`;
+                html += `<div class="valore"><span class="label">Nome:</span> ${dati.nome || ''}</div>`;
+                html += `<div class="valore"><span class="label">Cognome:</span> ${dati.cognome || ''}</div>`;
+                html += `<div class="valore"><span class="label">Email:</span> ${dati.email || ''}</div>`;
                 html += `<div class="valore"><span class="label">Data di nascita:</span> ${dati.birthdate ? new Date(dati.birthdate).toLocaleDateString() : ''}</div>`;
-                html += `<div class="valore"><span class="label">Carrello:</span> ${dati.carrello && dati.carrello.length ? dati.carrello.map(p => `${p.nome} x${p.quantity}`).join(', ') : 'Vuoto'}</div>`;
-            } else if (tipo === 'venditore') {
-                html += `<div class="valore"><span class="label">Nome:</span> ${dati.nome}</div>`;
-                html += `<div class="valore"><span class="label">Cognome:</span> ${dati.cognome}</div>`;
-                html += `<div class="valore"><span class="label">Email:</span> ${dati.email}</div>`;
-                html += `<div class="valore"><span class="label">Username:</span> ${dati.username}</div>`;
-                html += `<div class="valore"><span class="label">Descrizione:</span> ${dati.descrizione || ''}</div>`;
-                html += `<div class="valore"><span class="label">Indirizzo:</span> ${dati.indirizzo || ''}</div>`;
-                html += `<div class="valore"><span class="label">Specialità:</span> ${dati.specialita || ''}</div>`;
-            } else if (tipo === 'imprenditore') {
-                html += `<div class="valore"><span class="label">Nome:</span> ${dati.nome}</div>`;
-                html += `<div class="valore"><span class="label">Cognome:</span> ${dati.cognome}</div>`;
-                html += `<div class="valore"><span class="label">Email:</span> ${dati.email}</div>`;
-                html += `<div class="valore"><span class="label">Username:</span> ${dati.username}</div>`;
-                html += `<div class="valore"><span class="label">Azienda:</span> ${dati.azienda || ''}</div>`;
+            } else if (tipo === 'venditore' || tipo === 'imprenditore') {
+                html += `<div class="valore"><span class="label">Nome:</span> ${dati.nome || ''}</div>`;
+                html += `<div class="valore"><span class="label">Cognome:</span> ${dati.cognome || ''}</div>`;
+                html += `<div class="valore"><span class="label">Email:</span> ${dati.email || ''}</div>`;
+                html += `<div class="valore"><span class="label">Data di nascita:</span> ${dati.birthdate ? new Date(dati.birthdate).toLocaleDateString() : ''}</div>`;
+                html += `<div class="valore" id="sedeValore">
+                            <span class="label">Indirizzo:</span> <span id="sedeText">${dati.sede || ''}</span>
+                            <span class="indirizzo-btn-container" id="indirizzoBtnContainer">
+                                <button class="btn-red-border" id="cambiaIndirizzoBtn">cambia indirizzo</button>
+                            </span>
+                            <span id="sedeMicro"></span>
+                         </div>`;
+                html += `<div class="valore"><span class="label">Tipologia Azienda:</span> ${dati.tipo || ''}</div>`;
+                if (tipo === 'venditore') {
+                    html += `<div class="valore"><span class="label">Dati Pagamento:</span> ${dati.datiPagamento || ''}</div>`;
+                }
+                descrizioneHtml = `
+                    <div class="descrizione-extra">
+                        <span class="descrizione-label">Descrizione:</span>
+                        <span id="descrizioneText">${dati.descrizione ? dati.descrizione : '<em>Nessuna descrizione fornita.</em>'}</span>
+                        <div class="descrizione-btn-container">
+                            <button class="btn-red-border" id="cambiaDescrizioneBtn">cambia descrizione</button>
+                            <span id="descrizioneMicro"></span>
+                        </div>
+                    </div>
+                `;
             }
+
             document.getElementById('datiAccount').innerHTML = html;
+            document.getElementById('descrizioneExtra').innerHTML = descrizioneHtml;
+        }
+
+        function attachMicrointeractions() {
+            // Cambia descrizione
+            const btnDescrizione = document.getElementById('cambiaDescrizioneBtn');
+            if (btnDescrizione) {
+                btnDescrizione.onclick = function() {
+                    const descrizioneMicro = document.getElementById('descrizioneMicro');
+                    const descrizioneText = document.getElementById('descrizioneText');
+                    if (!descrizioneMicro) return;
+                    // Prevent multiple inputs
+                    if (descrizioneMicro.querySelector('input')) return;
+                    const oldValue = userDati.descrizione || '';
+                    descrizioneMicro.innerHTML = `
+                        <input class="microinput" id="inputDescrizione" type="text" maxlength="200" value="${oldValue.replace(/"/g, '&quot;')}" placeholder="Nuova descrizione..." />
+                        <button class="btn-micro" id="salvaDescrizioneBtn">Salva</button>
+                        <button class="btn-micro" id="annullaDescrizioneBtn" style="background:#fff;color:#4E342E;border:1px solid #4E342E;">Annulla</button>
+                        <span id="msgDescrizione" class="micro-msg"></span>
+                    `;
+                    document.getElementById('inputDescrizione').focus();
+
+                    document.getElementById('salvaDescrizioneBtn').onclick = async function() {
+                        const nuovaDescrizione = document.getElementById('inputDescrizione').value.trim();
+                        if (nuovaDescrizione.length === 0) {
+                            document.getElementById('msgDescrizione').textContent = "La descrizione non può essere vuota.";
+                            document.getElementById('msgDescrizione').classList.add('micro-err');
+                            return;
+                        }
+                        document.getElementById('salvaDescrizioneBtn').disabled = true;
+                        document.getElementById('msgDescrizione').textContent = "Salvataggio...";
+                        document.getElementById('msgDescrizione').classList.remove('micro-err');
+                        const token = localStorage.getItem('token');
+                        let api = '';
+                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditore/descrizione/${userId}`;
+                        else if (userTipo === 'venditore') api = `/api/v1/venditore/descrizione/${userId}`;
+                        else return;
+                        try {
+                            const res = await fetch(api, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'x-access-token': token
+                                },
+                                body: JSON.stringify({ descrizione: nuovaDescrizione })
+                            });
+                            if (!res.ok) {
+                                document.getElementById('msgDescrizione').textContent = "Errore nel salvataggio.";
+                                document.getElementById('msgDescrizione').classList.add('micro-err');
+                                document.getElementById('salvaDescrizioneBtn').disabled = false;
+                                return;
+                            }
+                            userDati.descrizione = nuovaDescrizione;
+                            document.getElementById('descrizioneText').textContent = nuovaDescrizione;
+                            descrizioneMicro.innerHTML = '<span class="micro-msg">Descrizione aggiornata!</span>';
+                            setTimeout(() => { descrizioneMicro.innerHTML = ''; }, 1200);
+                        } catch (e) {
+                            document.getElementById('msgDescrizione').textContent = "Errore di rete.";
+                            document.getElementById('msgDescrizione').classList.add('micro-err');
+                            document.getElementById('salvaDescrizioneBtn').disabled = false;
+                        }
+                    };
+                    document.getElementById('annullaDescrizioneBtn').onclick = function() {
+                        descrizioneMicro.innerHTML = '';
+                    };
+                };
+            }
+
+            // Cambia indirizzo/sede
+            const btnIndirizzo = document.getElementById('cambiaIndirizzoBtn');
+            const indirizzoBtnContainer = document.getElementById('indirizzoBtnContainer');
+            if (btnIndirizzo) {
+                btnIndirizzo.onclick = function() {
+                    const sedeMicro = document.getElementById('sedeMicro');
+                    const sedeText = document.getElementById('sedeText');
+                    if (!sedeMicro) return;
+                    if (sedeMicro.querySelector('input')) return;
+                    // Hide the button during microinteraction
+                    if (indirizzoBtnContainer) indirizzoBtnContainer.style.display = 'none';
+                    const oldValue = userDati.sede || '';
+                    sedeMicro.innerHTML = `
+                        <input class="microinput" id="inputSede" type="text" maxlength="120" value="${oldValue.replace(/"/g, '&quot;')}" placeholder="Nuova sede..." />
+                        <button class="btn-micro" id="salvaSedeBtn">Salva</button>
+                        <button class="btn-micro" id="annullaSedeBtn" style="background:#fff;color:#4E342E;border:1px solid #4E342E;">Annulla</button>
+                        <span id="msgSede" class="micro-msg"></span>
+                    `;
+                    document.getElementById('inputSede').focus();
+
+                    document.getElementById('salvaSedeBtn').onclick = async function() {
+                        const nuovaSede = document.getElementById('inputSede').value.trim();
+                        if (nuovaSede.length === 0) {
+                            document.getElementById('msgSede').textContent = "La sede non può essere vuota.";
+                            document.getElementById('msgSede').classList.add('micro-err');
+                            return;
+                        }
+                        document.getElementById('salvaSedeBtn').disabled = true;
+                        document.getElementById('msgSede').textContent = "Salvataggio...";
+                        document.getElementById('msgSede').classList.remove('micro-err');
+                        const token = localStorage.getItem('token');
+                        let api = '';
+                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditore/sede/${userId}`;
+                        else if (userTipo === 'venditore') api = `/api/v1/venditore/sede/${userId}`;
+                        else return;
+                        try {
+                            const res = await fetch(api, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'x-access-token': token
+                                },
+                                body: JSON.stringify({ sede: nuovaSede })
+                            });
+                            if (!res.ok) {
+                                document.getElementById('msgSede').textContent = "Errore nel salvataggio.";
+                                document.getElementById('msgSede').classList.add('micro-err');
+                                document.getElementById('salvaSedeBtn').disabled = false;
+                                return;
+                            }
+                            userDati.sede = nuovaSede;
+                            sedeText.textContent = nuovaSede;
+                            sedeMicro.innerHTML = '<span class="micro-msg">Sede aggiornata!</span>';
+                            setTimeout(() => { 
+                                sedeMicro.innerHTML = ''; 
+                                if (indirizzoBtnContainer) indirizzoBtnContainer.style.display = '';
+                            }, 1200);
+                        } catch (e) {
+                            document.getElementById('msgSede').textContent = "Errore di rete.";
+                            document.getElementById('msgSede').classList.add('micro-err');
+                            document.getElementById('salvaSedeBtn').disabled = false;
+                        }
+                    };
+                    document.getElementById('annullaSedeBtn').onclick = function() {
+                        sedeMicro.innerHTML = '';
+                        if (indirizzoBtnContainer) indirizzoBtnContainer.style.display = '';
+                    };
+                };
+            }
         }
 
         caricaDettagliAccount();

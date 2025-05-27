@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Cliente - MarkeTrento</title>
+    <style>
+        body {
+            background: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 420px;
+            margin: 60px auto;
+            background: #f6fff6;
+            border: 2.5px solid #6fdc8c;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px #e0f7e9;
+            padding: 36px 24px 28px 24px;
+            text-align: center;
+        }
+        h1 {
+            color: #3cb371;
+            margin-bottom: 32px;
+            font-size: 2.1em;
+            letter-spacing: 1px;
+        }
+        .btn-mercato {
+            display: block;
+            width: 100%;
+            background: #6fdc8c;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 22px 0;
+            margin-bottom: 36px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px #e0f7e9;
+        }
+        .btn-mercato:hover {
+            background: #4ec16e;
+        }
+        .mini-btns {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+        }
+        .mini-btn {
+            background: #eaffea;
+            color: #3cb371;
+            border: 1.5px solid #6fdc8c;
+            border-radius: 8px;
+            font-size: 1.1em;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .mini-btn:hover {
+            background: #c8f7d4;
+            color: #218c3a;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 18px 6px 18px 6px;
+            }
+            .btn-mercato {
+                font-size: 1.1em;
+                padding: 14px 0;
+            }
+            .mini-btn {
+                font-size: 0.98em;
+                padding: 7px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MarkeTrento WebApp 🥇</h1>
+        <button class="btn-mercato" onclick="window.location.href='/mercato.html'">🛒 Mercato</button>
+        <div class="mini-btns">
+            <button class="mini-btn" onclick="window.location.href='/agenda.html'">📅 Agenda</button>
+            <button class="mini-btn" onclick="window.location.href='/carrello.html'">🛍️ Carrello</button>
+            <button class="mini-btn" onclick="window.location.href='/dettagliaccount.html'">⚙️ Impostazioni</button>
+        </div>
+    </div>
+</body>
+</html>

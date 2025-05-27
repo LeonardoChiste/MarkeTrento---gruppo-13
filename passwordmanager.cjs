@@ -91,4 +91,4 @@ async function compareDB(usermail, password) {
 };
 
 
-  module.exports= {compareDBbusiness,compareDBbusinessv2,compareDB};
+  module.exports= {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2,compareDB};
