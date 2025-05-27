@@ -1,9 +1,9 @@
-const Imprenditore= require('../classes/Imprenditore.cjs');
+const Imprenditore= require('../models/promoterModel.cjs');
 
-async function updateDescrizione(descrizione,email) {
+async function updateDescrizione(descrizione,ID) {
     try {
         const imprenditoreAggiornato = await Imprenditore.findByIdAndUpdate(
-            id,
+            ID,
             { descrizione },
             { new: true }
         );
@@ -17,10 +17,10 @@ async function updateDescrizione(descrizione,email) {
     }
 }
 
-async function updateSede(sede,email) {
+async function updateSede(sede,ID) {
     try {
         const imprenditoreAggiornato = await Imprenditore.findByIdAndUpdate(
-            id,
+            ID,
             { sede },
             { new: true }
         );

@@ -467,8 +467,8 @@
                         document.getElementById('msgSede').classList.remove('micro-err');
                         const token = localStorage.getItem('token');
                         let api = '';
-                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditore/descrizione/${userId}`;
-                        else if (userTipo === 'venditore') api = `/api/v1/venditore/descrizione/${userId}`;
+                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditore/sede/${userId}`;
+                        else if (userTipo === 'venditore') api = `/api/v1/venditore/sede/${userId}`;
                         else return;
                         try {
                             const res = await fetch(api, {
