@@ -9,15 +9,15 @@ const {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2,compar
 const {tokenChecker,TokenGen,TokenGenEnt,TokenGenVend,st} = require ("./tokenchecker.cjs");
 require('dotenv').config({ path: 'process.env' });
 const {LocalStorage} = require('node-localstorage');
-const authcheck = require('./authcheck.cjs');
+const authcheck = require('./API/authcheck.cjs');
 
 const Prodotto = require('./classes/prodotto.cjs');
-const ProdottoServizio = require('./services/ProdottoService.cjs');
-const ClienteServizio = require('./services/clienteService.cjs');
+
 const dbUrl = process.env.DB_URL;
 
 const DBVendor=require('./models/vendorModel.cjs');
 const DBTags=require('./models/tagsModel.cjs');
+const CityTags=require('./models/citytagsModel.cjs');
 const TagServizio=require('./services/tagService.cjs');
 const DBEntrepreneur=require('./models/promoterModel.cjs');
 const Productv2=require('./models/productModel.cjs');  
@@ -25,14 +25,15 @@ const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
 const DBClient=require('./models/clientModel.cjs');
 
-const VenditoreServizio = require('./services/VenditoreService.cjs');
-const ImprenditoreServizio = require('./services/businessService.cjs');
-const carrello = require('./carrello.cjs');
-const promozione = require('./promozione.cjs');
-const venditore = require('./venditore.cjs');
-const prodotto = require('./prodotto.cjs');
-const accounts = require('./classes/account.cjs');
-const tags = require('./tags.cjs');
+
+//API imports
+const carrello = require('./API/carrello.cjs');
+const promozione = require('./API/promozione.cjs');
+const venditore = require('./API/venditore.cjs');
+const prodotto = require('./API/prodotto.cjs');
+const accounts = require('./API/account.cjs');
+const tags = require('./API/tags.cjs');
+const citytags = require('./API/citytags.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -85,6 +86,49 @@ app.use(express.static('public'));
             console.log("non aggiunta");
             return;
         }*/
+
+        /*
+       const tagsToAdd = [
+            { tag: 'Gardolo' },
+            { tag: 'Ravina' },
+            { tag: 'Romagnano' },
+            { tag: 'Baselga del Bondone' },
+            { tag: 'Cadine' },
+            { tag: 'Candrai' },
+            { tag: 'Celva' },
+            { tag: 'Cognola' },
+            { tag: 'Gabbiolo' },
+            { tag: 'Gardolo di Mezzo' },
+            { tag: 'Gazzadina' },
+            { tag: 'Martignano' },
+            { tag: 'Mattarello' },
+            { tag: 'Meano' },
+            { tag: 'Mesiano' },
+            { tag: 'Mezzocorona' },
+            { tag: 'Mezzolombardo' },
+            { tag: 'Montevaccino' },
+            { tag: 'Lavis' },
+            { tag: 'Oltrecastello' },
+            { tag: 'Povo' },
+            { tag: 'Roncafort' },
+            { tag: 'Rovereto' },
+            { tag: 'San Michele' },
+            { tag: 'Sardagna' },
+            { tag: 'Sopramonte' },
+            { tag: 'Tavernaro' },
+            { tag: 'Trento città' },
+            { tag: 'Valsorda' },
+            { tag: 'Vason' },
+            { tag: 'Vela' },
+            { tag: 'Vigo Meano' },
+            { tag: 'Vigolo Baselga' },
+            { tag: 'Villamontagna' },
+            { tag: 'Villazzano' },
+        ];
+
+        await CityTags.create(tagsToAdd);
+        console.log("Tags inseriti con successo!");
+        */
 }
 
 
@@ -119,6 +163,7 @@ app.use('/api/v1/venditore', venditore);
 app.use('/api/v1/prodotto', prodotto);  
 app.use('/api/v1/tags', tags);
 app.use('/api/v1/account',accounts)
+app.use('/api/v1/citytags', citytags);
 
 app.use('/check', authcheck);
 //login stuff

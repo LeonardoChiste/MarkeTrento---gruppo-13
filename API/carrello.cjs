@@ -1,8 +1,8 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
-const ClienteServizio = require('./services/clienteService.cjs');
-const Productv2=require('./models/productModel.cjs');  
-const DBClient=require('./models/clientModel.cjs');
+const ClienteServizio = require('../services/clienteService.cjs');
+const Productv2=require('../models/productModel.cjs');  
+const DBClient=require('../models/clientModel.cjs');
 const router = express.Router();
 
 //api carrello
