@@ -25,14 +25,15 @@ const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
 const DBClient=require('./models/clientModel.cjs');
 
-const VenditoreServizio = require('./services/VenditoreService.cjs');
-const ImprenditoreServizio = require('./services/businessService.cjs');
-const carrello = require('./carrello.cjs');
-const promozione = require('./promozione.cjs');
-const venditore = require('./venditore.cjs');
-const prodotto = require('./prodotto.cjs');
-const accounts = require('./classes/account.cjs');
-const tags = require('./tags.cjs');
+
+//API imports
+const carrello = require('./API/carrello.cjs');
+const promozione = require('./API/promozione.cjs');
+const venditore = require('./API/venditore.cjs');
+const prodotto = require('./API/prodotto.cjs');
+const accounts = require('./API/account.cjs');
+const tags = require('./API/tags.cjs');
+const citytags = require('./API/citytags.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
 
