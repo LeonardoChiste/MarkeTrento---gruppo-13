@@ -47,24 +47,18 @@ async function compareDBbusiness(usermail, password) {
 }
 
 async function compareDBbusinessv2(usermail, password) {
-    // Create a new instance of the Client class
+    
 
     const cc = new Venditore('', '', new Date(),usermail, 'username', password, '', '', '',1);
     try {
-        // Find user by username
         const user = await DBVendor.findOne({ 
             email: cc.email 
         });
         
         if (!user) {
             return false;
-            //var w=await hashPassword(cc.password);
-            //console.log(w);
         }
         else{
-
-        //var w= await hashPassword(cc.password)
-        //console.log(w);
         return comparePassword(cc.password,user.password)
         
         }
@@ -85,13 +79,8 @@ async function compareDB(usermail, password) {
         
         if (!user) {
             return false;
-            //var w=await hashPassword(cc.password);
-            //console.log(w);
         }
         else{
-
-        //var w= await hashPassword(cc.password)
-        //console.log(w);
         return comparePassword(cc.password,user.password)
         
         }
