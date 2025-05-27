@@ -5,7 +5,7 @@ const mongoose = require ('mongoose');
 const Cliente = require( "./classes/Cliente.cjs");
 const Imprenditore = require('./classes/Imprenditore.cjs');
 const Venditore = require( "./classes/Venditore.cjs");
-const {compareDBbusiness,compareDBbusinessv2,compareDB}= require ("./passwordmanager.cjs");
+const {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2,compareDB}= require ("./passwordmanager.cjs");
 const {tokenChecker,TokenGen,TokenGenEnt,TokenGenVend,st} = require ("./tokenchecker.cjs");
 require('dotenv').config({ path: 'process.env' });
 const {LocalStorage} = require('node-localstorage');
@@ -230,6 +230,35 @@ app.put('/api/v1/imprenditore/sede/:id', tokenChecker('Imprenditore'), async (re
         res.status(200).json(imprenditoreAggiornato);
     } catch (error) {
         console.error('Errore durante l\'aggiornamento dell\'indirizzo:', error.message);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
+app.put('/api/v1/account/password', tokenChecker('Cliente'), async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const token = req.headers['x-access-token'];
+        const decoded = require('jsonwebtoken').verify(token, process.env.SUPER_SECRET);
+        const ruolo = decoded.aut;
+        const email = decoded.email;
+
+        let userModel;
+        if (ruolo === 'Cliente') userModel = DBClient;
+        else if (ruolo === 'Venditore') userModel = DBVendor;
+        else if (ruolo === 'Imprenditore') userModel = DBEntrepreneur;
+        else return res.status(400).json({ error: 'Ruolo non valido' });
+
+        const user = await userModel.findOne({ email });
+        if (!user) return res.status(404).json({ error: 'Utente non trovato' });
+
+        const isMatch = await comparePassword(oldPassword, user.password);
+        if (!isMatch) return res.status(401).json({ error: 'Vecchia password errata' });
+
+        user.password = await hashPassword(newPassword);
+        await user.save();
+
+        res.json({ success: true, message: 'Password aggiornata!' });
+    } catch (err) {
         res.status(500).json({ error: 'Errore del server' });
     }
 });
