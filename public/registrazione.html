@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione - MarkeTrento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0fff0;
+            margin: 0;
+            padding: 20px;
+            color: #006400;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #e0ffe0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 100, 0, 0.1);
+        }
+        h1 {
+            color: #008000;
+            text-align: center;
+        }
+        .description {
+            margin-bottom: 20px;
+            text-align: center;
+            font-style: italic;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #008000;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .register-btn {
+            background-color: #008000;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .register-btn:hover {
+            background-color: #006400;
+        }
+        .login-btn {
+            background-color: white;
+            color: #008000;
+            padding: 8px 15px;
+            border: 1px solid #008000;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+        .login-btn:hover {
+            background-color: #f0fff0;
+        }
+        .accordion {
+            background-color: #f0fff0;
+            color: #008000;
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            border: 1px solid #008000;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: 0.4s;
+        }
+        .accordion:hover {
+            background-color: #e0ffe0;
+        }
+        .panel {
+            padding: 0 18px;
+            background-color: #f0fff0;
+            border: 1px solid #008000;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+        }
+        .panel p {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+   <div class="container">
+    <h1>Registrazione Cliente</h1>
+    <p class="description">Compila il form per registrarti come cliente su MarkeTrento</p>
+    
+    <form id="registrationForm">
+        <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="cognome">Cognome:</label>
+            <input type="text" id="cognome" name="cognome" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="birthdate">Data di nascita:</label>
+            <input type="date" id="birthdate" name="birthdate" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="confirm_password">Conferma Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+        </div>
+        
+        <button type="submit" class="register-btn">Registrati</button>
+    </form>
+    
+    <button class="login-btn" onclick="window.location.href='default.html'">Hai già un account? Accedi</button>
+    
+    <button class="accordion">Ti vuoi registrare come Imprenditore/Venditore?</button>
+    <div class="panel">
+        <p>Per ottenere un account business occorre registrarsi con i dati del titolare alla WebApp come utente standard (cliente) e mandare una richiesta in seguito con i dati dettagliati della tua azienda. Verrà valutata successivamente da un amministratore e sarai ricontattato e informato sull'esito e sulle nuove credenziali.</p>
+    </div>
+</div>
+    
+    <script>
+        var acc = document.getElementsByClassName("accordion");
+    var i;
+    
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            } 
+        });
+    }
+    
+    // Gestione della registrazione via API
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Le password non coincidono!');
+            }
+        });
+        //Qui dalle cose prese vanno implementate le API per la registrazione
+        var nome = document.getElementById('nome').value;
+        var cognome = document.getElementById('cognome').value;
+        var birthdate = document.getElementById('birthdate').value;
+        var email = document.getElementById('email').value;
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+    </script>
+</body>
+</html>

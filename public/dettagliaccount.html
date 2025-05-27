@@ -230,7 +230,7 @@
     </style>
 </head>
 <body>
-    <button class="back-btn" onclick="window.history.back()"><- torna indietro</button>
+    <button class="back-btn" id="backButton"><- torna indietro</button>
     <div class="container">
         <div id="username" class="username"></div>
         <h1>Dettagli Account</h1>
@@ -293,6 +293,14 @@
             else {
                 document.getElementById('errore').textContent = "Tipo account sconosciuto.";
                 return;
+            }
+
+            // Imposta l'azione del pulsante "torna indietro" in base al tipo di account
+            const backButton = document.getElementById('backButton');
+            if (tipo === 'cliente') {
+                backButton.onclick = function() { window.location.href = '/homev2(client).html'; };
+            } else {
+                backButton.onclick = function() { window.location.href = '/home.html'; };
             }
 
             if (tipo === 'venditore' || tipo === 'imprenditore') {
