@@ -33,7 +33,7 @@
     }
   </style>
   <h1>Aggiungi promozione</h1>
-  <form enctype="dati promozione">
+  <form enctype="multipart/form-data" action="/api/v1/promozione" method="POST">
     <label for="title">Titolo:</label><br>
     <input type="text" id="title" name="title" required><br><br>
 
@@ -50,7 +50,7 @@
     <input type="date" id="enddate" name="enddate" required><br><br>
 
     <label for="image">Immagine:</label><br>
-    <input type="file" id="image" name="image" accept="image/*" ><br><br>
+    <input type="file" id="image" name="image" accept="image/*"><br><br>
     
     <input type="radio" id="evento" name="tipo" value="Evento">
     <label for="evento">Evento</label><br>
@@ -68,42 +68,31 @@
       const form = e.target;
       const formData = new FormData(form);
 
-      // Convert FormData to JSON, except for image
-      const data = {};
-      formData.forEach((value, key) => { data[key] = value; });
-
-      const file = formData.get('image');
-      if (file && file.size > 0) {
-        // Read file as base64
-        const reader = new FileReader();
-        reader.onload = async function() {
-          // reader.result is a data URL: "data:image/jpeg;base64,..."
-          const base64String = reader.result.split(',')[1]; // get only the base64 part
-          data.image = base64String;
-          data.imageType = file.type;
-
-          await sendPromo(data);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        // No image selected, use placeholder
-        data.image = "";
-        data.imageType = "";
-        await sendPromo(data);
+      // Show a loading message
+      let msgDiv = document.getElementById('submit-msg');
+      if (!msgDiv) {
+        msgDiv = document.createElement('div');
+        msgDiv.id = 'submit-msg';
+        form.parentNode.insertBefore(msgDiv, form.nextSibling);
       }
+      msgDiv.textContent = "Invio in corso...";
 
-      async function sendPromo(data) {
+      try {
         const response = await fetch('/api/v1/promozione', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: formData
         });
 
         if (response.ok) {
-          window.location.href = '/home.html';
+          msgDiv.textContent = "Promozione creata con successo!";
+          setTimeout(() => {
+            window.location.href = '/home.html';
+          }, 500); // 0.5 seconds delay
         } else {
-          alert('Errore durante la creazione della promozione');
+          msgDiv.textContent = "Errore durante la creazione della promozione.";
         }
+      } catch (err) {
+        msgDiv.textContent = "Errore di rete.";
       }
     });
 </script>

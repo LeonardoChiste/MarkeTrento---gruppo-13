@@ -1,23 +1,17 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
 const multer = require('multer');
+const fs = require('fs');
 const DBPromotion=require('./models/promotionModel.cjs');
 const router = express.Router();
 
 // Multer configuration for memory storage
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // Limit to 5MB
 
 //api promozioni
 router.get('', async (req, res) => {
     try {
-        /*const promotions = await DBPromotion.find();
-        // Format the data field as 'YYYY-MM-DD'
-        const formattedPromotions = promotions.map(promo => ({
-            ...promo.toObject(),
-            data: promo.data ? promo.data.toISOString().split('T')[0] : null
-        }));
-        res.status(200).json(formattedPromotions);*/
         const promotions = await DBPromotion.find();
         const formattedPromotions = promotions.map(promo => {
             let imgSrc = '';
@@ -36,44 +30,20 @@ router.get('', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-router.post('', async (req, res) => {
-    /*const data = req.body;
-    let imgBuffer = null;
-    const encoded = image ? image.toString('base64') : null;
-    const promozione = DBPromotion({
-        data: data.startdate,
-        titolo: data.title,
-        promotore: data.promoter,
-        descrizione: data.description,
-        img: body.image,
-        tipoAnnuncio: data.tipo
-    });
-    console.log(promozione);
-    await DBPromotion.create(promozione).then(() => {
-        console.log('Promozione creata con successo');
-        res.status(201).json({ message: 'Promozione creata con successo' });
-    }).catch((error) => {   
-        console.error('Errore durante la creazione della promozione:', error);
-        res.status(500).json({ error: 'Errore durante la creazione della promozione' });
-    });*/
+router.post('', upload.single('image'), async (req, res) => {
     try {
         const data = req.body;
-        /*let imgBuffer = null;
-        if (data.image) {
-            // Remove data URL prefix if present
-            const base64 = data.image;//.split(',').pop();
-            imgBuffer = Buffer.from(base64, 'base64');
-        }*/
+        //const encode_image = req.file.buffer.toString('base64');
+        //const conType = req.file ? req.file.mimetype : 'image/png';
         const promozione = new DBPromotion({
             data: data.startdate,
             titolo: data.title,
             promotore: data.promoter,
             descrizione: data.description,
             img: {
-                data: data.image ? Buffer.from(data.image, 'base64') : undefined,
-                contentType: data.imageType || 'image/png'
+                data: req.file.buffer, //data.image ? Buffer.from(data.image, 'base64') : undefined,
+                contentType: req.file.mimetype //data.imageType || 'image/png'
             },
-            //img: imgBuffer,
             tipoAnnuncio: data.tipo
         });
         await promozione.save();
