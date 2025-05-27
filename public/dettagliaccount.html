@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettagli Account</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        .container { max-width: 600px; margin: auto; }
+        .label { font-weight: bold; }
+        .errore { color: red; }
+        .valore { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dettagli Account (Schema solamente provvisorio)</h1>
+        <div id="datiAccount"></div>
+        <div id="errore" class="errore"></div>
+    </div>
+    <script>
+        // Funzione per decodificare il payload del JWT
+        function parseJwt (token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function caricaDettagliAccount() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                document.getElementById('errore').textContent = "Token non trovato. Effettua il login.";
+                return;
+            }
+            const payload = parseJwt(token);
+            if (!payload || !payload.email || !payload.aut) {
+                document.getElementById('errore').textContent = "Token non valido. Effettua nuovamente il login.";
+                return;
+            }
+
+            let tipo = payload.aut.toLowerCase(); 
+            let email = encodeURIComponent(payload.email);
+            let endpoint = '';
+
+            if (tipo === 'cliente') endpoint = `/api/v1/account/cliente/${email}`;
+            else if (tipo === 'venditore') endpoint = `/api/v1/account/venditore/${email}`;
+            else if (tipo === 'imprenditore') endpoint = `/api/v1/account/imprenditore/${email}`;
+            else {
+                document.getElementById('errore').textContent = "Tipo account sconosciuto.";
+                return;
+            }
+
+            try {
+                const res = await fetch(endpoint, {
+                    headers: { 'x-access-token': token }
+                });
+                if (!res.ok) {
+                    document.getElementById('errore').textContent = "Errore nel recupero dati account.";
+                    return;
+                }
+                const dati = await res.json();
+                mostraDati(dati, tipo);
+            } catch (e) {
+                document.getElementById('errore').textContent = "Errore di rete.";
+            }
+        }
+
+        function mostraDati(dati, tipo) {
+            let html = '';
+            if (tipo === 'cliente') {
+                html += `<div class="valore"><span class="label">Nome:</span> ${dati.nome}</div>`;
+                html += `<div class="valore"><span class="label">Cognome:</span> ${dati.cognome}</div>`;
+                html += `<div class="valore"><span class="label">Email:</span> ${dati.email}</div>`;
+                html += `<div class="valore"><span class="label">Username:</span> ${dati.username}</div>`;
+                html += `<div class="valore"><span class="label">Data di nascita:</span> ${dati.birthdate ? new Date(dati.birthdate).toLocaleDateString() : ''}</div>`;
+                html += `<div class="valore"><span class="label">Carrello:</span> ${dati.carrello && dati.carrello.length ? dati.carrello.map(p => `${p.nome} x${p.quantity}`).join(', ') : 'Vuoto'}</div>`;
+            } else if (tipo === 'venditore') {
+                html += `<div class="valore"><span class="label">Nome:</span> ${dati.nome}</div>`;
+                html += `<div class="valore"><span class="label">Cognome:</span> ${dati.cognome}</div>`;
+                html += `<div class="valore"><span class="label">Email:</span> ${dati.email}</div>`;
+                html += `<div class="valore"><span class="label">Username:</span> ${dati.username}</div>`;
+                html += `<div class="valore"><span class="label">Descrizione:</span> ${dati.descrizione || ''}</div>`;
+                html += `<div class="valore"><span class="label">Indirizzo:</span> ${dati.indirizzo || ''}</div>`;
+                html += `<div class="valore"><span class="label">Specialità:</span> ${dati.specialita || ''}</div>`;
+            } else if (tipo === 'imprenditore') {
+                html += `<div class="valore"><span class="label">Nome:</span> ${dati.nome}</div>`;
+                html += `<div class="valore"><span class="label">Cognome:</span> ${dati.cognome}</div>`;
+                html += `<div class="valore"><span class="label">Email:</span> ${dati.email}</div>`;
+                html += `<div class="valore"><span class="label">Username:</span> ${dati.username}</div>`;
+                html += `<div class="valore"><span class="label">Azienda:</span> ${dati.azienda || ''}</div>`;
+            }
+            document.getElementById('datiAccount').innerHTML = html;
+        }
+
+        caricaDettagliAccount();
+    </script>
+</body>
+</html>

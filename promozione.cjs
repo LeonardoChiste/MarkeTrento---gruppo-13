@@ -1,40 +1,57 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
+const multer = require('multer');
+const fs = require('fs');
 const DBPromotion=require('./models/promotionModel.cjs');
 const router = express.Router();
+
+// Multer configuration for memory storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // Limit to 5MB
 
 //api promozioni
 router.get('', async (req, res) => {
     try {
         const promotions = await DBPromotion.find();
-        // Format the data field as 'YYYY-MM-DD'
-        const formattedPromotions = promotions.map(promo => ({
-            ...promo.toObject(),
-            data: promo.data ? promo.data.toISOString().split('T')[0] : null
-        }));
+        const formattedPromotions = promotions.map(promo => {
+            let imgSrc = '';
+            if (promo.img && promo.img.data) {
+                const base64 = promo.img.data.toString('base64');
+                imgSrc = `data:${promo.img.contentType};base64,${base64}`;
+            }
+            return {
+                ...promo.toObject(),
+                data: promo.data ? promo.data.toISOString().split('T')[0] : null,
+                img: imgSrc
+            };
+        });
         res.status(200).json(formattedPromotions);
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-router.post('', async (req, res) => {
-    const data = req.body;
-    const promozione = DBPromotion({
-        data: data.startdate,
-        titolo: data.title,
-        promotore: data.promoter,
-        descrizione: data.description,
-        img: data.image,
-        tipoAnnuncio: data.tipo
-    });
-    console.log(promozione);
-    await DBPromotion.create(promozione).then(() => {
-        console.log('Promozione creata con successo');
+router.post('', upload.single('image'), async (req, res) => {
+    try {
+        const data = req.body;
+        //const encode_image = req.file.buffer.toString('base64');
+        //const conType = req.file ? req.file.mimetype : 'image/png';
+        const promozione = new DBPromotion({
+            data: data.startdate,
+            titolo: data.title,
+            promotore: data.promoter,
+            descrizione: data.description,
+            img: {
+                data: req.file.buffer, //data.image ? Buffer.from(data.image, 'base64') : undefined,
+                contentType: req.file.mimetype //data.imageType || 'image/png'
+            },
+            tipoAnnuncio: data.tipo
+        });
+        await promozione.save();
         res.status(201).json({ message: 'Promozione creata con successo' });
-    }).catch((error) => {   
+    } catch (error) {
         console.error('Errore durante la creazione della promozione:', error);
         res.status(500).json({ error: 'Errore durante la creazione della promozione' });
-    });
+    }
 });
 
 module.exports = router;

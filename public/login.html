@@ -19,7 +19,7 @@
     </style>
     <script>
         window.onload = function() {
-            // Retrieve the usermail from localStorage
+            
             const usermail = window.localStorage.getItem("usermail");
             if (usermail) {
                 document.getElementById('welcome-message').textContent = `Bentornato, ${usermail}!`;

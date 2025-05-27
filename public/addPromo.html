@@ -33,7 +33,7 @@
     }
   </style>
   <h1>Aggiungi promozione</h1>
-  <form enctype="dati promozione">
+  <form enctype="multipart/form-data" action="/api/v1/promozione" method="POST">
     <label for="title">Titolo:</label><br>
     <input type="text" id="title" name="title" required><br><br>
 
@@ -50,7 +50,7 @@
     <input type="date" id="enddate" name="enddate" required><br><br>
 
     <label for="image">Immagine:</label><br>
-    <input type="text" id="image" name="image" accept="image/*" ><br><br>
+    <input type="file" id="image" name="image" accept="image/*"><br><br>
     
     <input type="radio" id="evento" name="tipo" value="Evento">
     <label for="evento">Evento</label><br>
@@ -68,22 +68,31 @@
       const form = e.target;
       const formData = new FormData(form);
 
-      // Convert FormData to JSON
-      const data = {};
-      formData.forEach((value, key) => { data[key] = value; });
-      if(data.image == null){
-        data.image = "https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png";
+      // Show a loading message
+      let msgDiv = document.getElementById('submit-msg');
+      if (!msgDiv) {
+        msgDiv = document.createElement('div');
+        msgDiv.id = 'submit-msg';
+        form.parentNode.insertBefore(msgDiv, form.nextSibling);
       }
-      const response = await fetch('/api/v1/promozione', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+      msgDiv.textContent = "Invio in corso...";
 
-      if (response.ok) {
-        window.location.href = '/home.html';
-      } else {
-        alert('Errore durante la creazione della promozione');
+      try {
+        const response = await fetch('/api/v1/promozione', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          msgDiv.textContent = "Promozione creata con successo!";
+          setTimeout(() => {
+            window.location.href = '/home.html';
+          }, 500); // 0.5 seconds delay
+        } else {
+          msgDiv.textContent = "Errore durante la creazione della promozione.";
+        }
+      } catch (err) {
+        msgDiv.textContent = "Errore di rete.";
       }
     });
 </script>

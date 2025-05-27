@@ -6,8 +6,10 @@ const Cliente = require( "./classes/Cliente.cjs");
 const Venditore = require( "./classes/Venditore.cjs");
 const Imprenditore = require( "./classes/Imprenditore.cjs");
 const {compareDBbusiness,compareDBbusinessv2,compareDB}= require ("./passwordmanager.cjs");
-const {tokenChecker,TokenGen,st} = require ("./tokenchecker.cjs");
+const {tokenChecker,TokenGen,TokenGenEnt,TokenGenVend,st} = require ("./tokenchecker.cjs");
 require('dotenv').config({ path: 'process.env' });
+const {LocalStorage} = require('node-localstorage');
+const authcheck = require('./authcheck.cjs');
 
 const Prodotto = require('./classes/prodotto.cjs');
 const ProdottoServizio = require('./services/ProdottoService.cjs');
@@ -26,6 +28,7 @@ const carrello = require('./carrello.cjs');
 const promozione = require('./promozione.cjs');
 const venditore = require('./venditore.cjs');
 const prodotto = require('./prodotto.cjs');
+const accounts = require('./classes/account.cjs');
 const tags = require('./tags.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -35,6 +38,7 @@ const port = process.env.PORT || 3000;
 //app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(bodyParser.json());
 app.use(express.static('public'));
+
     
     
     
@@ -111,27 +115,29 @@ app.use('/api/v1/promozione', promozione);
 app.use('/api/v1/venditore', venditore);    
 app.use('/api/v1/prodotto', prodotto);  
 app.use('/api/v1/tags', tags);
+app.use('/api/v1/account',accounts)
 
+app.use('/check', authcheck);
 //login stuff
 app.post('/login', async (req, res) => {
     const { usermail, password } = req.body;
     var au = await compareDB(usermail, password);
     if (au) {
-          const token = TokenGen(usermail);
-        /*res.status(200).json({
-            message: "Login effettuato!",
-            token: token
-        });*/
-        st(token);
-        res.status(200).send(`
+    const token = TokenGen(usermail);
+    res.send(`
+        <html>
+        <head><title>Login</title></head>
+        <body>
             <script>
-                window.usermail = "${usermail}";
-                window.localStorage.setItem("usermail", window.usermail);
-                window.location.href = "/login.html";
+                localStorage.setItem('token', '${token}');
+                window.location.href = '/login.html';
             </script>
-        `);
-    } else {
-        res.status(401).send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`);
+        </body>
+        </html>
+    `);
+}
+    else {
+        res.status(401).send(`<h1 style="color: #008000;">Accesso non effettuato!</h1>`);
     }
 });
 
@@ -139,24 +145,67 @@ app.post('/loginbusiness', async (req, res) => {
     const { usermail, password } = req.body;
     var au= await compareDBbusiness(usermail, password);
     if (au) {
-        res.status(200).sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
+        const token = TokenGenEnt(usermail);
+        st(token);
+        res.send(`
+        <html>
+        <head><title>Login</title></head>
+        <body>
+            <script>
+                localStorage.setItem('token', '${token}');
+                window.location.href = '/loginbusiness.html';
+            </script>
+        </body>
+        </html>
+    `);
     }
     else
     {
         au= await compareDBbusinessv2(usermail, password);
         if (au) {
-            res.status(200).sendFile(path.join(__dirname, 'public', '/loginbusiness.html'));
+            const token = TokenGenVend(usermail);
+            st(token);
+            res.send(`
+        <html>
+        <head><title>Login</title></head>
+        <body>
+            <script>
+                localStorage.setItem('token', '${token}');
+                window.location.href = '/loginbusiness.html';
+            </script>
+        </body>
+        </html>
+    `);
         }
-        else res.status(401).send(`<h1 style="color: #008000;">Accesso NON EFFETTUATO!</h1>`)
+        else res.status(401).send(`<h1 style="color: #008000;">Accesso non effettuato!</h1>`)
     }
 
 });
 
+app.get('/generateDevelopmentToken', (req, res) => {
+    const token = TokenGenVend('p@gmail.com');//come se fossi Piscitelli Antonello.. da usare per test
+    res.send(`
+        <html>
+        <head><title>Token Generato</title></head>
+        <body>
+            <h1>Token Generato con successo!</h1>
+            <p>Token: ${token}</p>
+            <script>
+                localStorage.setItem('token', '${token}');
+                window.location.href = '/home.html';
+            </script>
+        </body>
+        </html>
+    `);
+});
 
 
-app.get('/mercato', (req, res) => {
+app.get('/homev1', (req, res) => {
     res.status(200).sendFile(path.join(__dirname, 'public', `/home.html`));
 });
+
+
+
 
 
 
