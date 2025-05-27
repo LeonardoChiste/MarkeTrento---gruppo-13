@@ -1,6 +1,6 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
-const VenditoreServizio = require('./services/VenditoreService.cjs');
+const VenditoreServizio = require('../services/VenditoreService.cjs');
 const router = express.Router();
 
 //api venditore

@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const { tokenChecker } = require("./tokenchecker.cjs");
+const { tokenChecker } = require("../tokenchecker.cjs");
 const router = express.Router();
 
 router.get('/interfacciavenditore', tokenChecker('Venditore'), (req, res) => {

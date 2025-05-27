@@ -1,8 +1,8 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
 
-const Prodotto = require('./classes/prodotto.cjs');
-const ProdottoServizio = require('./services/ProdottoService.cjs');
+const Prodotto = require('../classes/prodotto.cjs');
+const ProdottoServizio = require('../services/ProdottoService.cjs');
 const router = express.Router();
 
 //api prodotti
