@@ -1,7 +1,7 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
 const VenditoreServizio = require('./services/VenditoreService.cjs');
-const tokenChecker = require('./tokenchecker.cjs').tokenChecker;
+const VenditoreServizio = require('../services/VenditoreService.cjs');
 const router = express.Router();
 
 //api venditore

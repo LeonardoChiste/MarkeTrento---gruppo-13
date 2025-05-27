@@ -127,6 +127,11 @@
         </div>
         <div id="indirizzo-consegna-container" style="display: block; margin-bottom: 16px;">
             <input type="text" id="indirizzo-consegna" placeholder="Inserisci indirizzo di consegna" style="width: 60%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+            <br>
+            <label for="city-tag" style="margin-top: 10px; display: block;">Seleziona zona/città:</label>
+            <select id="city-tag" style="width: 62%; padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+                <option value="">-- Seleziona una zona --</option>
+            </select>
         </div>
         <div class="button-row">
             <button class="back-btn" onclick="window.history.back()">Torna indietro</button>
@@ -148,6 +153,24 @@
             const res = await fetch(`/api/v1/venditore/${vendorId}`);
             if (!res.ok) throw new Error('Venditore non trovato');
             return await res.json();
+        }
+
+        async function loadCityTags() {
+            try {
+                const res = await fetch('/api/v1/citytags');
+                if (!res.ok) return;
+                let tags = await res.json();
+                tags.sort((a, b) => a.tag.localeCompare(b.tag, 'it', { sensitivity: 'base' }));
+                const select = document.getElementById('city-tag');
+                tags.forEach(tag => {
+                    const option = document.createElement('option');
+                    option.value = tag.tag;
+                    option.textContent = tag.tag;
+                    select.appendChild(option);
+                });
+            } catch (e) {
+                console.error('Errore nel caricamento dei city tags:', e);
+            }
         }
 
         async function loadOrdine() {
@@ -211,12 +234,18 @@
             const orderType = document.querySelector('input[name="orderType"]:checked').value;
             if (orderType === 'consegna') {
                 const indirizzo = document.getElementById('indirizzo-consegna').value.trim();
+                const cityTag = document.getElementById('city-tag').value;
                 if (!indirizzo) {
                     alert('Per la consegna devi inserire un indirizzo!');
                     document.getElementById('indirizzo-consegna').focus();
                     return;
                 }
-                alert(`Ordine confermato! Tipo: Consegna\nIndirizzo: ${indirizzo}`);
+                if (!cityTag) {
+                    alert('Per la consegna devi selezionare una zona/città!');
+                    document.getElementById('city-tag').focus();
+                    return;
+                }
+                alert(`Ordine confermato! Tipo: Consegna\nIndirizzo: ${indirizzo}\nZona: ${cityTag}`);
                 // Da aggiungere la logica per la consegna 
             } else {
                 alert('Ordine confermato! Tipo: Ritiro');
@@ -236,7 +265,10 @@
             });
         });
 
-        window.addEventListener('DOMContentLoaded', loadOrdine);
+        window.addEventListener('DOMContentLoaded', () => {
+            loadOrdine();
+            loadCityTags();
+        });
     </script>
 </body>
 </html>

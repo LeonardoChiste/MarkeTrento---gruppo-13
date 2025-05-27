@@ -9,4 +9,5 @@ module.exports = mongoose.model('Product', new Schema({
     cliente:{type: Schema.Types.ObjectId, ref: 'Client'},
     pubblicazione:Date,
     stato:String,
+    zona:String
 }));

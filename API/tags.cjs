@@ -1,6 +1,6 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
-const TagServizio=require('./services/tagService.cjs');
+const TagServizio=require('../services/tagService.cjs');
 const router = express.Router();
 
 router.get('', async (req, res) => {
