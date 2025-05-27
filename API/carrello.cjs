@@ -90,4 +90,16 @@ router.post('/:clientId/removeOne', async (req, res) => {
     }
 });
 
+router.post('/:clientId/clear', async (req, res) => {
+    try {
+        const client = await DBClient.findById(req.params.clientId);
+        if (!client) return res.status(404).json({ error: 'Cliente non trovato' });
+        client.carrello = [];
+        await client.save();
+        res.json({ message: 'Carrello svuotato' });
+    } catch (err) {
+        res.status(500).json({ error: 'Errore durante lo svuotamento del carrello' });
+    }
+});
+
 module.exports = router;
