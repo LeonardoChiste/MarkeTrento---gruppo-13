@@ -172,9 +172,10 @@ app.use('/check', authcheck);
 //login stuff
 app.post('/login', async (req, res) => {
     const { usermail, password } = req.body;
-    var au = await compareDB(usermail, password);
+    var usermail1 = usermail.toLowerCase();
+    var au = await compareDB(usermail1, password);
     if (au) {
-    const token = TokenGen(usermail);
+    const token = TokenGen(usermail1);
     res.send(`
         <html>
         <head><title>Login</title></head>
@@ -194,9 +195,10 @@ app.post('/login', async (req, res) => {
 
 app.post('/loginbusiness', async (req, res) => {
     const { usermail, password } = req.body;
-    var au= await compareDBbusiness(usermail, password);
+    var usermail1 = usermail.toLowerCase();
+    var au= await compareDBbusiness(usermail1, password);
     if (au) {
-        const token = TokenGenEnt(usermail);
+        const token = TokenGenEnt(usermail1);
         st(token);
         res.send(`
         <html>

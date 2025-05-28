@@ -1,9 +1,12 @@
-const Client = require('../models/clientModel.cjs');
+const DBClient = require('../models/clientModel.cjs');
 const Carrello = require('../classes/Carrello.cjs');
+const Cliente = require('../classes/Cliente.cjs');
+const DBVendor = require('../models/vendorModel.cjs');
+const DBEntrepreneur = require('../models/promoterModel.cjs');
 
 // Aggiunge un prodotto al carrello di un cliente
 async function addProductToCarrello(clientId, product) {
-    const client = await Client.findById(clientId);
+    const client = await DBClient.findById(clientId);
     if (client) {
         // Carrello da database a oggetto
         const carrello = new Carrello();
@@ -24,7 +27,7 @@ async function addProductToCarrello(clientId, product) {
 
 // Recupera il carrello di un cliente
 async function getClientCarrello(clientId) {
-    const client = await Client.findById(clientId);
+    const client = await DBClient.findById(clientId);
     if (client) {
         const carrello = new Carrello();
         carrello.prodotti = client.carrello.map(prodotto => ({
@@ -44,7 +47,7 @@ async function getClientCarrello(clientId) {
 
 // Rimuove un prodotto dal carrello di un cliente
 async function removeProductFromCarrello(clientId, nomeProdotto) {
-    const client = await Client.findById(clientId);
+    const client = await DBClient.findById(clientId);
     if (client) {
         // Carrello da database a oggetto
         const carrello = new Carrello();
@@ -63,4 +66,47 @@ async function removeProductFromCarrello(clientId, nomeProdotto) {
     }
 }
 
-module.exports = { addProductToCarrello, getClientCarrello, removeProductFromCarrello, removeProductFromCarrello };
+async function nuovaregistrazione(cliente) {
+    var email1 = cliente.email.toLowerCase();
+    var username1 = cliente.username.toLowerCase();
+    const [existingClient, existingVendor, existingEntrepreneur] = await Promise.all([
+        DBClient.findOne({ $or: [{ email: email1 }, { username: username1 }] }),
+        DBVendor.findOne({ $or: [{ email: email1 }, { username: username1 }] }),
+        DBEntrepreneur.findOne({ $or: [{ email: email1 }, { username: username1 }] })
+    ]);
+
+    if (existingClient) {
+        const msg = `Cliente già registrato con email o username: ${email1}, ${username1}`;
+        console.log(msg);
+        return { success: false, error: msg };
+    }
+    
+    if (existingVendor) {
+        const msg = `Venditore già registrato con email o username: ${email1}, ${username1}`;
+        console.log(msg);
+        return { success: false, error: msg };
+    }
+    
+    if (existingEntrepreneur) {
+        const msg = `Imprenditore già registrato con email o username: ${email1}, ${username1}`;
+        console.log(msg);
+        return { success: false, error: msg };
+    }
+    try {
+        cliente.email = email1;
+        cliente.username = username1;
+        const daSalvare = new DBClient(cliente);
+        await daSalvare.save();
+        const msg = "Registrazione completata con successo!";
+        console.log(msg);
+        return { success: true, message: msg };
+    } catch (error) {
+        const msg = `Errore durante la registrazione del cliente: ${error}`;
+        console.error(msg);
+        return { success: false, error: msg };
+    }
+}
+
+
+
+module.exports = { addProductToCarrello, getClientCarrello, removeProductFromCarrello, nuovaregistrazione };
