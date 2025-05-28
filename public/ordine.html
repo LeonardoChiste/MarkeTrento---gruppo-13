@@ -230,11 +230,12 @@
             
         }
 
-        function confermaOrdine() {
+        async function confermaOrdine() {
             const orderType = document.querySelector('input[name="orderType"]:checked').value;
+            const indirizzo = document.getElementById('indirizzo-consegna').value.trim();
+            const cityTag = document.getElementById('city-tag').value;
+
             if (orderType === 'consegna') {
-                const indirizzo = document.getElementById('indirizzo-consegna').value.trim();
-                const cityTag = document.getElementById('city-tag').value;
                 if (!indirizzo) {
                     alert('Per la consegna devi inserire un indirizzo!');
                     document.getElementById('indirizzo-consegna').focus();
@@ -245,11 +246,50 @@
                     document.getElementById('city-tag').focus();
                     return;
                 }
-                alert(`Ordine confermato! Tipo: Consegna\nIndirizzo: ${indirizzo}\nZona: ${cityTag}`);
-                // Da aggiungere la logica per la consegna 
-            } else {
-                alert('Ordine confermato! Tipo: Ritiro');
-                // Da aggiungere la logica per il ritiro
+            }
+            // Recupera i dati necessari dal carrello e dal venditore
+            const carrello = await getCarrello(clientId);
+            if (!carrello || carrello.length === 0) {
+                alert('Carrello vuoto!');
+                return;
+            }
+
+            // Recupera il venditore dal primo prodotto (tutti i prodotti sono dello stesso venditore)
+            const firstProduct = carrello[0];
+            const prodottoRes = await fetch(`/api/v1/prodotto/${firstProduct._id}`);
+            let venditoreId = null;
+            if (prodottoRes.ok) {
+                const prodotto = await prodottoRes.json();
+                venditoreId = prodotto.venditore;
+            }
+
+            // Prepara il body della richiesta ordine
+            const orderBody = {
+                prodotti: carrello, // invia tutto il carrello!
+                venditore: venditoreId,
+                cliente: clientId,
+                zona: cityTag,
+                tipo: orderType
+            };
+
+            // Invia l'ordine al backend
+            try {
+                const res = await fetch('/api/v1/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderBody)
+                });
+                if (res.ok) {
+                    alert('Ordine confermato e salvato!');
+                    // Svuota il carrello dopo l'ordine
+                    await fetch(`/api/v1/carrello/${clientId}/clear`, { method: 'POST' });
+                    window.location.href = '/home.html';
+                } else {
+                    const data = await res.json();
+                    alert(data.error || 'Errore durante il salvataggio dell\'ordine');
+                }
+            } catch (e) {
+                alert('Errore di rete durante il salvataggio dell\'ordine');
             }
         }
 
