@@ -19,6 +19,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 100, 0, 0.1);
+            position: relative;
         }
         h1 {
             color: #008000;
@@ -104,14 +105,68 @@
         .panel p {
             margin: 15px 0;
         }
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 320px;
+            max-width: 90vw;
+            padding: 24px 32px 24px 64px;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .notification.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .notification.success {
+            background-color: #e6f9ea;
+            color: #207a3c;
+            border: 1.5px solid #4CAF50;
+        }
+        .notification.error {
+            background-color: #ffeaea;
+            color: #a32a2a;
+            border: 1.5px solid #F44336;
+        }
+        .notification .icon {
+            position: absolute;
+            left: 24px;
+            font-size: 32px;
+        }
+        .notification .close-btn {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 0 8px;
+        }
     </style>
 </head>
 <body>
    <div class="container">
+    <div id="notification" class="notification">
+        <span class="icon" id="notificationIcon"></span>
+        <span id="notificationMessage"></span>
+        <button class="close-btn" id="notificationClose" aria-label="Chiudi">&times;</button>
+    </div>
+    
     <h1>Registrazione Cliente</h1>
     <p class="description">Compila il form per registrarti come cliente su MarkeTrento</p>
     
-    <form id="registrationForm">
+    <form id="registrationForm" autocomplete="off">
         <div class="form-group">
             <label for="nome">Nome:</label>
             <input type="text" id="nome" name="nome" required>
@@ -158,42 +213,102 @@
     </div>
 </div>
     
-    <script>
-        var acc = document.getElementsByClassName("accordion");
-    var i;
-    
-    for (i = 0; i < acc.length; i++) {
-        acc[i].addEventListener("click", function() {
-            this.classList.toggle("active");
+<script>
+    // Accordion
+    document.querySelectorAll('.accordion').forEach(function(acc) {
+        acc.addEventListener('click', function() {
+            this.classList.toggle('active');
             var panel = this.nextElementSibling;
             if (panel.style.maxHeight) {
                 panel.style.maxHeight = null;
             } else {
                 panel.style.maxHeight = panel.scrollHeight + "px";
-            } 
-        });
-    }
-    
-    // Gestione della registrazione via API
-        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm_password').value;
-        
-            
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('Le password non coincidono!');
             }
         });
-        //Qui dalle cose prese vanno implementate le API per la registrazione
-        var nome = document.getElementById('nome').value;
-        var cognome = document.getElementById('cognome').value;
-        var birthdate = document.getElementById('birthdate').value;
-        var email = document.getElementById('email').value;
-        var username = document.getElementById('username').value;
-        var password = document.getElementById('password').value;
-    </script>
+    });
+
+    // Notification logic
+    function showNotification(message, type, callback) {
+        const notification = document.getElementById('notification');
+        const icon = document.getElementById('notificationIcon');
+        const msg = document.getElementById('notificationMessage');
+        const closeBtn = document.getElementById('notificationClose');
+
+        notification.className = 'notification ' + type;
+        msg.textContent = message;
+
+        if (type === 'success') {
+            icon.textContent = '✓';
+        } else {
+            icon.textContent = '!';
+        }
+
+        notification.classList.add('show');
+
+        function closeHandler() {
+            notification.classList.remove('show');
+            closeBtn.removeEventListener('click', closeHandler);
+            if (callback) callback();
+        }
+
+        closeBtn.onclick = closeHandler;
+
+        // Auto-close after 3s for success, 5s for error
+        let timeout = setTimeout(closeHandler, type === 'success' ? 2000 : 5000);
+
+        // Prevent multiple timeouts
+        closeBtn.onmouseenter = () => clearTimeout(timeout);
+        closeBtn.onmouseleave = () => timeout = setTimeout(closeHandler, type === 'success' ? 2000 : 5000);
+    }
+
+    // Registration form logic
+    document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+
+        if (password !== confirmPassword) {
+            showNotification('Le password non coincidono!', 'error');
+            return;
+        }
+
+        try {
+            const nome = document.getElementById('nome').value.trim();
+            const cognome = document.getElementById('cognome').value.trim();
+            const birthdate = document.getElementById('birthdate').value;
+            const email = document.getElementById('email').value.trim();
+            const username = document.getElementById('username').value.trim();
+
+            const response = await fetch('/api/v1/account/registrazione', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nome, cognome, birthdate, email, username, password
+                })
+            });
+
+            let data;
+            try {
+                data = await response.json();
+            } catch {
+                data = {};
+            }
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Errore durante la registrazione');
+            }
+
+            showNotification('Registrazione completata con successo!', 'success', function() {
+                window.location.href = '/default.html';
+            });
+
+        } catch (error) {
+            showNotification(error.message, 'error');
+        }
+    });
+</script>
 </body>
 </html>
