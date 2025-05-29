@@ -211,7 +211,7 @@
 </body>
 <script>
         let venditoriGlobal = [];
-        let filtroTipo = 'tutti'; 
+        let filtroTipo = 'conTag';  // Changed default to 'conTag' to show only vendors with products
 
         async function caricaVenditori() {
             const lista = document.getElementById('listaVenditori');
@@ -346,7 +346,7 @@
 
         window.onload = function() {
             caricaVenditori();
-            setFiltroTipo('tutti');
+            setFiltroTipo('conTag');  // Set default filter to show only vendors with products
         };
 
         document.getElementById('carrelloBtn').addEventListener('click', async function() {

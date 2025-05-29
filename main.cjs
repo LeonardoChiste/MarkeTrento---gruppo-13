@@ -35,6 +35,7 @@ const accounts = require('./API/account.cjs');
 const tags = require('./API/tags.cjs');
 const citytags = require('./API/citytags.cjs');
 const order = require('./API/order.cjs');
+const mail = require('./API/mail.cjs');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -167,6 +168,7 @@ app.use('/api/v1/tags', tags);
 app.use('/api/v1/account',accounts)
 app.use('/api/v1/citytags', citytags);
 app.use('/api/v1/order', order);
+app.use('/api/v1/registrationservice',mail);
 
 app.use('/check', authcheck);
 //login stuff
