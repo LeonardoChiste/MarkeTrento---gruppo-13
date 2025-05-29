@@ -201,7 +201,7 @@
             </div>
             <button class="back-btn" onclick="tornaIndietro()">&#8592; Torna indietro</button>
         </div>
-        <button id="carrelloBtn">Carrello</button>
+        <button id="carrelloBtn">Carrello🛒</button>
     </div>
     <h1>Venditori registrati</h1>
     <div class="controls">
@@ -211,14 +211,14 @@
 </body>
 <script>
         let venditoriGlobal = [];
-        let filtroTipo = 'tutti'; 
+        let filtroTipo = 'conTag';  // Changed default to 'conTag' to show only vendors with products
 
         async function caricaVenditori() {
             const lista = document.getElementById('listaVenditori');
             lista.innerHTML = 'Caricamento...';
             try {
                 // Utilizzo Api per caricare i venditori
-                const res = await fetch('/api/v1/venditore');
+                const res = await fetch('/api/v1/venditori');
                 const venditori = await res.json();
                 venditoriGlobal = Array.isArray(venditori) ? venditori : [];
                 await aggiungiTagsAVenditori();
@@ -230,7 +230,7 @@
 
         async function caricaProdottidaVenditore(id) {
             // Utilizzo Api per caricare i prodotti del venditore
-            const res = await fetch(`/api/v1/prodotto/venditore/${id}`);
+            const res = await fetch(`/api/v1/prodotti/venditore/${id}`);
             if (res.ok) {
                 const prodotti = await res.json();
                 return prodotti;
@@ -346,7 +346,7 @@
 
         window.onload = function() {
             caricaVenditori();
-            setFiltroTipo('tutti');
+            setFiltroTipo('conTag');  // Set default filter to show only vendors with products
         };
 
         document.getElementById('carrelloBtn').addEventListener('click', async function() {

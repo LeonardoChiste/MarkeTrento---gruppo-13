@@ -5,6 +5,28 @@ info:
 servers:
   - url: https://api.server.test/v1
 paths:
+  /:
+    get:
+      summary: Default page
+      description: Returns the default page of the API.
+      responses:
+        '200':
+          description: Home page
+          content:
+            html:
+              schema:
+                type: string
+  /mercato:
+    get:
+      summary: Market page
+      description: Returns the market page of the API.
+      responses:
+        '200':
+          description: Market page
+          content:
+            html:
+              schema:
+                type: string
   /login:
     post:
       requestBody:
@@ -89,7 +111,7 @@ paths:
     post:
       requestBody:
         content:
-          application/json:
+          application/FormData:
             schema:
               type: object
               properties:
@@ -105,8 +127,11 @@ paths:
                 descrizione:
                   type: string
                 immagine:
-                  type: string
-                  description: uri
+                  type: object
+                  properties:
+                    file:
+                      type: string
+                      format: binary
                 tipoAnnuncio:
                   type: string
       responses:
@@ -177,7 +202,7 @@ paths:
           description: Prodotto non trovato
         '500':
           description: Internal Server Error
-  /api/v1/carrello/clientId/removeOne:
+  /api/v1/carrelli/clientId/removeOne:
     post:
       requestBody:
         content:
@@ -207,7 +232,7 @@ paths:
           description: Cliente non trovato
         '500':
           description: Internal Server Error
-  /api/v1/prodotto/venditore/:id:
+  /api/v1/prodotti/venditore/:id:
     get:
       requestBody:
         content:
@@ -261,7 +286,7 @@ paths:
           description: Prodotto non trovato
         '500':
           description: Internal Server Error  
-  /api/v1/venditore: 
+  /api/v1/venditori: 
     get:
       responses:
         '200':
@@ -299,7 +324,7 @@ paths:
                       type: string
         '500':
           description: Internal Server Error
-  /api/v1/venditore/:id:
+  /api/v1/venditori/:id:
     get:
       responses:
         '200':
@@ -337,7 +362,7 @@ paths:
           description: Venditore non trovato
         '500':
           description: Internal Server Error
-  /api/v1/prodotto: 
+  /api/v1/prodotti: 
     post: 
       requestBody:
         content:
@@ -365,7 +390,7 @@ paths:
           description: Created
         '500':
           description: Internal Server Error
-  /api/v1/prodotto/:id:
+  /api/v1/prodotti/:id:
     get:
       responses:
         '200':
@@ -470,5 +495,55 @@ paths:
                       type: integer
                     nome:
                       type: string
+        '500':
+          description: Internal Server Error
+  /api/v1/tags/:id:
+    get:
+      responses:
+        '200':
+          description: A JSON with one tag
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nome:
+                    type: string
+        '404':
+          description: Tag non trovata
+        '500':
+          description: Internal Server Error
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                nome:
+                  type: string
+      responses:
+        '200':
+          description: Tag aggiornata
+        '500':
+          description: Internal Server Error
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                nome:
+                  type: string
+      responses:
+        '200':
+          description: Tag eliminata
         '500':
           description: Internal Server Error

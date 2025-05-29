@@ -152,7 +152,7 @@
     }
 
     async function fetchEvents() {  //chiama api
-      const res = await fetch('/api/v1/promozione')
+      const res = await fetch('/api/v1/promozioni')
       if (res.ok) {
         const promo = await res.json();
         return promo;
@@ -175,7 +175,7 @@
       fetchEvents().then(events => {
         days.forEach(day => {
           const dayStr = day.toISOString().split('T')[0];
-          const dayEvents = events.filter(e => e.data === dayStr ).slice(0, 3);
+          const dayEvents = events.filter(e => e.data === dayStr ).slice(0, 5); // Filter events for the day and limit to 5
 
           const dayDiv = document.createElement('div');
           dayDiv.classList.add('day');
