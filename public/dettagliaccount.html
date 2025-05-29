@@ -379,14 +379,12 @@
         }
 
         function attachMicrointeractions() {
-            // Cambia descrizione
             const btnDescrizione = document.getElementById('cambiaDescrizioneBtn');
             if (btnDescrizione) {
                 btnDescrizione.onclick = function() {
                     const descrizioneMicro = document.getElementById('descrizioneMicro');
                     const descrizioneText = document.getElementById('descrizioneText');
                     if (!descrizioneMicro) return;
-                    // Prevent multiple inputs
                     if (descrizioneMicro.querySelector('input')) return;
                     const oldValue = userDati.descrizione || '';
                     descrizioneMicro.innerHTML = `
@@ -443,7 +441,7 @@
                 };
             }
 
-            // Cambia indirizzo/sede
+            
             const btnIndirizzo = document.getElementById('cambiaIndirizzoBtn');
             const indirizzoBtnContainer = document.getElementById('indirizzoBtnContainer');
             if (btnIndirizzo) {
@@ -452,7 +450,6 @@
                     const sedeText = document.getElementById('sedeText');
                     if (!sedeMicro) return;
                     if (sedeMicro.querySelector('input')) return;
-                    // Hide the button during microinteraction
                     if (indirizzoBtnContainer) indirizzoBtnContainer.style.display = 'none';
                     const oldValue = userDati.sede || '';
                     sedeMicro.innerHTML = `

@@ -301,6 +301,13 @@
                 throw new Error(data.error || 'Errore durante la registrazione');
             }
 
+            fetch('/api/v1/registrationservice/mail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, username })
+            });
+
+
             showNotification('Registrazione completata con successo!', 'success', function() {
                 window.location.href = '/default.html';
             });
