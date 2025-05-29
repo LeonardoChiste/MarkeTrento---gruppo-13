@@ -167,7 +167,7 @@ app.use('/api/v1/prodotti', prodotti);
 app.use('/api/v1/tags', tags);
 app.use('/api/v1/accounts',accounts)
 app.use('/api/v1/citytags', citytags);
-app.use('/api/v1/order', order);
+app.use('/api/v1/orders', order);
 app.use('/api/v1/registrationservice',mail);
 
 app.use('/check', authcheck);
