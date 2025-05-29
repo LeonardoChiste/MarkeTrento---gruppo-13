@@ -118,7 +118,7 @@
             if (!confirm('Sei sicuro di voler rimuovere questo prodotto?')) return;
             btn.disabled = true;
             try {
-                const res = await fetch(`/api/v1/prodotto/${idProdotto}`, {
+                const res = await fetch(`/api/v1/prodotti/${idProdotto}`, {
                     method: 'DELETE'
                 });
                 if (res.ok) {
@@ -138,7 +138,7 @@
             const titolo = document.getElementById('titoloVenditore');
             let username = id;
             try {
-                const resVend = await fetch(`/api/v1/venditore/${id}`);
+                const resVend = await fetch(`/api/v1/venditori/${id}`);
                 if (resVend.ok) {
                     const venditore = await resVend.json();
                     
@@ -148,7 +148,7 @@
             }
             titolo.textContent = `I tuoi prodotti disponibili`;
             try {
-                const res = await fetch(`/api/v1/prodotto/venditore/${id}`);
+                const res = await fetch(`/api/v1/prodotti/venditore/${id}`);
                 if (!res.ok) {
                     container.innerHTML = '<span style="color:red;">Nessun prodotto trovato o errore server.</span>';
                     return;

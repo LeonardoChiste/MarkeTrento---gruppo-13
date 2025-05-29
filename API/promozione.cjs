@@ -34,16 +34,14 @@ router.get('', async (req, res) => {
 router.post('', upload.single('image'), tokenChecker('Imprenditore'), async (req, res) => {
     try {
         const data = req.body;
-        //const encode_image = req.file.buffer.toString('base64');
-        //const conType = req.file ? req.file.mimetype : 'image/png';
         const promozione = new DBPromotion({
             data: data.startdate,
             titolo: data.title,
             promotore: data.promoter,
             descrizione: data.description,
             img: {
-                data: req.file.buffer, //data.image ? Buffer.from(data.image, 'base64') : undefined,
-                contentType: req.file.mimetype //data.imageType || 'image/png'
+                data: req.file.buffer, 
+                contentType: req.file.mimetype 
             },
             tipoAnnuncio: data.tipo
         });

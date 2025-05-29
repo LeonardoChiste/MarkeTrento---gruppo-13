@@ -108,7 +108,7 @@
                 return;
             }
             try {
-                const res = await fetch(`/api/v1/prodotto/${id}`);
+                const res = await fetch(`/api/v1/prodotti/${id}`);
                 if (!res.ok) {
                     document.getElementById('esito').innerHTML = '<span style="color:red;">Prodotto non trovato.</span>';
                     document.getElementById('updateForm').style.display = 'none';
@@ -131,7 +131,7 @@
             const descrizione = document.getElementById('descrizione').value;
             const quantita = parseInt(document.getElementById('quantita').value);
             try {
-                const res = await fetch(`/api/v1/prodotto/${id}`, {
+                const res = await fetch(`/api/v1/prodotti/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ descrizione, quantita })

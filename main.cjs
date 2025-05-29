@@ -27,14 +27,14 @@ const DBClient=require('./models/clientModel.cjs');
 
 
 //API imports
-const carrello = require('./API/carrello.cjs');
-const promozione = require('./API/promozione.cjs');
-const venditore = require('./API/venditore.cjs');
-const prodotto = require('./API/prodotto.cjs');
+const carrelli = require('./API/carrello.cjs');
+const promozioni = require('./API/promozione.cjs');
+const venditori = require('./API/venditore.cjs');
+const prodotti = require('./API/prodotto.cjs');
 const accounts = require('./API/account.cjs');
 const tags = require('./API/tags.cjs');
 const citytags = require('./API/citytags.cjs');
-const order = require('./API/order.cjs');
+const orders = require('./API/order.cjs');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -159,14 +159,14 @@ app.get('/products', async (req, res) => {
 });
 */
 
-app.use('/api/v1/carrello', carrello);
-app.use('/api/v1/promozione', promozione);  
-app.use('/api/v1/venditore', venditore);    
-app.use('/api/v1/prodotto', prodotto);  
+app.use('/api/v1/carrelli', carrelli);
+app.use('/api/v1/promozioni', promozioni);  
+app.use('/api/v1/venditori', venditori);    
+app.use('/api/v1/prodotti', prodotti);  
 app.use('/api/v1/tags', tags);
-app.use('/api/v1/account',accounts)
+app.use('/api/v1/accounts',accounts)
 app.use('/api/v1/citytags', citytags);
-app.use('/api/v1/order', order);
+app.use('/api/v1/orders', orders);
 
 app.use('/check', authcheck);
 //login stuff
@@ -260,7 +260,7 @@ app.get('/homev1', (req, res) => {
 
 
 //AGGIUNTA DI API IN FONDO AL MAIN, DA ORGANIZZARE, UNA SU IMPRENDITORE, UNA SU CLIENTE
-app.put('/api/v1/imprenditore/descrizione/:id', tokenChecker('Imprenditore'), async (req, res) => {
+app.put('/api/v1/imprenditori/descrizione/:id', tokenChecker('Imprenditore'), async (req, res) => {
     try {
         const { descrizione } = req.body;
         const id = req.params.id;
@@ -272,7 +272,7 @@ app.put('/api/v1/imprenditore/descrizione/:id', tokenChecker('Imprenditore'), as
     }
 });
 
-app.put('/api/v1/imprenditore/sede/:id', tokenChecker('Imprenditore'), async (req, res) => {
+app.put('/api/v1/imprenditori/sede/:id', tokenChecker('Imprenditore'), async (req, res) => {
     try {
         const { sede } = req.body;
         const id = req.params.id;

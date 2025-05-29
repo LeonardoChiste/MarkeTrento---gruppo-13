@@ -287,9 +287,9 @@
             let email = encodeURIComponent(payload.email);
             let endpoint = '';
 
-            if (tipo === 'cliente') endpoint = `/api/v1/account/cliente/${email}`;
-            else if (tipo === 'venditore') endpoint = `/api/v1/account/venditore/${email}`;
-            else if (tipo === 'imprenditore') endpoint = `/api/v1/account/imprenditore/${email}`;
+            if (tipo === 'cliente') endpoint = `/api/v1/accounts/cliente/${email}`;
+            else if (tipo === 'venditore') endpoint = `/api/v1/accounts/venditore/${email}`;
+            else if (tipo === 'imprenditore') endpoint = `/api/v1/accounts/imprenditore/${email}`;
             else {
                 document.getElementById('errore').textContent = "Tipo account sconosciuto.";
                 return;
@@ -409,8 +409,8 @@
                         document.getElementById('msgDescrizione').classList.remove('micro-err');
                         const token = localStorage.getItem('token');
                         let api = '';
-                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditore/descrizione/${userId}`;
-                        else if (userTipo === 'venditore') api = `/api/v1/venditore/descrizione/${userId}`;
+                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditori/descrizione/${userId}`;
+                        else if (userTipo === 'venditore') api = `/api/v1/venditori/descrizione/${userId}`;
                         else return;
                         try {
                             const res = await fetch(api, {
@@ -475,8 +475,8 @@
                         document.getElementById('msgSede').classList.remove('micro-err');
                         const token = localStorage.getItem('token');
                         let api = '';
-                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditore/sede/${userId}`;
-                        else if (userTipo === 'venditore') api = `/api/v1/venditore/sede/${userId}`;
+                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditori/sede/${userId}`;
+                        else if (userTipo === 'venditore') api = `/api/v1/venditori/sede/${userId}`;
                         else return;
                         try {
                             const res = await fetch(api, {

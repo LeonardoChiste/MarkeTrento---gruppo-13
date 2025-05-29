@@ -132,7 +132,7 @@
             // chiamo API
             let username = id;
             try {
-                const resVend = await fetch(`/api/v1/venditore/${id}`);
+                const resVend = await fetch(`/api/v1/venditori/${id}`);
                 if (resVend.ok) {
                     const venditore = await resVend.json();
                     if (venditore && venditore.username) {
@@ -144,7 +144,7 @@
             }
             titolo.textContent = `${username}, Prodotti disponibili`;
             try {
-                const res = await fetch(`/api/v1/prodotto/venditore/${id}`);
+                const res = await fetch(`/api/v1/prodotti/venditore/${id}`);
                 if (!res.ok) {
                     container.innerHTML = '<span style="color:red;">Nessun prodotto trovato o errore server.</span>';
                     return;
@@ -218,7 +218,7 @@
                         quantity: quantity
                     };
                     try {
-                        const res = await fetch(`/api/v1/carrello/${clientId}/add`, {
+                        const res = await fetch(`/api/v1/carrelli/${clientId}/add`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(prodotto)

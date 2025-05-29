@@ -218,7 +218,7 @@
             lista.innerHTML = 'Caricamento...';
             try {
                 // Utilizzo Api per caricare i venditori
-                const res = await fetch('/api/v1/venditore');
+                const res = await fetch('/api/v1/venditori');
                 const venditori = await res.json();
                 venditoriGlobal = Array.isArray(venditori) ? venditori : [];
                 await aggiungiTagsAVenditori();
@@ -230,7 +230,7 @@
 
         async function caricaProdottidaVenditore(id) {
             // Utilizzo Api per caricare i prodotti del venditore
-            const res = await fetch(`/api/v1/prodotto/venditore/${id}`);
+            const res = await fetch(`/api/v1/prodotti/venditore/${id}`);
             if (res.ok) {
                 const prodotti = await res.json();
                 return prodotti;

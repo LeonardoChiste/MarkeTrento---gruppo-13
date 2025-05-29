@@ -102,7 +102,7 @@
         // Recupera il carrello di un cliente
         async function getCarrello(clientId) {
             try {
-                const response = await fetch(`/api/v1/carrello/${clientId}`);
+                const response = await fetch(`/api/v1/carrelli/${clientId}`);
                 if (!response.ok) {
                     throw new Error('Carrello non trovato');
                 }
@@ -154,7 +154,7 @@
                     btn.addEventListener('click', async function() {
                         const nome = this.getAttribute('data-nome');
                         try {
-                            const res = await fetch(`/api/v1/carrello/${clientId}/removeOne`, {
+                            const res = await fetch(`/api/v1/carrelli/${clientId}/removeOne`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ nome })
