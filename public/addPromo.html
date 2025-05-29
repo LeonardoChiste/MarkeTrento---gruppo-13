@@ -34,22 +34,22 @@
   </style>
   <h1>Aggiungi promozione</h1>
   <form enctype="multipart/form-data" action="/api/v1/promozione" method="POST">
-    <label for="title">Titolo:</label><br>
+    <label for="title">Titolo*:</label><br>
     <input type="text" id="title" name="title" required><br><br>
 
-    <label for="description">Promotore:</label><br>
+    <label for="description">Promotore*:</label><br>
     <textarea id="promoter" name="promoter" rows="1" required></textarea><br><br>
 
-    <label for="description">Descrizione:</label><br>
+    <label for="description">Descrizione*:</label><br>
     <textarea id="description" name="description" rows="4" required></textarea><br><br>
 
-    <label for="startdate">Data inizio:</label><br>
+    <label for="startdate">Data inizio*:</label><br>
     <input type="date" id="startdate" name="startdate" required><br><br>
 
     <label for="enddate">Data fine:</label><br>
     <input type="date" id="enddate" name="enddate" required><br><br>
 
-    <label for="image">Immagine:</label><br>
+    <label for="image">Immagine(Max 5MB):</label><br>
     <input type="file" id="image" name="image" accept="image/*"><br><br>
     
     <input type="radio" id="evento" name="tipo" value="Evento">
@@ -59,10 +59,63 @@
 
     <button type="submit">Aggiungi</button>
   </form>
+  <div id="container">Status: </div>
   <div class ="nav-links">
     <a href="/home.html">Torna al Mercato</a>
   </div>
   <script>
+    /*let userId = null;
+    let userTipo = null;
+    let userDati = null;
+    const container = document.getElementById('container');
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (e) {
+        return null;
+      }
+    }
+    const token = localStorage.getItem('token');
+    if (!token) {
+      container.innerHTML = '<span style="color:red;">Token non trovato. Effettua il login.</span>';
+      return;
+    } else {
+      container.innerHTML = 'Caricamento dati utente...';
+    }
+    const payload = parseJwt(token);
+    if (!payload || !payload.email || !payload.aut) {
+      container.innerHTML = '<span style="color:red;">Token non valido.</span>';
+      return;
+    } else {
+      container.innerHTML = `Caricamento dati per ${payload.email}...`;
+    }
+    let tipo = payload.aut.toLowerCase();
+    let email = encodeURIComponent(payload.email);
+    let endpoint = '';
+    if (tipo === 'imprenditore') {
+      endpoint = `/api/v1/imprenditore/${email}`;
+    } else {
+      container.innerHTML = '<span style="color:red;">Tipo utente non riconosciuto.</span>';
+      return;
+    }
+    
+    try {
+      const res = await fetch(endpoint, {
+        headers: { 'x-access-token': token }
+      });
+      if (!res.ok) {
+        container.innerHTML = '<span style="color:red;">Errore nel recupero dati account.</span>';
+        return;
+      }
+      const dati = await res.json();
+      userId = dati.id || dati._id || null;
+      userTipo = tipo;
+      userDati = dati;
+      container.innerHTML = `Benvenuto ${userDati.nome || 'Utente'}!`;
+    } catch (e) {
+      container.innerHTML = '<span style="color:red;">Errore di rete.</span>';
+    }
+    container.innerHTML = `Benvenuto ${userDati.nome || 'Utente'}!`;
     document.querySelector('form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const form = e.target;
@@ -94,7 +147,101 @@
       } catch (err) {
         msgDiv.textContent = "Errore di rete.";
       }
+    });*/
+(async function() {
+  let userId = null;
+  let userTipo = null;
+  let userDati = null;
+  const container = document.getElementById('container');
+  const promoter = document.getElementById('promoter');
+  function parseJwt(token) {
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+      return null;
+    }
+  }
+  const token = localStorage.getItem('token');
+  if (!token) {
+    container.innerHTML = '<span style="color:red;">Token non trovato. Effettua il login.</span>';
+    return;
+  } else {
+    container.innerHTML = 'Caricamento dati utente...';
+  }
+  const payload = parseJwt(token);
+  if (!payload || !payload.email || !payload.aut) {
+    container.innerHTML = '<span style="color:red;">Token non valido.</span>';
+    return;
+  } else {
+    container.innerHTML = `Caricamento dati per ${payload.email}...`;
+  }
+  let tipo = payload.aut.toLowerCase();
+  let email = encodeURIComponent(payload.email);
+  let endpoint = '';
+  if (tipo === 'imprenditore') {
+    endpoint = `/api/v1/account/imprenditore/${email}`;
+  } else if (tipo === 'venditore') {
+    endpoint = `/api/v1/account/venditore/${email}`;
+  } else {
+    container.innerHTML = `Tipo utente non riconosciuto. Tipo ${tipo} non supportato.`;
+    return;
+  }
+  
+  try {
+    const res = await fetch(endpoint, {
+      headers: { 'x-access-token': token }
     });
+    if (!res.ok) {
+      container.innerHTML = '<span style="color:red;">Errore nel recupero dati account.</span>';
+      return;
+    }
+    const dati = await res.json();
+    userId = dati.id || dati._id || null;
+    userTipo = tipo;
+    userDati = dati;
+    container.innerHTML = `Benvenuto ${userDati.nome || 'Utente'}!`;
+    promoter.value = userDati.nome || 'Utente';
+  } catch (e) {
+    container.innerHTML = '<span style="color:red;">Errore di rete.</span>';
+    return;
+  }
+
+  document.querySelector('form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    // Show a loading message
+    let msgDiv = document.getElementById('submit-msg');
+    if (!msgDiv) {
+      msgDiv = document.createElement('div');
+      msgDiv.id = 'submit-msg';
+      form.parentNode.insertBefore(msgDiv, form.nextSibling);
+    }
+    msgDiv.textContent = "Invio in corso...";
+
+    try {
+      const response = await fetch('/api/v1/promozione', {
+        method: 'POST',
+        headers: {
+          'x-access-token': token
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        msgDiv.textContent = "Promozione creata con successo!";
+        setTimeout(() => {
+          window.location.href = '/home.html';
+        }, 500); // 0.5 seconds delay
+      } else {
+        msgDiv.textContent = "Errore durante la creazione della promozione.";
+      }
+    } catch (err) {
+      msgDiv.textContent = "Errore di rete.";
+    }
+  });
+})();
 </script>
 </body>
 </html>

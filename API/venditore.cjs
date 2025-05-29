@@ -25,6 +25,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+
 router.put('/descrizione/:id', tokenChecker('Venditore'), async (req, res) => {
     try {
         const { descrizione } = req.body;

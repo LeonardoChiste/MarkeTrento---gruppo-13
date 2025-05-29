@@ -4,6 +4,7 @@ const multer = require('multer');
 const fs = require('fs');
 const DBPromotion=require('../models/promotionModel.cjs');
 const router = express.Router();
+const tokenChecker = require('../tokenchecker.cjs').tokenChecker;
 
 // Multer configuration for memory storage
 const storage = multer.memoryStorage();
@@ -30,7 +31,7 @@ router.get('', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-router.post('', upload.single('image'), async (req, res) => {
+router.post('', upload.single('image'), tokenChecker('Imprenditore'), async (req, res) => {
     try {
         const data = req.body;
         //const encode_image = req.file.buffer.toString('base64');

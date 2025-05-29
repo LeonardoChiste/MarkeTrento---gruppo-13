@@ -15,4 +15,8 @@ router.get('/dettagliaccount', tokenChecker('Cliente'), (req, res) => {
     res.sendFile(path.join(process.cwd(), 'public', 'dettagliaccount.html'));
 });
 
+router.get('/addPromo', tokenChecker('Venditore'), (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'public', 'addPromo.html'));
+});
+
 module.exports = router;

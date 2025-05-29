@@ -265,7 +265,7 @@ app.put('/api/v1/imprenditore/descrizione/:id', tokenChecker('Imprenditore'), as
         const imprenditoreAggiornato = await ImprenditoreServizio.updateDescrizione(descrizione, id);
         res.status(200).json(imprenditoreAggiornato);
     } catch (error) {
-        console.error('Errore durante l\'aggiornamento della descrizione:', error.message);
+        console.error('Errore durante l\'aggiornamento della descrizione:', error.message);F
         res.status(500).json({ error: 'Errore del server' });
     }
 });
@@ -282,6 +282,17 @@ app.put('/api/v1/imprenditore/sede/:id', tokenChecker('Imprenditore'), async (re
     }
 });
 
+/*app.get('/api/v1/imprenditore/:id', tokenChecker('Imprenditore'), async (req, res) => {
+    try {
+        const imprenditore = await ImprenditoreServizio.getImprenditoreById(req.params.id);
+        if (!imprenditore) {
+            return res.status(404).send('Imprenditore non trovato');
+        }
+        res.status(200).json(imprenditore);
+    } catch (error) {
+        res.status(500).send('Errore del server');
+    }
+});*/
 
 
 
