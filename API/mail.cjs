@@ -5,12 +5,13 @@ const sgMail = require('@sendgrid/mail');
 router.post('/mail', async (req, res) => {
   try {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    var emailreg= req.body.email;
+    var userreg= req.body.username;
     const msg = {
-      to: 'alessandro.luzzani@studenti.unitn.it', // Cambia destinatario se serve
+      to: emailreg, // Email del destinatario
       from: 'marketrentowebapp@gmail.com', // Mittente verificato SendGrid
-      subject: 'Sending with SendGrid is Fun',
-      text: 'and easy to do anywhere, even with Node.js',
-      html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+      subject: 'Registrazione Marketrento - nuovo cliente',
+      text: 'Buongiorno, \n\ngrazie per esserti registrto su MarkeTrento. Il suo account è ora attivo e può iniziare a utilizzare il servizio.\n\nCordiali saluti,\nIl Team di Marketrento',
     };
     await sgMail.send(msg);
     console.log('Email sent');

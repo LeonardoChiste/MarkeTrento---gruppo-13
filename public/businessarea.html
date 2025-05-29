@@ -43,6 +43,16 @@
             background-color: #0066cc;
             color: white;
         }
+        /* Style for the red bordered button */
+        #exitBusinessBtn {
+            color: #cc0000;
+            border: 1.5px solid #cc0000;
+            margin-left: 50px;
+        }
+        #exitBusinessBtn:hover {
+            background-color: #cc0000;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -62,6 +72,7 @@
             <button id="carrelloBtn">Carrello</button>
             <button id="addPromoBtn">Aggiungi Promozione</button>
             <button id="dettagliAccountBtn">DettagliAccount</button>
+            <button id="exitBusinessBtn">Esci dall'area Business</button>
         </div>
     </div>
     <script>
@@ -123,6 +134,10 @@
                     alert("Accesso negato!");
                 }
             });
+        });
+
+        document.getElementById('exitBusinessBtn').addEventListener('click', function() {
+            window.location.href = '/homev2(business).html';
         });
     </script>
 </body>
