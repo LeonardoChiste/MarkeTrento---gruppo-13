@@ -61,7 +61,7 @@
   </form>
   <div id="container">Status: </div>
   <div class ="nav-links">
-    <a href="/home.html">Torna al Mercato</a>
+    <a href="/businessarea.html">Torna alla business area</a>
   </div>
   <script>
     (async function() {
@@ -148,8 +148,8 @@
           if (response.ok) {
             msgDiv.textContent = "Promozione creata con successo!";
             setTimeout(() => {
-              window.location.href = '/home.html';
-            }, 500); // 0.5 seconds delay
+              window.location.href = '/businessarea.html';
+            }, 500); 
           } else {
             msgDiv.textContent = "Errore durante la creazione della promozione.";
           }

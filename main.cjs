@@ -247,7 +247,7 @@ app.get('/generateDevelopmentToken', (req, res) => {
             <p>Token: ${token}</p>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/home.html';
+                window.location.href = '/businessarea.html';
             </script>
         </body>
         </html>
@@ -256,7 +256,7 @@ app.get('/generateDevelopmentToken', (req, res) => {
 
 
 app.get('/homev1', (req, res) => {
-    res.status(200).sendFile(path.join(__dirname, 'public', `/home.html`));
+    res.status(200).sendFile(path.join(__dirname, 'public', `/businessarea.html`));
 });
 
 

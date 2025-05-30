@@ -283,7 +283,7 @@
                     alert('Ordine confermato e salvato!');
                     // Svuota il carrello dopo l'ordine
                     await fetch(`/api/v1/carrelli/${clientId}/clear`, { method: 'POST' });
-                    window.location.href = '/home.html';
+                    window.location.href = '/businessarea.html';
                 } else {
                     const data = await res.json();
                     alert(data.error || 'Errore durante il salvataggio dell\'ordine');
