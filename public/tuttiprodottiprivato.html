@@ -100,11 +100,53 @@
         window.location.reload();
         }
         });
-        // Ottieni id venditore da query string o usa default
-        function getVenditoreId() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('id') || '682794e1cf5e37c6f8526f3f';
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
         }
+        // Ottieni id venditore da query string o usa default
+        async function getVenditoreId() {
+            
+        let userId = null;
+        let userTipo = null;
+        let userDati = null;
+
+        
+            const token = localStorage.getItem('token');
+            if (!token) {
+                document.getElementById('errore').textContent = "Token non trovato. Effettua il login.";
+                return;
+            }
+            const payload = parseJwt(token);
+            if (!payload || !payload.email || !payload.aut) {
+                document.getElementById('errore').textContent = "Token non valido. Effettua nuovamente il login.";
+                return;
+            }
+
+            let tipo = payload.aut.toLowerCase();
+            let email = encodeURIComponent(payload.email);
+
+            endpoint = `/api/v1/accounts/venditore/${email}`
+            try {
+                const res = await fetch(endpoint, {
+                    headers: { 'x-access-token': token }
+                });
+                if (!res.ok) {
+                    document.getElementById('errore').textContent = "Errore nel recupero dati account.";
+                    return;
+                }
+                const datoricerca = await res.json();
+                var idricerca = datoricerca._id;
+                return idricerca;
+         }
+            catch (err) {
+                document.getElementById('errore').textContent = "Errore di rete o server.";
+                return;
+            }
+            }
 
         function aggiornaProdotto(idProdotto) {
             alert('Funzione di aggiornamento per prodotto ID: ' + idProdotto);
@@ -192,8 +234,8 @@
 
         window.aggiornaProdotto = aggiornaProdotto;
 
-        window.onload = function() {
-            const id = getVenditoreId();
+        window.onload = async function() {
+            const id = await getVenditoreId();
             caricaProdotti(id);
         };
     </script>

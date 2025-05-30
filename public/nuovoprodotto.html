@@ -231,6 +231,14 @@
             hideSelectedTagChip();
         }
 
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             caricaTagSimple();
             document.getElementById('tagSelect').addEventListener('change', function() {
@@ -251,10 +259,45 @@
 
             const immaginiRaw = this.immagine.value.split('\n').map(s => s.trim()).filter(Boolean);
 
+            
+
+        let userId = null;
+        let userTipo = null;
+        let userDati = null;
+
+        
+            const token = localStorage.getItem('token');
+            if (!token) {
+                document.getElementById('errore').textContent = "Token non trovato. Effettua il login.";
+                return;
+            }
+            const payload = parseJwt(token);
+            if (!payload || !payload.email || !payload.aut) {
+                document.getElementById('errore').textContent = "Token non valido. Effettua nuovamente il login.";
+                return;
+            }
+
+            let tipo = payload.aut.toLowerCase();
+            let email = encodeURIComponent(payload.email);
+
+            endpoint = `/api/v1/accounts/venditore/${email}`
+            try {
+                const res = await fetch(endpoint, {
+                    headers: { 'x-access-token': token }
+                });
+                if (!res.ok) {
+                    document.getElementById('errore').textContent = "Errore nel recupero dati account.";
+                    return;
+                }
+                const datoricerca = await res.json();
+                var idricerca = datoricerca._id;
+
+
+
             const dati = {
                 nome: String(this.nome.value),
                 descrizione: String(this.descrizione.value),
-                venditore: '682794e1cf5e37c6f8526f3f',
+                venditore: idricerca,
                 costo: parseFloat(this.costo.value),
                 quantita: parseInt(this.quantita.value),
                 tag: tagString,
@@ -284,6 +327,10 @@
                 }
             } catch (error) {
                 document.getElementById('esito').innerHTML = '<span style="color:red;">Errore di rete!</span>';
+            }
+        }
+            catch (error) {
+                document.getElementById('esito').innerHTML = '<span style="color:red;">Errore nel recupero dati account!</span>';
             }
         });
     </script>
