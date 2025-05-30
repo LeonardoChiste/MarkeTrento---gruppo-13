@@ -5,8 +5,8 @@ const DBVendor = require('../models/vendorModel.cjs');
 const DBEntrepreneur = require('../models/promoterModel.cjs');
 
 // Aggiunge un prodotto al carrello di un cliente
-async function addProductToCarrello(clientId, product) {
-    const client = await DBClient.findById(clientId);
+async function addProductToCarrello(model, userId, product) {
+    const client = await model.findById(userId);
     if (client) {
         // Carrello da database a oggetto
         const carrello = new Carrello();
@@ -26,28 +26,27 @@ async function addProductToCarrello(clientId, product) {
 }
 
 // Recupera il carrello di un cliente
-async function getClientCarrello(clientId) {
-    const client = await DBClient.findById(clientId);
-    if (client) {
+async function getCarrello(model, userId) {
+    const user = await model.findById(userId);
+    if (user) {
         const carrello = new Carrello();
-        carrello.prodotti = client.carrello.map(prodotto => ({
-            _id: prodotto._id,
-            nome: prodotto.nome || 'Prodotto sconosciuto',
-            prezzo: prodotto.prezzo || 0,
-            quantity: prodotto.quantity || 1
-        }));
-
-        console.log("Carrello:", carrello);
+        carrello.prodotti = user.carrello
+            .filter(prodotto => prodotto && prodotto._id)
+            .map(prodotto => ({
+                _id: prodotto._id,
+                nome: prodotto.nome || 'Prodotto sconosciuto',
+                prezzo: prodotto.prezzo || 0,
+                quantity: prodotto.quantity || 1
+            }));
         return carrello;
     } else {
-        console.log("Client not found");
         return null;
     }
 }
 
-// Rimuove un prodotto dal carrello di un cliente
-async function removeProductFromCarrello(clientId, nomeProdotto) {
-    const client = await DBClient.findById(clientId);
+// Rimuove un prodotto dal carrello di un 
+async function removeProductFromCarrello(model, userId, nomeProdotto) {
+    const client = await model.findById(userId);
     if (client) {
         // Carrello da database a oggetto
         const carrello = new Carrello();
@@ -109,4 +108,4 @@ async function nuovaregistrazione(cliente) {
 
 
 
-module.exports = { addProductToCarrello, getClientCarrello, removeProductFromCarrello, nuovaregistrazione };
+module.exports = { addProductToCarrello, getCarrello, removeProductFromCarrello, nuovaregistrazione };

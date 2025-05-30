@@ -16,5 +16,5 @@ module.exports = mongoose.model('DBClient', new Schema({
     email:String,
     username:String,
     password:String,
-    carrello: [ProductSchema] //Array di prodotti
+    carrello: { type: [ProductSchema], default: [] } // Array di prodotti, default vuoto (sennò causa problemi)
 }));

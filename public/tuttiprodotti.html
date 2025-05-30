@@ -114,6 +114,42 @@
     </div>
 </body>
 <script>
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function getUserTypeAndIdFromToken() {
+            const token = localStorage.getItem('token');
+            if (!token) return null;
+            const payload = parseJwt(token);
+            const email = payload && (payload.email || payload.usermail);
+            const role = payload && (payload.aut || payload.role);
+            if (!email || !role) return null;
+
+            let endpoint, userType;
+            if (role === 'Cliente') {
+                endpoint = `/api/v1/accounts/cliente/${email}`;
+                userType = 'cliente';
+            } else if (role === 'Venditore') {
+                endpoint = `/api/v1/accounts/venditore/${email}`;
+                userType = 'venditore';
+            } else if (role === 'Imprenditore') {
+                endpoint = `/api/v1/accounts/imprenditore/${email}`;
+                userType = 'imprenditore';
+            } else {
+                return null;
+            }
+
+            const res = await fetch(endpoint);
+            if (!res.ok) return null;
+            const user = await res.json();
+            return { userType, userId: user._id };
+        }
+
         function getIdFromQuery() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
@@ -192,7 +228,14 @@
                 container.innerHTML = '<span style="color:red;">Errore nel caricamento dei prodotti.</span>';
             }
             // ID di test per il carrello
-            const clientId =  '68245a82ef2a089ff02b2a7b';
+            //const clientId =  '68245a82ef2a089ff02b2a7b';
+            const userInfo = await getUserTypeAndIdFromToken();
+            if (!userInfo) {
+                alert('Utente non autenticato!');
+                window.history.back();
+                return;
+            }
+            const { userType, userId } = userInfo;
 
             container.querySelectorAll('.add-cart-btn').forEach(btn => {
                 btn.addEventListener('click', async function() {
@@ -218,7 +261,7 @@
                         quantity: quantity
                     };
                     try {
-                        const res = await fetch(`/api/v1/carrelli/${clientId}/add`, {
+                        const res = await fetch(`/api/v1/carrelli/${userType}/${userId}/add`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(prodotto)
@@ -235,22 +278,24 @@
                 });
             });
         }
-         document.getElementById('carrelloBtn').addEventListener('click', async function() {
-    fetch('/check/carrello', {
-        headers: {
-            'x-access-token': localStorage.getItem('token')
-        }
-    })
-    .then(res => {
-        if (res.ok) {
-            window.location.href = '/carrello.html';
-        } else {
-            alert("Accesso negato!");
-        }
-    });
-});
 
-        window.onload = caricaProdotti;
+
+        document.getElementById('carrelloBtn').addEventListener('click', async function() {
+            fetch('/check/carrello', {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = '/carrello.html';
+                } else {
+                    alert("Accesso negato!");
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', caricaProdotti);
 
     </script>
 </html>
