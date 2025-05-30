@@ -1,5 +1,13 @@
 var mongoose = require('mongoose');
+const { default: Carrello } = require('../classes/Carrello.cjs');
 var Schema = mongoose.Schema;
+
+var ProductSchema = new Schema({
+    _id: { type: Schema.Types.ObjectId, ref: 'Productv2' },
+    nome: String,
+    prezzo: Number,
+    quantity: Number
+});
 
 // set up a mongoose model
 module.exports = mongoose.model('DBEntrepreneur', new Schema({ 
@@ -12,4 +20,5 @@ module.exports = mongoose.model('DBEntrepreneur', new Schema({
     sede:String,
     descrizione:String,
     tipo:String,
+    Carrello: { type: [ProductSchema], default: [] }, 
 }));

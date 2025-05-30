@@ -1,6 +1,13 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var ProductSchema = new Schema({
+    _id: { type: Schema.Types.ObjectId, ref: 'Productv2' },
+    nome: String,
+    prezzo: Number,
+    quantity: Number
+});
+
 // set up a mongoose model
 module.exports = mongoose.model('DBVendor', new Schema({ 
     nome:String,
@@ -13,4 +20,5 @@ module.exports = mongoose.model('DBVendor', new Schema({
     descrizione:String,
     tipo:String,
     datiPagamento:String,
+    carrello: { type: [ProductSchema], default: [] },
 }));

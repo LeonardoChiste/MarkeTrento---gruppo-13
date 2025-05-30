@@ -1,6 +1,6 @@
 const Utente = require('./Utente.cjs');
 const Carrello = require('./Carrello.cjs');
-const { addProductToCarrello, removeProductFromCarrello } = require('../services/clienteService.cjs');
+const { addProductToCarrello, removeProductFromCarrello } = require('../services/CarrrelloService.cjs');
 
 
 class Cliente extends Utente {

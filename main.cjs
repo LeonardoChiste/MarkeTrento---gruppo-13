@@ -146,7 +146,10 @@ app.use(express.json()); // Per dati JSON (opzionale ma utile)
 //app.use('/default.html');
 // Pagina principale
 app.get('/', (req, res) => {
+    //addCarrelloToVendors();
+    //addCarrelloToPromoters();
     //popola();
+    //cleanCarts();
     res.status(200).sendFile(path.join(__dirname, 'public', `/default.html`));
 });
 /*
@@ -298,9 +301,41 @@ app.put('/api/v1/imprenditori/sede/:id', tokenChecker('Imprenditore'), async (re
     }
 });*/
 
+//DEBUGGING CARRELLI
+async function cleanCarts() {
+    const clients = await DBClient.find();
+    for (const client of clients) {
+        if (Array.isArray(client.carrello)) {
+            // Remove null or invalid products
+            client.carrello = client.carrello.filter(p => p && p._id);
+            await client.save();
+        }
+    }
+    console.log('Carrelli puliti!');
+}
 
+async function addCarrelloToVendors() {
+    const vendors = await DBVendor.find();
+    for (const vendor of vendors) {
+        if (!Array.isArray(vendor.carrello)) {
+            vendor.carrello = [];
+            await vendor.save();
+        }
+    }
+    console.log('Carrello aggiunto a tutti i venditori!');
+}
 
-
+// Utility function to add carrello to all promoters
+async function addCarrelloToPromoters() {
+    const promoters = await DBEntrepreneur.find();
+    for (const promoter of promoters) {
+        if (!Array.isArray(promoter.carrello)) {
+            promoter.carrello = [];
+            await promoter.save();
+        }
+    }
+    console.log('Carrello aggiunto a tutti i promotori!');
+}
 
 
 

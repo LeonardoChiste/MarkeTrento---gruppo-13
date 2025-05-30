@@ -99,10 +99,47 @@
     </div>
 
     <script>
-        // Recupera il carrello di un cliente
-        async function getCarrello(clientId) {
+        function parseJwt(token) {
             try {
-                const response = await fetch(`/api/v1/carrelli/${clientId}`);
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Ritorna { userType, userId }
+        async function getUserTypeAndIdFromToken() {
+            const token = localStorage.getItem('token');
+            if (!token) return null;
+            const payload = parseJwt(token);
+            const email = payload && (payload.email || payload.usermail);
+            const role = payload && (payload.aut || payload.role);
+            if (!email || !role) return null;
+
+            let endpoint, userType;
+            if (role === 'Cliente') {
+                endpoint = `/api/v1/accounts/cliente/${email}`;
+                userType = 'cliente';
+            } else if (role === 'Venditore') {
+                endpoint = `/api/v1/accounts/venditore/${email}`;
+                userType = 'venditore';
+            } else if (role === 'Imprenditore') {
+                endpoint = `/api/v1/accounts/imprenditore/${email}`;
+                userType = 'imprenditore';
+            } else {
+                return null;
+            }
+
+            const res = await fetch(endpoint);
+            if (!res.ok) return null;
+            const user = await res.json();
+            return { userType, userId: user._id };
+        }
+
+        // Recupera il carrello di un utente
+        async function getCarrello(userType, userId) {
+            try {
+                const response = await fetch(`/api/v1/carrelli/${userType}/${userId}`);
                 if (!response.ok) {
                     throw new Error('Carrello non trovato');
                 }
@@ -135,8 +172,14 @@
             const container = document.getElementById('carrello-container');
             const totalPriceElement = document.getElementById('total-price');
             try {
-                const clientId = '68245a82ef2a089ff02b2a7b'; // Id cliente di prova
-                const carrello = await getCarrello(clientId);
+                const userInfo = await getUserTypeAndIdFromToken();
+                if (!userInfo) {
+                    alert('Utente non autenticato!');
+                    window.history.back();
+                    return;
+                }
+                const { userType, userId } = userInfo;
+                const carrello = await getCarrello(userType, userId);
 
                 if (!carrello || carrello.length === 0) {
                     container.innerHTML = `<div class="error-message">Carrello vuoto</div>`;
@@ -154,7 +197,7 @@
                     btn.addEventListener('click', async function() {
                         const nome = this.getAttribute('data-nome');
                         try {
-                            const res = await fetch(`/api/v1/carrelli/${clientId}/removeOne`, {
+                            const res = await fetch(`/api/v1/carrelli/${userType}/${userId}/removeOne`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ nome })
