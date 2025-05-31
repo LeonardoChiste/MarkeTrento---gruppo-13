@@ -55,4 +55,19 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.post('/:id/approve', async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ error: 'Ordine non trovato' });
+        }
+        order.stato = 'In consegna';
+        await order.save();
+        res.status(200).json({ message: 'Ordine approvato con successo' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Errore durante l approvazione dell ordine' });
+    }
+});
 module.exports = router;
