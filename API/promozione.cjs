@@ -1,7 +1,6 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
 const multer = require('multer');
-const fs = require('fs');
 const DBPromotion=require('../models/promotionModel.cjs');
 const router = express.Router();
 const tokenChecker = require('../tokenchecker.cjs').tokenChecker;

@@ -36,7 +36,7 @@ const tags = require('./API/tags.cjs');
 const citytags = require('./API/citytags.cjs');
 const order = require('./API/order.cjs');
 const mail = require('./API/mail.cjs');
-
+const clienti = require('./API/clienti.cjs')
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -169,7 +169,7 @@ app.use('/api/v1/accounts',accounts)
 app.use('/api/v1/citytags', citytags);
 app.use('/api/v1/orders', order);
 app.use('/api/v1/registrationservice',mail);
-
+app.use('/api/v1/clienti', clienti);
 app.use('/check', authcheck);
 //login stuff
 app.post('/login', async (req, res) => {
@@ -285,20 +285,6 @@ app.put('/api/v1/imprenditori/sede/:id', tokenChecker('Imprenditore'), async (re
         res.status(500).json({ error: 'Errore del server' });
     }
 });
-
-/*app.get('/api/v1/imprenditore/:id', tokenChecker('Imprenditore'), async (req, res) => {
-    try {
-        const imprenditore = await ImprenditoreServizio.getImprenditoreById(req.params.id);
-        if (!imprenditore) {
-            return res.status(404).send('Imprenditore non trovato');
-        }
-        res.status(200).json(imprenditore);
-    } catch (error) {
-        res.status(500).send('Errore del server');
-    }
-});*/
-
-
 
 
 

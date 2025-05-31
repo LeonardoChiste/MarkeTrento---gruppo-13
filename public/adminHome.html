@@ -65,7 +65,7 @@
     </div>
     <script>
         document.getElementById('dettagliAccountBtn').addEventListener('click', async function() {
-            fetch('/check/dettagliaccount', {
+            fetch('/check/admin', {
                 headers: {
                     'x-access-token': localStorage.getItem('token')
                 }
@@ -73,6 +73,20 @@
             .then(res => {
                 if (res.ok) {
                     window.location.href = '/dettagliaccount.html';
+                } else {
+                    alert("Accesso negato!");
+                }
+            });
+        });
+        document.getElementById('consegnaBtn').addEventListener('click', async function() {
+            fetch('/check/consegne', {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = '/viewOrders.html';
                 } else {
                     alert("Accesso negato!");
                 }
