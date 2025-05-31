@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-const { default: Carrello } = require('../classes/Carrello.cjs');
 var Schema = mongoose.Schema;
 
 var ProductSchema = new Schema({
