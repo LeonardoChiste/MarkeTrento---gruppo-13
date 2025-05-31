@@ -106,6 +106,19 @@ async function nuovaregistrazione(cliente) {
     }
 }
 
+async function getClienteById(id) {
+    try {
+        const cliente = await DBClient.findById(id);
+        if (!cliente) {
+            console.log("Cliente non trovato");
+            return null;
+        }
+        return cliente;
+    } catch (error) {
+        console.error("Errore durante il recupero del cliente:", error);
+        return null;
+    }
+}
 
 
 module.exports = { addProductToCarrello, getCarrello, removeProductFromCarrello, nuovaregistrazione };

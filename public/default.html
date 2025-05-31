@@ -117,9 +117,10 @@
         
         <button class="register-btn" onclick="window.location.href='registrazione.html'">Registrati</button>
         
-        <form id="guestForm">
-    <button type="submit" class="guest-btn">Accedi senza registrazione</button>
-</form>
+    <form id="guestForm">
+        <button type="submit" class="guest-btn">Accedi senza registrazione</button>
+    </form>
+    <button class="admin"  onclick="window.location.href = '/adminHome.html'">Accedi come Admin</button>
     </div>
     <script>
         document.getElementById('guestForm').addEventListener('submit', function(e) {
@@ -127,8 +128,8 @@
             localStorage.removeItem('token');
             //provvisorio per sviluppo DA ELIMINARE IN PRODUZIONE
              window.location.href = '/generateDevelopmentToken';
-            
         });
+        
     </script>
 </body>
 </html>

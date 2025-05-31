@@ -3,6 +3,15 @@ const router = express.Router();
 const Order = require('../models/orderModel.cjs');
 const Productv2 = require('../models/productModel.cjs');
 
+
+router.get('/', async (req, res) => {
+    try {
+        const orders = await Order.find();
+        res.status(200).json(orders);
+    } catch (err) {
+        res.status(500).json({ error: "Errore durante il recupero degli ordini." });
+    }
+});
 router.post('/', async (req, res) => {
     try {
         const { prodotti, venditore, cliente, zona, tipo } = req.body;
