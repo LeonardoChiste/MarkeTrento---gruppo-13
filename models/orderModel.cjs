@@ -10,8 +10,17 @@ const OrderSchema = new Schema({
             quantity: Number
         }
     ],
-    venditore: { type: Schema.Types.ObjectId, ref: 'Venditore' },
-    cliente: { type: Schema.Types.ObjectId, ref: 'Client' },
+    venditore: { type: Schema.Types.ObjectId, ref: 'DBVendor' },
+    cliente: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        refPath: 'clienteModel'
+    },
+    clienteModel: {
+        type: String,
+        required: true,
+        enum: ['DBClient', 'DBVendor', 'DBEntrepreneur']
+    },
     zona: String,
     tipo: String,
     pubblicazione: { type: Date, default: Date.now },

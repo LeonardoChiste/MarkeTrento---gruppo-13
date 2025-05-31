@@ -268,77 +268,95 @@
         }
 
         async function confermaOrdine() {
-            const orderType = document.querySelector('input[name="orderType"]:checked').value;
-            const indirizzo = document.getElementById('indirizzo-consegna').value.trim();
-            const cityTag = document.getElementById('city-tag').value;
+    const orderType = document.querySelector('input[name="orderType"]:checked').value;
+    const indirizzo = document.getElementById('indirizzo-consegna').value.trim();
+    const cityTag = document.getElementById('city-tag').value;
 
-            if (orderType === 'consegna') {
-                if (!indirizzo) {
-                    alert('Per la consegna devi inserire un indirizzo!');
-                    document.getElementById('indirizzo-consegna').focus();
-                    return;
-                }
-                if (!cityTag) {
-                    alert('Per la consegna devi selezionare una zona/città!');
-                    document.getElementById('city-tag').focus();
-                    return;
-                }
-            }
-            // Recupera i dati necessari dal carrello e dal venditore
-            const carrello = await getCarrello(userType, userId);
-            if (!carrello || carrello.length === 0) {
-                alert('Carrello vuoto!');
-                return;
-            }
-
-            // Recupera il venditore dal primo prodotto (tutti i prodotti sono dello stesso venditore)
-            const firstProduct = carrello[0];
-            const prodottoRes = await fetch(`/api/v1/prodotti/${firstProduct._id}`);
-            let venditoreId = null;
-            if (prodottoRes.ok) {
-                const prodotto = await prodottoRes.json();
-                venditoreId = prodotto.venditore;
-            }
-
-            // Prepara il body della richiesta ordine
-            const orderBody = {
-                prodotti: carrello, // invia tutto il carrello!
-                venditore: venditoreId,
-                cliente: userId, // ora può essere anche venditore o imprenditore
-                zona: cityTag,
-                tipo: orderType
-            };
-
-            // Invia l'ordine al backend
-            try {
-                const res = await fetch('/api/v1/orders', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderBody)
-                });
-                if (res.ok) {
-                    alert('Ordine confermato e salvato!');
-                    // Svuota il carrello dopo l'ordine
-                    await fetch(`/api/v1/carrelli/${userType}/${userId}/clear`, { method: 'POST' });
-                    switch (userType) {
-                        case 'cliente':
-                            window.location.href = '/homev2(client).html';
-                            break;
-                        case 'venditore':
-                        case 'imprenditore':
-                            window.location.href = '/homev2(business).html';
-                            break;
-                        default:
-                            window.location.back();
-                    }
-                } else {
-                    const data = await res.json();
-                    alert(data.error || 'Errore durante il salvataggio dell\'ordine');
-                }
-            } catch (e) {
-                alert('Errore di rete durante il salvataggio dell\'ordine');
-            }
+    if (orderType === 'consegna') {
+        if (!indirizzo) {
+            alert('Per la consegna devi inserire un indirizzo!');
+            document.getElementById('indirizzo-consegna').focus();
+            return;
         }
+        if (!cityTag) {
+            alert('Per la consegna devi selezionare una zona/città!');
+            document.getElementById('city-tag').focus();
+            return;
+        }
+    }
+    // Recupera i dati necessari dal carrello e dal venditore
+    const carrello = await getCarrello(userType, userId);
+    if (!carrello || carrello.length === 0) {
+        alert('Carrello vuoto!');
+        return;
+    }
+
+    // Recupera il venditore dal primo prodotto (tutti i prodotti sono dello stesso venditore)
+    const firstProduct = carrello[0];
+    const prodottoRes = await fetch(`/api/v1/prodotti/${firstProduct._id}`);
+    let venditoreId = null;
+    if (prodottoRes.ok) {
+        const prodotto = await prodottoRes.json();
+        venditoreId = prodotto.venditore;
+    }
+
+    // Determina il clienteModel corretto
+    let clienteModel = '';
+    switch (userType) {
+        case 'cliente':
+            clienteModel = 'DBClient';
+            break;
+        case 'venditore':
+            clienteModel = 'DBVendor';
+            break;
+        case 'imprenditore':
+            clienteModel = 'DBEntrepreneur';
+            break;
+        default:
+            alert('Tipo utente non valido!');
+            return;
+    }
+
+    // Prepara il body della richiesta ordine
+    const orderBody = {
+        prodotti: carrello,
+        venditore: venditoreId,
+        cliente: userId,
+        clienteModel: clienteModel, 
+        zona: cityTag,
+        tipo: orderType
+    };
+
+    // Invia l'ordine al backend
+    try {
+        const res = await fetch('/api/v1/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderBody)
+        });
+        if (res.ok) {
+            alert('Ordine confermato e salvato!');
+            // Svuota il carrello dopo l'ordine
+            await fetch(`/api/v1/carrelli/${userType}/${userId}/clear`, { method: 'POST' });
+            switch (userType) {
+                case 'cliente':
+                    window.location.href = '/homev2(client).html';
+                    break;
+                case 'venditore':
+                case 'imprenditore':
+                    window.location.href = '/homev2(business).html';
+                    break;
+                default:
+                    window.history.back();
+            }
+        } else {
+            const data = await res.json();
+            alert(data.error || 'Errore durante il salvataggio dell\'ordine');
+        }
+    } catch (e) {
+        alert('Errore di rete durante il salvataggio dell\'ordine');
+    }
+}
 
         // Event listener per mostrare/nascondere il campo indirizzo
         document.querySelectorAll('input[name="orderType"]').forEach(radio => {

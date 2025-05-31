@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>I tuoi Ordini - MarkeTrento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e6ffe6 0%, #b2f2b2 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #f6fff6;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #b2f2b2;
+            padding: 32px 28px;
+        }
+        h1 {
+            color: #218838;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .ordine {
+            background: #e6ffe6;
+            border-left: 6px solid #28a745;
+            margin-bottom: 18px;
+            padding: 14px 18px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px #d4f5d4;
+        }
+        .ordine strong {
+            color: #155724;
+        }
+        .ordine-prodotti {
+            margin: 8px 0 0 0;
+            padding-left: 18px;
+        }
+        .ordine-prodotti li {
+            margin-bottom: 4px;
+        }
+        .back-btn {
+            display: block;
+            margin: 0 auto;
+            margin-top: 30px;
+            padding: 8px 22px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #218838;
+        }
+        .no-orders {
+            text-align: center;
+            color: #888;
+            font-size: 1.2em;
+            margin-top: 40px;
+        }
+        .ordine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .ordine-data {
+            color: #218838;
+            font-size: 1em;
+            font-weight: bold;
+        }
+        .ordine-totale {
+            color: #155724;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>I tuoi Ordini</h1>
+        <div id="ordini-list"></div>
+        <button class="back-btn" id="homeBtn">Torna Indietro</button>
+    </div>
+    <script>
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function getUserTypeAndIdFromToken() {
+            const token = localStorage.getItem('token');
+            if (!token) return null;
+            const payload = parseJwt(token);
+            const email = payload && (payload.email || payload.usermail);
+            const role = payload && (payload.aut || payload.role);
+            if (!email || !role) return null;
+
+            let endpoint, userType;
+            if (role === 'Cliente') {
+                endpoint = `/api/v1/accounts/cliente/${email}`;
+                userType = 'cliente';
+            } else if (role === 'Venditore') {
+                endpoint = `/api/v1/accounts/venditore/${email}`;
+                userType = 'venditore';
+            } else if (role === 'Imprenditore') {
+                endpoint = `/api/v1/accounts/imprenditore/${email}`;
+                userType = 'imprenditore';
+            } else {
+                return null;
+            }
+
+            const res = await fetch(endpoint);
+            if (!res.ok) return null;
+            const user = await res.json();
+            return { userType, userId: user._id, role };
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderVenditore(venditore) {
+            if (!venditore) return '-';
+            if (typeof venditore === 'object') {
+                return `${venditore.nome || ''} ${venditore.cognome || ''} (${venditore.sede || '-'})`;
+            }
+            return venditore;
+        }
+
+        function renderOrdine(ordine) {
+            const totale = ordine.prodotti.reduce((sum, p) => sum + ((p.prezzo || p.costo || 0) * (p.quantity || 1)), 0);
+            return `
+                <div class="ordine">
+                    <div class="ordine-header">
+                        <span class="ordine-data">Data: ${formatDate(ordine.pubblicazione || ordine.data || ordine.createdAt || ordine.updatedAt || Date.now())}</span>
+                        <span class="ordine-totale">Totale: €${totale.toFixed(2)}</span>
+                    </div>
+                    <div><strong>Stato:</strong> ${ordine.stato || 'In attesa'}</div>
+                    <div><strong>Venditore:</strong> ${renderVenditore(ordine.venditore)}</div>
+                    <ul class="ordine-prodotti">
+                        ${ordine.prodotti.map(p => `
+                            <li>
+                                ${p.nome || 'Prodotto'} x${p.quantity || 1} &mdash; €${((p.prezzo || p.costo || 0) * (p.quantity || 1)).toFixed(2)}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        async function caricaOrdini() {
+            const ordiniList = document.getElementById('ordini-list');
+            ordiniList.innerHTML = 'Caricamento...';
+            const userInfo = await getUserTypeAndIdFromToken();
+            if (!userInfo) {
+                ordiniList.innerHTML = '<div class="no-orders">Utente non autenticato.</div>';
+                return;
+            }
+            const { userType, userId, role } = userInfo;
+            let queryParam = '';
+           if (userType === 'cliente' || userType === 'imprenditore' || userType === 'venditore') {
+                queryParam = `userType=cliente&userId=${userId}`;
+            }
+            else if (role === 'business') {
+                queryParam = `userType=business&userId=${userId}`;
+            } else {
+                ordiniList.innerHTML = '<div class="no-orders">Tipo di utente non supportato.</div>';
+                return;
+            }
+            try {
+                const res = await fetch(`/api/v1/orders?${queryParam}`);
+                if (!res.ok) {
+                    ordiniList.innerHTML = '<div class="no-orders">Errore nel caricamento degli ordini.</div>';
+                    return;
+                }
+                const ordini = await res.json();
+                if (!Array.isArray(ordini) || ordini.length === 0) {
+                    ordiniList.innerHTML = '<div class="no-orders">Nessun ordine trovato.</div>';
+                    return;
+                }
+                ordiniList.innerHTML = ordini.map(renderOrdine).join('');
+            } catch (e) {
+                ordiniList.innerHTML = '<div class="no-orders">Errore di rete.</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+        caricaOrdini();
+
+        const homeBtn = document.getElementById('homeBtn');
+        homeBtn.addEventListener('click', async () => {
+            const userInfo = await getUserTypeAndIdFromToken();
+            if (userInfo && userInfo.userType === 'cliente') {
+                window.location.href = '/homev2(client).html';
+            } else {
+                window.location.href = '/homev2(business).html';
+            }
+        });
+    });
+    </script>
+</body>
+</html>

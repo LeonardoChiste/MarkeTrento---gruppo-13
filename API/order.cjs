@@ -3,22 +3,32 @@ const router = express.Router();
 const Order = require('../models/orderModel.cjs');
 const Productv2 = require('../models/productModel.cjs');
 
-
 router.get('/', async (req, res) => {
     try {
-        const orders = await Order.find();
-        res.status(200).json(orders);
+        const { userType, userId } = req.query;
+        let filter = {};
+        if (userType === 'cliente' || userType === 'venditore' || userType === 'imprenditore') {
+            filter.cliente = userId;
+        }
+        const orders = await Order.find(filter)
+        .populate('venditore', 'nome cognome sede')
+        .populate({ path: 'cliente', select: 'nome cognome email', strictPopulate: false }) 
+        .sort({ pubblicazione: -1 });
+        res.json(orders);
     } catch (err) {
-        res.status(500).json({ error: "Errore durante il recupero degli ordini." });
+    console.error(err); // <--- add this
+    res.status(500).json({ error: 'Errore nel recupero degli ordini' });
     }
 });
+
 router.post('/', async (req, res) => {
     try {
-        const { prodotti, venditore, cliente, zona, tipo } = req.body;
+        const { prodotti, venditore, cliente, clienteModel, zona, tipo } = req.body; 
         const newOrder = new Order({
             prodotti,
             venditore,
             cliente,
+            clienteModel, 
             zona,
             tipo,
             pubblicazione: new Date(),
