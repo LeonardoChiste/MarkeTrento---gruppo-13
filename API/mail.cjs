@@ -11,7 +11,7 @@ router.post('/mail', async (req, res) => {
       to: emailreg, // Email del destinatario
       from: 'marketrentowebapp@gmail.com', // Mittente verificato SendGrid
       subject: 'Registrazione Marketrento - nuovo cliente',
-      text: 'Buongiorno, \n\ngrazie per esserti registrto su MarkeTrento. Il suo account è ora attivo e può iniziare a utilizzare il servizio.\n\nCordiali saluti,\nIl Team di Marketrento',
+      text: 'Buongiorno, \n\ngrazie per esserti registrato su MarkeTrento. Il suo account è ora attivo e può iniziare a utilizzare il servizio.\n\nCordiali saluti,\nIl Team di Marketrento',
     };
     await sgMail.send(msg);
     console.log('Email sent');
