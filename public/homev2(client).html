@@ -12,13 +12,14 @@
         }
         .container {
             position: relative;
-            max-width: 420px;
+            max-width: 700px;
+            min-height: 420px;
             margin: 60px auto;
             background: #f6fff6;
             border: 2.5px solid #6fdc8c;
-            border-radius: 18px;
-            box-shadow: 0 2px 12px #e0f7e9;
-            padding: 36px 24px 28px 24px;
+            border-radius: 28px;
+            box-shadow: 0 2px 18px #e0f7e9;
+            padding: 48px 40px 40px 40px;
             text-align: center;
         }
         h1 {
@@ -45,11 +46,13 @@
         .btn-mercato:hover {
             background: #4ec16e;
         }
-        .mini-btns {
-            display: flex;
-            justify-content: center;
-            gap: 18px;
-            flex-wrap: wrap;
+        .mini-btns-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px 28px;
+            justify-items: stretch;
+            margin-top: 0;
+            margin-bottom: 0;
         }
         .mini-btn {
             background: #eaffea;
@@ -63,6 +66,8 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            width: 100%;
+            justify-content: center;
         }
         .mini-btn:hover {
             background: #c8f7d4;
@@ -87,9 +92,19 @@
         .upgrade-btn:hover {
             background: #e69500;
         }
+        @media (max-width: 900px) {
+            .container {
+                max-width: 98vw;
+                padding: 24px 8px 24px 8px;
+            }
+            .mini-btns-grid {
+                gap: 12px 10px;
+            }
+        }
         @media (max-width: 600px) {
             .container {
                 padding: 18px 6px 18px 6px;
+                min-height: 0;
             }
             .btn-mercato {
                 font-size: 1.1em;
@@ -103,6 +118,10 @@
                 font-size: 0.6em;
                 padding: 4px 6px;
             }
+            .mini-btns-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px 6px;
+            }
         }
     </style>
 </head>
@@ -111,9 +130,9 @@
         <button class="upgrade-btn" onclick="window.location.href='/upgrade.html'">🔼 Upgrade a Account Business</button>
         <h1>MarkeTrento WebApp 🥇</h1>
         <button class="btn-mercato" onclick="window.location.href='/mercato.html'">🛍️ Mercato</button>
-        <div class="mini-btns">
-            <button class="mini-btn" onclick="window.location.href='/agenda.html'">📅 Agenda</button>
+        <div class="mini-btns-grid">
             <button class="mini-btn" onclick="window.location.href='/carrello.html'"> 🛒 Carrello</button>
+            <button class="mini-btn" onclick="window.location.href='/agenda.html'">📅 Agenda</button>
             <button class="mini-btn" onclick="window.location.href='/ordinicliente.html'">👜 Ordini</button>
             <button class="mini-btn" onclick="window.location.href='/dettagliaccount.html'">⚙️ Impostazioni</button>
         </div>
