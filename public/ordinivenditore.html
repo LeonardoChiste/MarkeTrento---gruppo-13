@@ -211,7 +211,7 @@
                         `).join('')}
                     </ul>
                     ${showRifiuta ? `<button class="rifiuta-btn" data-ordine-id="${ordine._id}">Rifiuta Ordine</button>` : ''}
-                    ${showRitirato ? `<button class="ritirato-btn" data-ordine-id="${ordine._id}">Imposta come Ritirato</button>` : ''}
+                    ${showRitirato ? `<button class="ritirato-btn" data-ordine-id="${ordine._id}">Imposta come Ritirato del cliente</button>` : ''}
                 </div>
             `;
         }
@@ -246,6 +246,17 @@
                 document.querySelectorAll('.rifiuta-btn').forEach(btn => {
                     btn.addEventListener('click', async function() {
                         const ordineId = this.getAttribute('data-ordine-id');
+                        // Trova l'ordine e info cliente associati a questo bottone
+                        const ordineElem = this.closest('.ordine');
+                        // Trova l'indice dell'ordine corrente
+                        const ordiniElems = Array.from(document.querySelectorAll('.ordine'));
+                        const ordineIdx = ordiniElems.indexOf(ordineElem);
+                        // Recupera i dati dal contesto già caricati
+                        const ordini = await (await fetch(`/api/v1/orders/venditori/${await getVenditoreIdFromToken()}`)).json();
+                        const clientiIds = ordini.map(o => (typeof o.cliente === 'object' ? o.cliente._id : o.cliente));
+                        const clientiInfo = await Promise.all(clientiIds.map(id => getClienteInfo(id)));
+                        const clienteEmail = clientiInfo[ordineIdx]?.email || '-';
+                        const clientename = clientiInfo[ordineIdx]?.username || '-';
                         if (!ordineId) return;
                         if (!confirm('Sei sicuro di voler rifiutare questo ordine?')) return;
                         try {
@@ -253,8 +264,8 @@
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
-                                }
+                                    }
+                                
                             });
                             if (res.ok) {
                                 caricaOrdini();
@@ -264,10 +275,22 @@
                         } catch (e) {
                             alert('Errore di rete.');
                         }
+                        try {
+                            const res= await fetch('/api/v1/service/mail/rifiuto-ordini', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ orderId: ordineId, username: clientename, email: clienteEmail })
+                            });
+                        }
+                        catch (e) {
+                            console.error('Errore nell\'invio della mail di rifiuto:', e);
+                        }
                     });
                 });
 
-                // Aggiungi event listener ai bottoni "RITIRATO"
+                
                 document.querySelectorAll('.ritirato-btn').forEach(btn => {
                     btn.addEventListener('click', async function() {
                         const ordineId = this.getAttribute('data-ordine-id');
