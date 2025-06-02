@@ -51,8 +51,9 @@ router.post('/', async (req, res) => {
         }
 
         res.status(201).json({ message: "Ordine salvato con successo!" });
-    } catch (err) {
-        res.status(500).json({ error: "Errore durante il salvataggio dell'ordine." });
+        }catch (err) {
+            console.error("Order creation error:", err);
+            res.status(500).json({ error: "Errore durante il salvataggio dell'ordine.", details: err.message });
     }
 });
 
