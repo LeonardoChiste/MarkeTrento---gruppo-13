@@ -32,8 +32,8 @@
       margin-top: 20px;
     }
   </style>
-  <h1>Aggiungi promozione</h1>
-  <form enctype="multipart/form-data" action="/api/v1/promozioni" method="POST">
+  <h1>Aggiungi richiesta</h1>
+  <form enctype="multipart/form-data" action="/api/v1/upgrade/registrazione" method="POST">
     <label for="file">Partita IVA (.pdf Max 10MB):</label><br>
     <input type="file" id="file" name="file" accept="file/*" required><br><br>
     <button type="submit">Aggiungi</button>
@@ -48,7 +48,6 @@
       let userTipo = null;
       let userDati = null;
       const container = document.getElementById('container');
-      const promoter = document.getElementById('promoter');
       function parseJwt(token) {
         try {
           return JSON.parse(atob(token.split('.')[1]));
@@ -73,8 +72,10 @@
       let tipo = payload.aut.toLowerCase();
       let email = encodeURIComponent(payload.email);
       let endpoint = '';
-      if (tipo === 'Imprenditore') {
+      if (tipo === 'imprenditore') {
         endpoint = `/api/v1/accounts/imprenditore/${email}`;
+      } else if (tipo === 'venditore') {
+        endpoint = `/api/v1/accounts/venditore/${email}`;
       } else {
         container.innerHTML = `Tipo utente non riconosciuto. Tipo ${tipo} non supportato.`;
         return;
@@ -93,9 +94,8 @@
         userTipo = tipo;
         userDati = dati;
         container.innerHTML = `Benvenuto ${userDati.nome || 'Utente'}!`;
-        promoter.value = userDati.nome + ' ' + userDati.cognome || 'N/A';
       } catch (e) {
-        container.innerHTML = '<span style="color:red;">Errore di rete.</span>';
+        container.innerHTML = `<span style="color:red;">Errore di rete. ${userTipo}</span>`;
         return;
       }
 
@@ -103,7 +103,8 @@
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
-
+        formData.append('imprenditore', userId);
+        formData.append('uploadDate', new Date().toISOString());
         // Show a loading message
         let msgDiv = document.getElementById('submit-msg');
         if (!msgDiv) {
@@ -112,9 +113,9 @@
           form.parentNode.insertBefore(msgDiv, form.nextSibling);
         }
         msgDiv.textContent = "Invio in corso...";
-
+        
         try {
-          const response = await fetch('/api/v1/promozioni', {
+          const response = await fetch('/api/v1/upgrades/registrazione', {
             method: 'POST',
             headers: {
               'x-access-token': token
@@ -123,12 +124,12 @@
           });
 
           if (response.ok) {
-            msgDiv.textContent = "Promozione creata con successo!";
+            msgDiv.textContent = "Richiesta creata con successo!";
             setTimeout(() => {
               window.location.href = '/businessarea.html';
             }, 500); 
           } else {
-            msgDiv.textContent = "Errore durante la creazione della promozione.";
+            msgDiv.textContent = "Errore durante la creazione della richiesta.";
           }
         } catch (err) {
           msgDiv.textContent = "Errore di rete.";

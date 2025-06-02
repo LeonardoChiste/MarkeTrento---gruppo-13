@@ -9,11 +9,8 @@ const fileSchema = new Schema({
 
 // set up a mongoose model
 module.exports = mongoose.model('DBFormVend', new Schema({ 
-    imprenditore: { 
-        type: Schema.Types.ObjectId, ref: 'DBEntrepreneur',
-        required: true
-    },
-    pdf: fileSchema,
+    imprenditore: String,
+    file: fileSchema,
     uploadDate: {
         type: Date,
         default: Date.now

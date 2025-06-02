@@ -24,7 +24,7 @@ const Productv2=require('./models/productModel.cjs');
 const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
 const DBClient=require('./models/clientModel.cjs');
-
+const DBFormVend = require ('./models/upgradeModel.cjs');
 
 //API imports
 const carrelli = require('./API/carrello.cjs');
@@ -36,10 +36,10 @@ const tags = require('./API/tags.cjs');
 const citytags = require('./API/citytags.cjs');
 const order = require('./API/order.cjs');
 const mail = require('./API/mail.cjs');
-const clienti = require('./API/clienti.cjs')
+const clienti = require('./API/clienti.cjs');
+const upgrade = require('./API/upgrade.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
-
 
 // Middleware
 //app.use(express.static(path.join(__dirname, 'frontend')));
@@ -174,6 +174,8 @@ app.use('/api/v1/orders', order);
 app.use('/api/v1/registrationservice',mail);
 app.use('/api/v1/clienti', clienti);
 app.use('/check', authcheck);
+app.use('/api/v1/upgrades', upgrade);
+
 //login stuff
 app.post('/login', async (req, res) => {
     const { usermail, password } = req.body;

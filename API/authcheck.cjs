@@ -27,4 +27,8 @@ router.get('/admin', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'public', 'dettagliaccount.html'));
 });
 
+router.get('/upgrade', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'public', 'venditoreRegForm.html'));
+});
+
 module.exports = router;
