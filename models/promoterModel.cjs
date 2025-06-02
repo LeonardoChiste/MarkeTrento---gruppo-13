@@ -19,5 +19,5 @@ module.exports = mongoose.model('DBEntrepreneur', new Schema({
     sede:String,
     descrizione:String,
     tipo:String,
-    Carrello: { type: [ProductSchema], default: [] }, 
+    carrello: { type: [ProductSchema], default: [] }, 
 }));
