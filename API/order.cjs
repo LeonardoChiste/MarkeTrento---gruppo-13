@@ -56,6 +56,20 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    try { 
+        const orderId = req.params.id;
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ error: 'Ordine non trovato' });
+        }
+    } catch (err) {
+        console.error(err); 
+        return res.status(500).json({ error: 'Errore nel recupero dell ordine' });
+    }
+    res.json(order);
+});
+
 router.post('/:id/approve', async (req, res) => {
     try {
         const orderId = req.params.id;
