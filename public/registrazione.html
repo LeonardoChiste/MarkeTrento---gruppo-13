@@ -301,7 +301,7 @@
                 throw new Error(data.error || 'Errore durante la registrazione');
             }
 
-            fetch('/api/v1/registrationservice/mail', {
+            fetch('/api/v1/service/mail', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, username })

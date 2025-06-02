@@ -171,7 +171,7 @@ app.use('/api/v1/tags', tags);
 app.use('/api/v1/accounts',accounts)
 app.use('/api/v1/citytags', citytags);
 app.use('/api/v1/orders', order);
-app.use('/api/v1/registrationservice',mail);
+app.use('/api/v1/service',mail);
 app.use('/api/v1/clienti', clienti);
 app.use('/check', authcheck);
 app.use('/api/v1/upgrades', upgrade);
