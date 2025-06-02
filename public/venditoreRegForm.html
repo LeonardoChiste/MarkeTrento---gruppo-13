@@ -34,29 +34,8 @@
   </style>
   <h1>Aggiungi promozione</h1>
   <form enctype="multipart/form-data" action="/api/v1/promozioni" method="POST">
-    <label for="title">Titolo*:</label><br>
-    <input type="text" id="title" name="title" required><br><br>
-
-    <label for="promoter">Promotore*:</label><br>
-    <textarea id="promoter" name="promoter" rows="1" required></textarea><br><br>
-
-    <label for="description">Descrizione*:</label><br>
-    <textarea id="description" name="description" rows="4" required></textarea><br><br>
-
-    <label for="startdate">Data inizio*:</label><br>
-    <input type="date" id="startdate" name="startdate" required><br><br>
-
-    <label for="enddate">Data fine:</label><br>
-    <input type="date" id="enddate" name="enddate" required><br><br>
-
-    <label for="image">Immagine(Max 5MB):</label><br>
-    <input type="file" id="image" name="image" accept="image/*"><br><br>
-    
-    <input type="radio" id="evento" name="tipo" value="Evento">
-    <label for="evento">Evento</label><br>
-    <input type="radio" id="promozione" name="tipo" value="Promozione">
-    <label for="promozione">Promozione</label><br>
-
+    <label for="file">Partita IVA (.pdf Max 10MB):</label><br>
+    <input type="file" id="file" name="file" accept="file/*" required><br><br>
     <button type="submit">Aggiungi</button>
   </form>
   <div id="container">Status: </div>
@@ -96,8 +75,6 @@
       let endpoint = '';
       if (tipo === 'Imprenditore') {
         endpoint = `/api/v1/accounts/imprenditore/${email}`;
-      } else if (tipo === 'Venditore') {
-        endpoint = `/api/v1/accounts/venditore/${email}`;
       } else {
         container.innerHTML = `Tipo utente non riconosciuto. Tipo ${tipo} non supportato.`;
         return;
