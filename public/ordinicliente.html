@@ -30,9 +30,18 @@
             padding: 14px 18px;
             border-radius: 8px;
             box-shadow: 0 1px 4px #d4f5d4;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .ordine.rifiutato {
+            background: #ffe6e6;
+            border-left: 6px solid #dc3545;
+            box-shadow: 0 1px 4px #f5d4d4;
         }
         .ordine strong {
             color: #155724;
+        }
+        .ordine.rifiutato strong {
+            color: #721c24;
         }
         .ordine-prodotti {
             margin: 8px 0 0 0;
@@ -79,6 +88,10 @@
             color: #155724;
             font-weight: bold;
             font-size: 1.1em;
+        }
+        .ordine.rifiutato .ordine-data,
+        .ordine.rifiutato .ordine-totale {
+            color: #dc3545;
         }
     </style>
 </head>
@@ -140,13 +153,16 @@
 
         function renderOrdine(ordine) {
             const totale = ordine.prodotti.reduce((sum, p) => sum + ((p.prezzo || p.costo || 0) * (p.quantity || 1)), 0);
+            const stato = ordine.stato || 'In attesa';
+            const isRifiutato = stato.toLowerCase() === 'rifiutato';
+            const ordineClass = isRifiutato ? 'ordine rifiutato' : 'ordine';
             return `
-                <div class="ordine">
+                <div class="${ordineClass}">
                     <div class="ordine-header">
                         <span class="ordine-data">Data: ${formatDate(ordine.pubblicazione || ordine.data || ordine.createdAt || ordine.updatedAt || Date.now())}</span>
                         <span class="ordine-totale">Totale: €${totale.toFixed(2)}</span>
                     </div>
-                    <div><strong>Stato:</strong> ${ordine.stato || 'In attesa'}</div>
+                    <div><strong>Stato:</strong> ${stato}</div>
                     <div><strong>Venditore:</strong> ${renderVenditore(ordine.venditore)}</div>
                     <ul class="ordine-prodotti">
                         ${ordine.prodotti.map(p => `
@@ -169,12 +185,10 @@
             }
             const { userType, userId, role } = userInfo;
             let queryParam = '';
-           if (userType === 'cliente' || userType === 'imprenditore' || userType === 'venditore') {
+            if (userType === 'cliente' || userType === 'imprenditore' || userType === 'venditore') {
                 queryParam = `userType=cliente&userId=${userId}`;
             }
-            else if (role === 'business') {
-                queryParam = `userType=business&userId=${userId}`;
-            } else {
+            else {
                 ordiniList.innerHTML = '<div class="no-orders">Tipo di utente non supportato.</div>';
                 return;
             }
@@ -196,18 +210,18 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-        caricaOrdini();
+            caricaOrdini();
 
-        const homeBtn = document.getElementById('homeBtn');
-        homeBtn.addEventListener('click', async () => {
-            const userInfo = await getUserTypeAndIdFromToken();
-            if (userInfo && userInfo.userType === 'cliente') {
-                window.location.href = '/homev2(client).html';
-            } else {
-                window.location.href = '/homev2(business).html';
-            }
+            const homeBtn = document.getElementById('homeBtn');
+            homeBtn.addEventListener('click', async () => {
+                const userInfo = await getUserTypeAndIdFromToken();
+                if (userInfo && userInfo.userType === 'cliente') {
+                    window.location.href = '/homev2(client).html';
+                } else {
+                    window.location.href = '/homev2(business).html';
+                }
+            });
         });
-    });
     </script>
 </body>
 </html>

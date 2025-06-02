@@ -70,4 +70,50 @@ router.post('/:id/approve', async (req, res) => {
         res.status(500).json({ error: 'Errore durante l approvazione dell ordine' });
     }
 });
+
+router.post('/rifiuta/:id', async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ error: 'Ordine non trovato' });
+        }
+        order.stato = 'Rifiutato';
+        await order.save();
+        res.status(200).json({ message: 'Ordine rifiutato con successo' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Errore durante il rifiuto dell ordine' });
+    }
+}
+);
+
+router.put('/ritirato/:id', async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ error: 'Ordine non trovato' });
+        }
+        order.stato = 'Ritirato';
+        await order.save();
+        res.status(200).json({ message: 'Ordine marcato come ritirato con successo' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Errore durante la marcatura dell ordine come ritirato' });
+    }
+}
+);
+
+router.get('/venditori/:id', async (req, res) => {
+    try {
+        const venditoreId = req.params.id;
+        const orders = await Order.find({ venditore: venditoreId });
+        const filteredOrders = orders.filter(order => order.stato != 'Rifiutato');
+        res.json(filteredOrders);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Errore nel recupero degli ordini per il venditore' });
+    }
+});
 module.exports = router;
