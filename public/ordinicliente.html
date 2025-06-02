@@ -93,11 +93,36 @@
         .ordine.rifiutato .ordine-totale {
             color: #dc3545;
         }
+        .filter-btns {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .filter-btn {
+            padding: 8px 18px;
+            background: #218838;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: #155724;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>I tuoi Ordini</h1>
+        <div class="filter-btns">
+            <button class="filter-btn" id="currentOrdersBtn">Ordini correnti</button>
+            <button class="filter-btn active" id="allOrdersBtn">Tutti gli ordini</button>
+        </div>
         <div id="ordini-list"></div>
         <button class="back-btn" id="homeBtn">Torna Indietro</button>
     </div>
@@ -175,6 +200,28 @@
             `;
         }
 
+        let allOrdini = [];
+        let currentFilter = 'all'; // 'all' or 'current'
+
+        function filterOrdini(ordini, filter) {
+            if (filter === 'current') {
+                return ordini.filter(o => {
+                    const stato = (o.stato || '').toLowerCase();
+                    return stato === 'in elaborazione' || stato === 'spedito';
+                });
+            }
+            return ordini;
+        }
+
+        function renderOrdiniList(ordini) {
+            const ordiniList = document.getElementById('ordini-list');
+            if (!Array.isArray(ordini) || ordini.length === 0) {
+                ordiniList.innerHTML = '<div class="no-orders">Nessun ordine trovato.</div>';
+                return;
+            }
+            ordiniList.innerHTML = ordini.map(renderOrdine).join('');
+        }
+
         async function caricaOrdini() {
             const ordiniList = document.getElementById('ordini-list');
             ordiniList.innerHTML = 'Caricamento...';
@@ -199,11 +246,8 @@
                     return;
                 }
                 const ordini = await res.json();
-                if (!Array.isArray(ordini) || ordini.length === 0) {
-                    ordiniList.innerHTML = '<div class="no-orders">Nessun ordine trovato.</div>';
-                    return;
-                }
-                ordiniList.innerHTML = ordini.map(renderOrdine).join('');
+                allOrdini = Array.isArray(ordini) ? ordini : [];
+                renderOrdiniList(filterOrdini(allOrdini, currentFilter));
             } catch (e) {
                 ordiniList.innerHTML = '<div class="no-orders">Errore di rete.</div>';
             }
@@ -220,6 +264,23 @@
                 } else {
                     window.location.href = '/homev2(business).html';
                 }
+            });
+
+            const currentOrdersBtn = document.getElementById('currentOrdersBtn');
+            const allOrdersBtn = document.getElementById('allOrdersBtn');
+
+            currentOrdersBtn.addEventListener('click', () => {
+                currentFilter = 'current';
+                currentOrdersBtn.classList.add('active');
+                allOrdersBtn.classList.remove('active');
+                renderOrdiniList(filterOrdini(allOrdini, currentFilter));
+            });
+
+            allOrdersBtn.addEventListener('click', () => {
+                currentFilter = 'all';
+                allOrdersBtn.classList.add('active');
+                currentOrdersBtn.classList.remove('active');
+                renderOrdiniList(filterOrdini(allOrdini, currentFilter));
             });
         });
     </script>
