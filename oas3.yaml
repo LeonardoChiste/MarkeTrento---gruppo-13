@@ -141,7 +141,7 @@ paths:
           description: Bad Request
         '500':
           description: Internal Server Error
-  /api/v1/carrello/clientId:
+  /api/v1/carrelli/:userType/:userId:
     get:
       responses:
         '200':
@@ -168,9 +168,13 @@ paths:
                     immagine:
                       type: string
                       description: uri
+        '400':
+          description: Tipo utente non valido
+        '404':
+          description: Carrello non trovato
         '500':
           description: Internal Server Error
-  /api/v1/carrello/clientId/add:
+  /api/v1/carrelli/:userType/:userId/add:
     post:
       requestBody:
         content:
@@ -195,14 +199,14 @@ paths:
                   description: uri
       responses:
         '200':
-          description: Created
+          description: Prodotto aggiunto al carrello
         '400':
-          description: Quantità totale nel carrello eccede la quantità disponibile
+          description: Tutti i prodotti nel carrello devono appartenere allo stesso venditore. Svuotare il carrello per inserire prodotti di questo venditore.
         '404':
-          description: Prodotto non trovato
+          description: Utente non trovato
         '500':
-          description: Internal Server Error
-  /api/v1/carrelli/clientId/removeOne:
+          description: Errore del server
+  /api/v1/carrelli/:userType/:userId/removeOne:
     post:
       requestBody:
         content:
@@ -228,8 +232,176 @@ paths:
       responses:
         '200':
           description: Removed
+        '400':
+          description: Tipo utente non valido
         '404':
-          description: Cliente non trovato
+          description: Utente non trovato
+        '500':
+          description: Errore del server
+  /api/v1/carrelli/:userType/:userId/clear:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userType:
+                  type: string
+                userId:
+                  type: integer
+      responses:
+        '200':
+          description: Carrello svuotato
+        '400':
+          description: Tipo utente non valido
+        '404':
+          description: Utente non trovato
+        '500':
+          description: Internal Server Error
+  /api/v1/prodotti: 
+    post: 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                descrizione:
+                  type: string
+                venditore:
+                  type: string
+                quantita:
+                  type: number  
+                costo:
+                  type: number    
+                tag:
+                  type: string
+                immagine:
+                  type: string
+                  description: uri
+      responses:
+        '201':
+          description: Created
+        '500':
+          description: Internal Server Error
+  /api/v1/prodotti/:id:
+    get:
+      responses:
+        '200':
+          description: A JSON with one product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nome:
+                    type: string
+                  descrizione:
+                    type: string
+                  venditore:
+                    type: string
+                  quantita:
+                    type: number  
+                  costo:
+                    type: number    
+                  tag:
+                    type: string
+                  immagine:
+                    type: string
+                    description: uri
+        '404':
+          description: prodotto non trovato
+        '500':
+          description: Internal Server Error
+    put: 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                nome:
+                  type: string
+                descrizione:
+                  type: string
+                venditore:
+                  type: string
+                quantita:
+                  type: number  
+                costo:
+                  type: number    
+                tag:
+                  type: string
+                immagine:
+                  type: string
+                  description: uri
+      responses:
+        '200':
+          description: Prodotto aggiornato
+        '500':
+          description: Internal Server Error
+    delete: 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                nome:
+                  type: string
+                descrizione:
+                  type: string
+                venditore:
+                  type: string
+                quantita:
+                  type: number  
+                costo:
+                  type: number    
+                tag:
+                  type: string
+                immagine:
+                  type: string
+                  description: uri
+      responses:
+        '200':
+          description: Prodotto eliminato
+        '500':
+          description: Internal Server Error
+    
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome:
+                  type: string
+                descrizione:
+                  type: string
+                venditore:
+                  type: string
+                quantita:
+                  type: number  
+                costo:
+                  type: number    
+                tag:
+                  type: string
+                immagine:
+                  type: string
+                  description: uri
+      responses:
+        '201':
+          description: Prodotto creato
         '500':
           description: Internal Server Error
   /api/v1/prodotti/venditore/:id:
@@ -362,121 +534,34 @@ paths:
           description: Venditore non trovato
         '500':
           description: Internal Server Error
-  /api/v1/prodotti: 
-    post: 
+  /api/v1/venditori/descrizione/:id:
+    put:
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                nome:
-                  type: string
                 descrizione:
                   type: string
-                venditore:
-                  type: string
-                quantita:
-                  type: number  
-                costo:
-                  type: number    
-                tag:
-                  type: string
-                immagine:
-                  type: string
-                  description: uri
-      responses:
-        '201':
-          description: Created
-        '500':
-          description: Internal Server Error
-  /api/v1/prodotti/:id:
-    get:
       responses:
         '200':
-          description: A JSON with one product
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  nome:
-                    type: string
-                  descrizione:
-                    type: string
-                  venditore:
-                    type: string
-                  quantita:
-                    type: number  
-                  costo:
-                    type: number    
-                  tag:
-                    type: string
-                  immagine:
-                    type: string
-                    description: uri
-        '404':
-          description: prodotto non trovato
+          description: Venditore aggiornato
         '500':
           description: Internal Server Error
-    put: 
+  /api/v1/venditori/sede/:id:
+    put:
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                id:
-                  type: integer
-                nome:
+                sede:
                   type: string
-                descrizione:
-                  type: string
-                venditore:
-                  type: string
-                quantita:
-                  type: number  
-                costo:
-                  type: number    
-                tag:
-                  type: string
-                immagine:
-                  type: string
-                  description: uri
       responses:
         '200':
-          description: Prodotto aggiornato
-        '500':
-          description: Internal Server Error
-    delete: 
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                nome:
-                  type: string
-                descrizione:
-                  type: string
-                venditore:
-                  type: string
-                quantita:
-                  type: number  
-                costo:
-                  type: number    
-                tag:
-                  type: string
-                immagine:
-                  type: string
-                  description: uri
-      responses:
-        '200':
-          description: Prodotto eliminato
+          description: Sede aggiornata
         '500':
           description: Internal Server Error
   /api/v1/tags:

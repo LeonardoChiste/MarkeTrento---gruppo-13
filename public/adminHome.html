@@ -92,6 +92,20 @@
                 }
             });
         });
+        document.getElementById('candidatureBtn').addEventListener('click', async function() {
+            fetch('/check/candidature', {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = '/candidature.html';
+                } else {
+                    alert("Accesso negato!");
+                }
+            });
+        });
     </script>
 </body>
 </html>

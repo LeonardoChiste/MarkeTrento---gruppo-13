@@ -128,7 +128,7 @@ router.post('/:userType/:userId/clear', async (req, res) => {
 
         user.carrello = [];
         await user.save();
-        res.json({ message: 'Carrello svuotato' });
+        res.status(200).json({ message: 'Carrello svuotato' });
     } catch (err) {
         res.status(500).json({ error: 'Errore durante lo svuotamento del carrello' });
     }

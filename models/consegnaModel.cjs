@@ -4,8 +4,11 @@ var Schema = mongoose.Schema;
 const consegnaSchema = new Schema({
     ordini: [{
         id: String,
-        prezzo: Number
     }],
+    data: {
+        type: Date,
+        default: Date.now
+    },
 });
 
 module.exports = mongoose.model('Consegna', consegnaSchema);

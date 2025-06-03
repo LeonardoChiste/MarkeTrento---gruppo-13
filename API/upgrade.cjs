@@ -47,6 +47,16 @@ router.post('/registrazione', upload.single('file'), tokenChecker('Imprenditore'
     }
 });
 
+router.get('', async (req, res) => {
+    try {
+        const files = await DBFormVend.find();
+        res.status(200).json(files);
+    } catch (error) {
+        console.error('Error retrieving files:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 router.get('/registrazione/:id', async (req, res) => {
     try {
         const file = await DBFormVend.findById(req.params.id);

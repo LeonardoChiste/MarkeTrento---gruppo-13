@@ -31,4 +31,8 @@ router.get('/upgrade', (req, res) => {
     res.sendFile(path.join(process.cwd(), 'public', 'venditoreRegForm.html'));
 });
 
+router.get('/candidature', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'public', 'candidature.html'));
+});
+
 module.exports = router;

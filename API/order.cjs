@@ -70,7 +70,7 @@ router.get('/:id', async (req, res) => {
     res.json(order);
 });
 
-router.post('/:id/approve', async (req, res) => {
+router.post('/approve/:id', async (req, res) => {
     try {
         const orderId = req.params.id;
         const order = await Order.findById(orderId);

@@ -149,7 +149,7 @@
                     approveButton.textContent = 'Approva Ordine';
                     approveButton.onclick = async () => {
                         try {
-                            const response = await fetch(`/api/v1/orders/${order._id}/approve`, {  //da implementare
+                            const response = await fetch(`/api/v1/orders/approve/${order._id}`, {  
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' }
                             });
