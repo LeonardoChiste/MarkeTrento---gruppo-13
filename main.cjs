@@ -291,6 +291,20 @@ app.put('/api/v1/imprenditori/sede/:id', tokenChecker('Imprenditore'), async (re
     }
 });
 
+app.get('/api/v1/imprenditori/:id', async (req, res) => {
+    try {
+        const imprenditore = await DBEntrepreneur.getImprenditoreById(req.params.id);
+        if (!imprenditore) {
+            return res.status(404).send('Imprenditore non trovato');
+        }
+        res.status(200).json(imprenditore);
+    } catch (error) {
+        console.error('Errore durante il recupero dell\'imprenditore:', error.message);
+        res.status(500).send('Errore del server');
+    }
+});
+
+
 /*app.get('/api/v1/imprenditore/:id', tokenChecker('Imprenditore'), async (req, res) => {
     try {
         const imprenditore = await ImprenditoreServizio.getImprenditoreById(req.params.id);
