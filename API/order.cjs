@@ -125,7 +125,19 @@ router.get('/venditori/:id', async (req, res) => {
     try {
         const venditoreId = req.params.id;
         const orders = await Order.find({ venditore: venditoreId });
-        const filteredOrders = orders.filter(order => order.stato != 'Rifiutato');
+        const now = new Date();
+        const twentyOneDaysAgo = new Date(now.getTime() - 21 * 24 * 60 * 60 * 1000);
+
+        const filteredOrders = orders.filter(order => {
+            if (order.stato === 'Rifiutato') return false;
+            if (
+            (order.stato === 'Consegnato' || order.stato === 'Ritirato') &&
+            order.pubblicazione < twentyOneDaysAgo
+            ) {
+            return false;
+            }
+            else return true;
+        });
         res.json(filteredOrders);
     } catch (err) {
         console.error(err);

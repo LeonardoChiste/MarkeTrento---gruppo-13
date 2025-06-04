@@ -173,16 +173,66 @@
             try {
                 const res = await fetch(`/api/v1/clienti/${clienteId}`);
                 if (!res.ok) return null;
-                return await res.json();
+                const data = await res.json();
+                if (data && data._id) {
+                    return { ...data, tipoUtente: 'Cliente' };
+                }
+                return null;
             } catch (e) {
                 return null;
             }
         }
+
+        async function getImprenditoreInfo(imprenditoreId) {
+            if (!imprenditoreId) return null;
+            try {
+                const res = await fetch(`/api/v1/imprenditori/${imprenditoreId}`);
+                if (!res.ok) return null;
+                const data = await res.json();
+                if (data && data._id) {
+                    return { ...data, tipoUtente: 'Imprenditore' };
+                }
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function getVenditoreInfo(venditoreId) {
+            if (!venditoreId) return null;
+            try {
+                const res = await fetch(`/api/v1/venditori/${venditoreId}`);
+                if (!res.ok) return null;
+                const data = await res.json();
+                if (data && data._id) {
+                    return { ...data, tipoUtente: 'Venditore' };
+                }
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Determina il tipo di utente e restituisce le info
+        async function getUtenteInfo(utenteId) {
+            // Prova come cliente
+            let info = await getClienteInfo(utenteId);
+            if (info) return info;
+            // Prova come imprenditore
+            info = await getImprenditoreInfo(utenteId);
+            if (info) return info;
+            // Prova come venditore
+            info = await getVenditoreInfo(utenteId);
+            if (info) return info;
+            return null;
+        }
+        
         function renderOrdine(ordine, infoCliente) {
             const totale = ordine.prodotti.reduce((sum, p) => sum + ((p.prezzo || p.costo || 0) * (p.quantity || 1)), 0);
             let clienteHtml = '-';
             if (infoCliente) {
                 clienteHtml = `
+                    <div><strong>Tipo utente:</strong> ${infoCliente.tipoUtente || '-'}</div>
                     <div><strong>Username:</strong> ${infoCliente.username || '-'}</div>
                     <div><strong>Email:</strong> ${infoCliente.email || '-'}</div>
                     <div><strong>Nome:</strong> ${infoCliente.nome || '-'} ${infoCliente.cognome || ''}</div>
@@ -200,7 +250,7 @@
                     <div><strong>Stato:</strong> ${ordine.stato || 'In attesa'}</div>
                     <div class="ordine-consegna"><strong>Consegna richiesta:</strong> ${tipoText}</div>
                     <div class="cliente-info">
-                        <strong>Dati cliente:</strong>
+                        <strong>Dati utente:</strong>
                         ${clienteHtml}
                     </div>
                     <ul class="ordine-prodotti">
@@ -238,25 +288,25 @@
                     ordiniList.innerHTML = '<div class="no-orders">Nessun ordine trovato per il tuo negozio.</div>';
                     return;
                 }
-                const clientiIds = ordini.map(o => (typeof o.cliente === 'object' ? o.cliente._id : o.cliente));
-                const clientiInfoPromises = clientiIds.map(id => getClienteInfo(id));
-                const clientiInfo = await Promise.all(clientiInfoPromises);
+                // Ottieni info utente per ogni ordine (cliente, imprenditore o venditore)
+                const utentiIds = ordini.map(o => (typeof o.cliente === 'object' ? o.cliente._id : o.cliente));
+                const utentiInfoPromises = utentiIds.map(id => getUtenteInfo(id));
+                const utentiInfo = await Promise.all(utentiInfoPromises);
 
-                ordiniList.innerHTML = ordini.map((ordine, idx) => renderOrdine(ordine, clientiInfo[idx])).join('');
+                ordiniList.innerHTML = ordini.map((ordine, idx) => renderOrdine(ordine, utentiInfo[idx])).join('');
                 document.querySelectorAll('.rifiuta-btn').forEach(btn => {
                     btn.addEventListener('click', async function() {
                         const ordineId = this.getAttribute('data-ordine-id');
-                        
                         const ordineElem = this.closest('.ordine');
-                        
                         const ordiniElems = Array.from(document.querySelectorAll('.ordine'));
                         const ordineIdx = ordiniElems.indexOf(ordineElem);
-                        
+
+                        // Ricarica info utente per email e username
                         const ordini = await (await fetch(`/api/v1/orders/venditori/${await getVenditoreIdFromToken()}`)).json();
-                        const clientiIds = ordini.map(o => (typeof o.cliente === 'object' ? o.cliente._id : o.cliente));
-                        const clientiInfo = await Promise.all(clientiIds.map(id => getClienteInfo(id)));
-                        const clienteEmail = clientiInfo[ordineIdx]?.email || '-';
-                        const clientename = clientiInfo[ordineIdx]?.username || '-';
+                        const utentiIds = ordini.map(o => (typeof o.cliente === 'object' ? o.cliente._id : o.cliente));
+                        const utentiInfo = await Promise.all(utentiIds.map(id => getUtenteInfo(id)));
+                        const clienteEmail = utentiInfo[ordineIdx]?.email || '-';
+                        const clientename = utentiInfo[ordineIdx]?.username || '-';
                         if (!ordineId) return;
                         if (!confirm('Sei sicuro di voler rifiutare questo ordine?')) return;
                         try {
@@ -264,8 +314,7 @@
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    }
-                                
+                                }
                             });
                             if (res.ok) {
                                 caricaOrdini();
@@ -290,7 +339,6 @@
                     });
                 });
 
-                
                 document.querySelectorAll('.ritirato-btn').forEach(btn => {
                     btn.addEventListener('click', async function() {
                         const ordineId = this.getAttribute('data-ordine-id');
@@ -301,10 +349,8 @@
                                 method: 'PUT',
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    }
                                 }
-                            
-                            );
+                            });
                             if (res.ok) {
                                 caricaOrdini();
                             } else {
