@@ -260,9 +260,9 @@
             homeBtn.addEventListener('click', async () => {
                 const userInfo = await getUserTypeAndIdFromToken();
                 if (userInfo && userInfo.userType === 'cliente') {
-                    window.location.href = '/homev2(client).html';
+                    window.location.href = '/homev2-client.html';
                 } else {
-                    window.location.href = '/homev2(business).html';
+                    window.location.href = '/homev2-business.html';
                 }
             });
 

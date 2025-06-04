@@ -143,14 +143,14 @@ async function popola()
 
 app.use(express.urlencoded({ extended: true })); // Per form HTML
 app.use(express.json()); // Per dati JSON (opzionale ma utile)
-//app.use('/default.html');
+//app.use('/login.html');
 // Pagina principale
 app.get('/', (req, res) => {
     //addCarrelloToVendors();
     //addCarrelloToPromoters();
     //popola();
     //cleanCarts();
-    res.status(200).sendFile(path.join(__dirname, 'public', `/default.html`));
+    res.status(200).sendFile(path.join(__dirname, 'public', `/login.html`));
 });
 /*
 app.get('/products', async (req, res) => {
@@ -189,7 +189,7 @@ app.post('/login', async (req, res) => {
         <body>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/login.html';
+                window.location.href = '/caricamento.html';
             </script>
         </body>
         </html>
@@ -213,7 +213,7 @@ app.post('/loginbusiness', async (req, res) => {
         <body>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/loginbusiness.html';
+                window.location.href = '/caricamento-business.html';
             </script>
         </body>
         </html>
@@ -231,7 +231,7 @@ app.post('/loginbusiness', async (req, res) => {
         <body>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/loginbusiness.html';
+                window.location.href = '/caricamento-business.html';
             </script>
         </body>
         </html>
@@ -252,7 +252,7 @@ app.get('/generateDevelopmentToken', (req, res) => {
             <p>Token: ${token}</p>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/businessarea.html';
+                window.location.href = '/business.html';
             </script>
         </body>
         </html>
@@ -261,7 +261,7 @@ app.get('/generateDevelopmentToken', (req, res) => {
 
 
 app.get('/homev1', (req, res) => {
-    res.status(200).sendFile(path.join(__dirname, 'public', `/businessarea.html`));
+    res.status(200).sendFile(path.join(__dirname, 'public', `/business.html`));
 });
 
 

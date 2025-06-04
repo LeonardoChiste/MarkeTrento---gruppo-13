@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Accesso effettuato</title>
+    <style>
+        .progress-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 3s linear;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            
+            const usermail = window.localStorage.getItem("usermail1");
+            if (usermail) {
+                document.getElementById('welcome-message').textContent = `Bentornato, ${usermail}!`;
+            }
+            document.getElementById('progress').style.width = '100%';
+            setTimeout(function() {
+                window.location.href = '/homev2-client.html';
+            }, 3000);
+        };
+    </script>
+</head>
+<body>
+    <h1 id="welcome-message" style="color: #008000;">Accesso effettuato. Caricamento...</h1>
+    <div class="progress-container">
+        <div id="progress" class="progress-bar"></div>
+    </div>
+    <p>Reindirizzamento in corso...</p>
+</body>
+</html>

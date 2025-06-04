@@ -340,11 +340,11 @@
             await fetch(`/api/v1/carrelli/${userType}/${userId}/clear`, { method: 'POST' });
             switch (userType) {
                 case 'cliente':
-                    window.location.href = '/homev2(client).html';
+                    window.location.href = '/homev2-client.html';
                     break;
                 case 'venditore':
                 case 'imprenditore':
-                    window.location.href = '/homev2(business).html';
+                    window.location.href = '/homev2-business.html';
                     break;
                 default:
                     window.history.back();
@@ -375,7 +375,7 @@
             const userInfo = await getUserTypeAndIdFromToken();
             if (!userInfo) {
                 alert('Utente non autenticato!');
-                window.location.href = '/login.html';
+                window.location.href = '/caricamento.html';
                 return;
             }
             userType = userInfo.userType;
