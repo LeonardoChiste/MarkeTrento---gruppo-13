@@ -293,7 +293,7 @@ app.put('/api/v1/imprenditori/sede/:id', tokenChecker('Imprenditore'), async (re
 
 app.get('/api/v1/imprenditori/:id', async (req, res) => {
     try {
-        const imprenditore = await DBEntrepreneur.getImprenditoreById(req.params.id);
+        const imprenditore = await DBEntrepreneur.findById(req.params.id);
         if (!imprenditore) {
             return res.status(404).send('Imprenditore non trovato');
         }
