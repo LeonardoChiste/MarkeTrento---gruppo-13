@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
         .sort({ pubblicazione: -1 });
         res.json(orders);
     } catch (err) {
-    console.error(err); // <--- add this
+    console.error(err); 
     res.status(500).json({ error: 'Errore nel recupero degli ordini' });
     }
 });

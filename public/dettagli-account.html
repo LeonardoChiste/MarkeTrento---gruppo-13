@@ -298,9 +298,9 @@
             // Imposta l'azione del pulsante "torna indietro" in base al tipo di account
             const backButton = document.getElementById('backButton');
             if (tipo === 'cliente') {
-                backButton.onclick = function() { window.location.href = '/homev2(client).html'; };
+                backButton.onclick = function() { window.location.href = '/homev2-client.html'; };
             } else {
-                backButton.onclick = function() { window.location.href = '/homev2(business).html'; };
+                backButton.onclick = function() { window.location.href = '/homev2-business.html'; };
             }
 
             if (tipo === 'venditore' || tipo === 'imprenditore') {
@@ -326,7 +326,7 @@
                 const cambiaPasswordBtn = document.getElementById('cambiaPasswordBtn');
                 if (cambiaPasswordBtn && userId) {
                     cambiaPasswordBtn.onclick = function() {
-                        window.location.href = `updatePassword.html?id=${encodeURIComponent(userId)}`;
+                        window.location.href = `aggiorna-password.html?id=${encodeURIComponent(userId)}`;
                     };
                 }
                 attachMicrointeractions();

@@ -1,41 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <title>Accesso effettuato</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarkeTrento Official Webapp</title>
     <style>
-        .progress-container {
-            width: 100%;
-            background-color: #ddd;
-            border-radius: 5px;
-            margin: 20px 0;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0fff0;
+            margin: 0;
+            padding: 20px;
+            color: #006400;
         }
-        .progress-bar {
-            height: 20px;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            width: 0%;
-            transition: width 3s linear;
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #e0ffe0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 100, 0, 0.1);
+        }
+        h1 {
+            color: #008000;
+            text-align: center;
+        }
+        .description {
+            margin-bottom: 20px;
+            text-align: center;
+            font-style: italic;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #008000;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-btn {
+            background-color: #008000;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .login-btn:hover {
+            background-color: #006400;
+        }
+        .register-btn {
+            background-color: white;
+            color: #008000;
+            padding: 8px 15px;
+            border: 1px solid #008000;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .register-btn:hover {
+            background-color: #f0fff0;
+        }
+        .guest-btn {
+            background-color: #008000;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        .guest-btn:hover {
+            background-color: #006400;
+        }
+        .divider {
+            text-align: center;
+            margin: 15px 0;
+            color: #008000;
+            font-weight: bold;
         }
     </style>
-    <script>
-        window.onload = function() {
-            
-            const usermail = window.localStorage.getItem("usermail1");
-            if (usermail) {
-                document.getElementById('welcome-message').textContent = `Bentornato, ${usermail}!`;
-            }
-            document.getElementById('progress').style.width = '100%';
-            setTimeout(function() {
-                window.location.href = '/homev2(client).html';
-            }, 3000);
-        };
-    </script>
 </head>
 <body>
-    <h1 id="welcome-message" style="color: #008000;">Accesso effettuato. Caricamento...</h1>
-    <div class="progress-container">
-        <div id="progress" class="progress-bar"></div>
+    <div class="container">
+        <h1>MarkeTrento - Pagina login</h1>
+        <p class="description">Accedi alla web app con i tuoi dati personali.</p>
+        
+        <form action="/login" method="POST">
+            <div class="form-group">
+            <label for="usermail">Nome utente (email):</label>
+            <input type="text" id="usermail" name="usermail" required>
+            </div>
+            
+            <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="login-btn" name="userType" value="cliente">Accedi come Cliente</button>
+            <button type="submit" class="login-btn" name="userType" value="business" formaction="/loginbusiness">Accedi come Imprenditore/Venditore</button>
+            <button type="submit" class="login-btn" name="userType" value="admin" formaction="/admin-home.html.html">Accedi come Admin</button>
+        </form>
+        
+        <button class="register-btn" onclick="window.location.href='registrazione.html'">Registrati</button>
+        
+    <form id="guestForm">
+        <button type="submit" class="guest-btn">Accedi senza registrazione</button>
+    </form>
+    <button class="admin"  onclick="window.location.href = '/admin-home.html.html'">Accedi come Admin</button>
     </div>
-    <p>Reindirizzamento in corso...</p>
+    <script>
+        document.getElementById('guestForm').addEventListener('submit', function(e) {
+            e.preventDefault();//DA ELIMINARE ANCHE IN PRODUZIONE
+            localStorage.removeItem('token');
+            //provvisorio per sviluppo DA ELIMINARE IN PRODUZIONE
+             window.location.href = '/generateDevelopmentToken';
+        });
+        
+    </script>
 </body>
 </html>

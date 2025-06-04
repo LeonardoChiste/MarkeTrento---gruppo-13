@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MarkeTrento Homepage</title>
+    <title>MarkeTrento's Admin</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -43,101 +43,68 @@
             background-color: #0066cc;
             color: white;
         }
-        /* Style for the red bordered button */
-        #exitBusinessBtn {
-            color: #cc0000;
-            border: 1.5px solid #cc0000;
-            margin-left: 50px;
-        }
-        #exitBusinessBtn:hover {
-            background-color: #cc0000;
-            color: #fff;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>TITOLO: HOME</h1>
+        <h1>TITOLO: ADMIN</h1>
         
         <div class="description">
-            <p>Questa è la homepage. Qui si possono selezionare i prodotti dai diversi venditori o reindirizzarsi alla sezione promozioni. Per ora ci sono 3 link vuoti</p>
+            <p>Pagina per amministratore</p>
         </div>
         
         <h2>Azioni disponibili:</h2>
         
         <div class="nav-links">
-            <a href="/mercato.html">tasto1</a>
-            <button id="venditoreBtn">Interfaccia Venditore</button>
+            <a href="/mercato.html">Mercato</a>
+            <button id="candidatureBtn">Visualizza candidature</button>
             <a href="/agenda.html">Agenda_Test</a>
-            <button id="carrelloBtn">Carrello</button>
-            <button id="addPromoBtn">Aggiungi Promozione</button>
+            <button id="consegnaBtn">Visualizza consegne</button>
             <button id="dettagliAccountBtn">DettagliAccount</button>
-            <button id="exitBusinessBtn">Esci dall'area Business</button>
         </div>
     </div>
     <script>
-        document.getElementById('venditoreBtn').addEventListener('click', async function() {
-            fetch('/check/interfacciavenditore', {
-                headers: {
-                    'x-access-token': localStorage.getItem('token')
-                }
-            })
-            .then(res => {
-                if (res.ok) {
-                    window.location.href = '/interfacciavenditore.html';
-                } else {
-                    alert("Accesso negato!");
-                }
-            });
-        });
-
-        document.getElementById('carrelloBtn').addEventListener('click', async function() {
-            fetch('/check/carrello', {
-                headers: {
-                    'x-access-token': localStorage.getItem('token')
-                }
-            })
-            .then(res => {
-                if (res.ok) {
-                    window.location.href = '/carrello.html';
-                } else {
-                    alert("Accesso negato!");
-                }
-            });
-        });
-
         document.getElementById('dettagliAccountBtn').addEventListener('click', async function() {
-            fetch('/check/dettagliaccount', {
+            fetch('/check/admin', {
                 headers: {
                     'x-access-token': localStorage.getItem('token')
                 }
             })
             .then(res => {
                 if (res.ok) {
-                    window.location.href = '/dettagliaccount.html';
+                    window.location.href = '/dettagli-account.html';
                 } else {
                     alert("Accesso negato!");
                 }
             });
         });
-
-        document.getElementById('addPromoBtn').addEventListener('click', async function() {
-            fetch('/check/addPromo', {
+        document.getElementById('consegnaBtn').addEventListener('click', async function() {
+            fetch('/check/consegne', {
                 headers: {
                     'x-access-token': localStorage.getItem('token')
                 }
             })
             .then(res => {
                 if (res.ok) {
-                    window.location.href = '/addPromo.html';
+                    window.location.href = '/ordini-admin.html';
                 } else {
                     alert("Accesso negato!");
                 }
             });
         });
-
-        document.getElementById('exitBusinessBtn').addEventListener('click', function() {
-            window.location.href = '/homev2(business).html';
+        document.getElementById('candidatureBtn').addEventListener('click', async function() {
+            fetch('/check/candidature', {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = '/candidature.html';
+                } else {
+                    alert("Accesso negato!");
+                }
+            });
         });
     </script>
 </body>

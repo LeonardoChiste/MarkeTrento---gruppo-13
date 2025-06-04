@@ -32,15 +32,36 @@
       margin-top: 20px;
     }
   </style>
-  <h1>Aggiungi richiesta</h1>
-  <form enctype="multipart/form-data" action="/api/v1/upgrade/registrazione" method="POST">
-    <label for="file">Partita IVA (.pdf Max 10MB):</label><br>
-    <input type="file" id="file" name="file" accept="file/*" required><br><br>
+  <h1>Aggiungi promozione</h1>
+  <form enctype="multipart/form-data" action="/api/v1/promozioni" method="POST">
+    <label for="title">Titolo*:</label><br>
+    <input type="text" id="title" name="title" required><br><br>
+
+    <label for="promoter">Promotore*:</label><br>
+    <textarea id="promoter" name="promoter" rows="1" required></textarea><br><br>
+
+    <label for="description">Descrizione*:</label><br>
+    <textarea id="description" name="description" rows="4" required></textarea><br><br>
+
+    <label for="startdate">Data inizio*:</label><br>
+    <input type="date" id="startdate" name="startdate" required><br><br>
+
+    <label for="enddate">Data fine:</label><br>
+    <input type="date" id="enddate" name="enddate" required><br><br>
+
+    <label for="image">Immagine(Max 5MB):</label><br>
+    <input type="file" id="image" name="image" accept="image/*"><br><br>
+    
+    <input type="radio" id="evento" name="tipo" value="Evento">
+    <label for="evento">Evento</label><br>
+    <input type="radio" id="promozione" name="tipo" value="Promozione">
+    <label for="promozione">Promozione</label><br>
+
     <button type="submit">Aggiungi</button>
   </form>
   <div id="container">Status: </div>
   <div class ="nav-links">
-    <a href="/businessarea.html">Torna alla business area</a>
+    <a href="/business.html">Torna alla business area</a>
   </div>
   <script>
     (async function() {
@@ -48,6 +69,7 @@
       let userTipo = null;
       let userDati = null;
       const container = document.getElementById('container');
+      const promoter = document.getElementById('promoter');
       function parseJwt(token) {
         try {
           return JSON.parse(atob(token.split('.')[1]));
@@ -94,8 +116,9 @@
         userTipo = tipo;
         userDati = dati;
         container.innerHTML = `Benvenuto ${userDati.nome || 'Utente'}!`;
+        promoter.value = userDati.nome + ' ' + userDati.cognome || 'N/A';
       } catch (e) {
-        container.innerHTML = `<span style="color:red;">Errore di rete. ${userTipo}</span>`;
+        container.innerHTML = '<span style="color:red;">Errore di rete.</span>';
         return;
       }
 
@@ -103,8 +126,7 @@
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
-        formData.append('imprenditore', userId);
-        formData.append('uploadDate', new Date().toISOString());
+
         // Show a loading message
         let msgDiv = document.getElementById('submit-msg');
         if (!msgDiv) {
@@ -113,9 +135,9 @@
           form.parentNode.insertBefore(msgDiv, form.nextSibling);
         }
         msgDiv.textContent = "Invio in corso...";
-        
+
         try {
-          const response = await fetch('/api/v1/upgrades/registrazione', {
+          const response = await fetch('/api/v1/promozioni', {
             method: 'POST',
             headers: {
               'x-access-token': token
@@ -124,12 +146,12 @@
           });
 
           if (response.ok) {
-            msgDiv.textContent = "Richiesta creata con successo!";
+            msgDiv.textContent = "Promozione creata con successo!";
             setTimeout(() => {
-              window.location.href = '/businessarea.html';
+              window.location.href = '/business.html';
             }, 500); 
           } else {
-            msgDiv.textContent = "Errore durante la creazione della richiesta.";
+            msgDiv.textContent = "Errore durante la creazione della promozione.";
           }
         } catch (err) {
           msgDiv.textContent = "Errore di rete.";
