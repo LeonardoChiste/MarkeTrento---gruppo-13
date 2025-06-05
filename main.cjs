@@ -19,6 +19,7 @@ const DBVendor=require('./models/vendorModel.cjs');
 const DBTags=require('./models/tagsModel.cjs');
 const CityTags=require('./models/citytagsModel.cjs');
 const TagServizio=require('./services/tagService.cjs');
+const ImprenditoreServizio = require('./services/businessService.cjs');
 const DBEntrepreneur=require('./models/promoterModel.cjs');
 const Productv2=require('./models/productModel.cjs');  
 const DBPromotion=require('./models/promotionModel.cjs');
@@ -38,6 +39,7 @@ const order = require('./API/order.cjs');
 const mail = require('./API/mail.cjs');
 const clienti = require('./API/clienti.cjs');
 const upgrade = require('./API/upgrade.cjs');
+const imprenditori = require('./API/imprenditori.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -175,6 +177,7 @@ app.use('/api/v1/service',mail);
 app.use('/api/v1/clienti', clienti);
 app.use('/check', authcheck);
 app.use('/api/v1/upgrades', upgrade);
+app.use('/api/v1/imprenditori', imprenditori);
 
 //login stuff
 app.post('/login', async (req, res) => {
@@ -242,22 +245,6 @@ app.post('/loginbusiness', async (req, res) => {
 
 });
 
-app.get('/generateDevelopmentToken', (req, res) => {
-    const token = TokenGenVend('p@gm.com');//come se fossi Piscitelli Antonello.. da usare per test
-    res.send(`
-        <html>
-        <head><title>Token Generato</title></head>
-        <body>
-            <h1>Token Generato con successo!</h1>
-            <p>Token: ${token}</p>
-            <script>
-                localStorage.setItem('token', '${token}');
-                window.location.href = '/business.html';
-            </script>
-        </body>
-        </html>
-    `);
-});
 
 
 app.get('/homev1', (req, res) => {
@@ -266,43 +253,6 @@ app.get('/homev1', (req, res) => {
 
 
 
-//AGGIUNTA DI API IN FONDO AL MAIN, DA ORGANIZZARE, UNA SU IMPRENDITORE, UNA SU CLIENTE
-app.put('/api/v1/imprenditori/descrizione/:id', tokenChecker('Imprenditore'), async (req, res) => {
-    try {
-        const { descrizione } = req.body;
-        const id = req.params.id;
-        const imprenditoreAggiornato = await ImprenditoreServizio.updateDescrizione(descrizione, id);
-        res.status(200).json(imprenditoreAggiornato);
-    } catch (error) {
-        console.error('Errore durante l\'aggiornamento della descrizione:', error.message);F
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
-
-app.put('/api/v1/imprenditori/sede/:id', tokenChecker('Imprenditore'), async (req, res) => {
-    try {
-        const { sede } = req.body;
-        const id = req.params.id;
-        const imprenditoreAggiornato = await ImprenditoreServizio.updateSede(sede, id);
-        res.status(200).json(imprenditoreAggiornato);
-    } catch (error) {
-        console.error('Errore durante l\'aggiornamento dell\'indirizzo:', error.message);
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
-
-app.get('/api/v1/imprenditori/:id', async (req, res) => {
-    try {
-        const imprenditore = await DBEntrepreneur.findById(req.params.id);
-        if (!imprenditore) {
-            return res.status(404).send('Imprenditore non trovato');
-        }
-        res.status(200).json(imprenditore);
-    } catch (error) {
-        console.error('Errore durante il recupero dell\'imprenditore:', error.message);
-        res.status(500).send('Errore del server');
-    }
-});
 
 
 /*app.get('/api/v1/imprenditore/:id', tokenChecker('Imprenditore'), async (req, res) => {
