@@ -100,6 +100,23 @@
             font-size: 1.3em;
             color: #ffc107;
         }
+        .warning-out {
+            display: flex;
+            align-items: center;
+            background: #ffeaea;
+            color: #b71c1c;
+            border: 1px solid #ff5252;
+            border-radius: 6px;
+            padding: 7px 13px;
+            margin-bottom: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            gap: 8px;
+        }
+        .warning-out .excl {
+            font-size: 1.3em;
+            color: #ff1744;
+        }
     </style>
     
 </head>
@@ -195,8 +212,17 @@
                     const div = document.createElement('div');
                     div.className = 'prodotto';
                     let warning = '';
+                    let isOut = false;
                     const quantitaNum = parseInt(p.quantita, 10);
-                    if (!isNaN(quantitaNum) && quantitaNum <= 5) {
+                    if (isNaN(quantitaNum) || quantitaNum === 0) {
+                        warning = `
+                            <div class="warning-out">
+                                <span class="excl">&#9888;</span>
+                                <span>Prodotto Esaurito! Presto potrebbe comunque essere reinserito sul mercato</span>
+                            </div>
+                        `;
+                        isOut = true;
+                    } else if (quantitaNum <= 5) {
                         warning = `
                             <div class="warning-limited">
                                 <span class="excl">&#9888;</span>
@@ -218,7 +244,7 @@
                                 <b>Tag:</b> ${p.tag || '-'}
                             </div>
                             <div style="display:flex;align-items:center;justify-content:flex-end;height:100%;">
-                                <button class="add-cart-btn"data-id="${p._id}" data-nome="${p.nome}" data-prezzo="${p.costo}" data-quantita="${p.quantita}">Aggiungi al carrello</button>
+                                ${isOut ? '' : `<button class="add-cart-btn" data-id="${p._id}" data-nome="${p.nome}" data-prezzo="${p.costo}" data-quantita="${p.quantita}">Aggiungi al carrello</button>`}
                             </div>
                         </div>
                     `;

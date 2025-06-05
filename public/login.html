@@ -125,10 +125,9 @@
     </div>
     <script>
         document.getElementById('guestForm').addEventListener('submit', function(e) {
-            e.preventDefault();//DA ELIMINARE ANCHE IN PRODUZIONE
-            localStorage.removeItem('token');
-            //provvisorio per sviluppo DA ELIMINARE IN PRODUZIONE
-             window.location.href = '/generateDevelopmentToken';
+            localStorage.removeItem('token'); // Clear any existing token
+             window.location.href = '/caricamento.html';
+            e.preventDefault(); // Prevent the default form submission
         });
         
     </script>

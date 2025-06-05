@@ -92,13 +92,29 @@
         .update-btn:hover {
             background: #0056b3;
         }
+        .alert-esaurito {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #ffeaea;
+            color: #b21f2d;
+            border: 1.5px solid #dc3545;
+            border-radius: 7px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+        .alert-esaurito .icon {
+            font-size: 1.5em;
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
     </style>
     <script>
-
         window.addEventListener('pageshow', function(event) {
-        if (event.persisted) {
-        window.location.reload();
-        }
+            if (event.persisted) {
+                window.location.reload();
+            }
         });
         function parseJwt(token) {
             try {
@@ -109,12 +125,10 @@
         }
         // Ottieni id venditore da query string o usa default
         async function getVenditoreId() {
-            
-        let userId = null;
-        let userTipo = null;
-        let userDati = null;
+            let userId = null;
+            let userTipo = null;
+            let userDati = null;
 
-        
             const token = localStorage.getItem('token');
             if (!token) {
                 document.getElementById('errore').textContent = "Token non trovato. Effettua il login.";
@@ -141,19 +155,18 @@
                 const datoricerca = await res.json();
                 var idricerca = datoricerca._id;
                 return idricerca;
-         }
+            }
             catch (err) {
                 document.getElementById('errore').textContent = "Errore di rete o server.";
                 return;
             }
-            }
+        }
 
         function aggiornaProdotto(idProdotto) {
             alert('Funzione di aggiornamento per prodotto ID: ' + idProdotto);
             // Qui puoi implementare la logica per aggiornare il prodotto
             // Ad esempio, reindirizzare a una pagina di aggiornamento prodotto
-            
-             window.location.href = `/aggiorna-prodotto.html?id=${idProdotto}`;
+            window.location.href = `/aggiorna-prodotto.html?id=${idProdotto}`;
         }
 
         async function rimuoviProdotto(idProdotto, btn) {
@@ -183,10 +196,8 @@
                 const resVend = await fetch(`/api/v1/venditori/${id}`);
                 if (resVend.ok) {
                     const venditore = await resVend.json();
-                    
                 }
             } catch (e) {
-                
             }
             titolo.textContent = `I tuoi prodotti disponibili`;
             try {
@@ -204,9 +215,22 @@
                 prodotti.forEach(p => {
                     const div = document.createElement('div');
                     div.className = 'prodotto';
+                    let alertEsaurito = '';
+                    // Mostra alert se il prodotto è esaurito (quantità 0 o null o non definita)
+                    if (!p.quantita || p.quantita === 0) {
+                        alertEsaurito = `
+                        <div class="alert-esaurito">
+                            <span class="icon">&#9888;</span>
+                            <span>
+                                Il prodotto in questione è esaurito.  Puoi scegliere se eliminarlo o riaggiungerlo al mercato.
+                            </span>
+                        </div>
+                        `;
+                    }
                     div.innerHTML = `
                         <button class="update-btn" title="Aggiorna prodotto" onclick="aggiornaProdotto('${p._id}')">&#9998;</button>
                         <button class="remove-btn" title="Rimuovi prodotto">&#10006;</button>
+                        ${alertEsaurito}
                         <div style="display:flex;align-items:center;gap:18px;">
                             <img src="${(p.immagine && p.immagine.startsWith('http')) ? p.immagine : 'https://placehold.co/100x100?text=No+Image'}"
                                 alt="${p.nome}" 
