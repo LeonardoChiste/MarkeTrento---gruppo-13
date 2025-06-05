@@ -58,6 +58,14 @@ function TokenGenVend(email) {
 	return jwt.sign(payload, secret, options);
 }
 
+function TokenGenAdmin(email) {
+	var aut='Admin';
+	const payload = { email, aut };
+	const options = { expiresIn: '1h' };
+	const secret = process.env.SUPER_SECRET || 'niente'; 
+	return jwt.sign(payload, secret, options);
+}
+
 function st(token) {
 	const decoded = jwt.decode(token);
 	console.log('Decoded Token:', decoded);
@@ -71,5 +79,6 @@ module.exports = {
 	TokenGen,
 	TokenGenEnt,
 	TokenGenVend,
+    TokenGenAdmin,
 	st,
 };

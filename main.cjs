@@ -5,8 +5,8 @@ const mongoose = require ('mongoose');
 const Cliente = require( "./classes/Cliente.cjs");
 const Imprenditore = require('./classes/Imprenditore.cjs');
 const Venditore = require( "./classes/Venditore.cjs");
-const {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2,compareDB}= require ("./passwordmanager.cjs");
-const {tokenChecker,TokenGen,TokenGenEnt,TokenGenVend,st} = require ("./tokenchecker.cjs");
+const {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2,compareDB, compareDBadmin}= require ("./passwordmanager.cjs");
+const {tokenChecker,TokenGen,TokenGenEnt,TokenGenVend, TokenGenAdmin, st} = require ("./tokenchecker.cjs");
 require('dotenv').config({ path: 'process.env' });
 const {LocalStorage} = require('node-localstorage');
 const authcheck = require('./API/authcheck.cjs');
@@ -26,6 +26,7 @@ const DBPromotion=require('./models/promotionModel.cjs');
 //const Order=require('./models/orderModel.cjs');     //Orders contiene un product
 const DBClient=require('./models/clientModel.cjs');
 const DBFormVend = require ('./models/upgradeModel.cjs');
+const DBAdmin = require('./models/adminModel.cjs');
 
 //API imports
 const carrelli = require('./API/carrello.cjs');
@@ -148,7 +149,7 @@ app.use(express.static('public'));
        });
        await imprenditore.save()*/
 
-       const admin = new DBAdmin({ 
+       /*const admin = new DBAdmin({ 
            nome: 'Admin',
            cognome: 'Admin',
            birthdate: new Date('1990-01-01'),
@@ -156,7 +157,7 @@ app.use(express.static('public'));
            username: 'admin',
            password: await hashPassword('admin123'),
        });
-         await admin.save();
+         await admin.save();*/
 }
 
 
@@ -266,6 +267,27 @@ app.post('/loginbusiness', async (req, res) => {
         else res.status(401).send(`<h1 style="color: #008000;">Accesso non effettuato!</h1>`)
     }
 
+});
+
+app.post('/loginadmin', async (req, res) => {
+    const { usermail, password } = req.body;
+    var usermail1 = usermail.toLowerCase();
+    var au= await compareDBadmin(usermail1, password);
+    if (au) {
+        const token = TokenGenAdmin(usermail1);
+        st(token);
+        res.send(`
+        <html>
+        <head><title>Login</title></head>
+        <body>
+            <script>
+                localStorage.setItem('token', '${token}');
+                window.location.href = '/admin-home.html';
+            </script>
+        </body>
+        </html>
+    `);
+    } else res.status(401).send(`<h1 style="color: #008000;">Accesso non effettuato!</h1>`)
 });
 
 

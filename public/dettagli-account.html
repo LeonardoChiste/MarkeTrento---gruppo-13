@@ -291,6 +291,7 @@
             if (tipo === 'cliente') endpoint = `/api/v1/accounts/cliente/${email}`;
             else if (tipo === 'venditore') endpoint = `/api/v1/accounts/venditore/${email}`;
             else if (tipo === 'imprenditore') endpoint = `/api/v1/accounts/imprenditore/${email}`;
+            else if (tipo === 'admin') endpoint = `/api/v1/accounts/admin/${email}`;
             else {
                 document.getElementById('errore').textContent = "Tipo account sconosciuto.";
                 return;

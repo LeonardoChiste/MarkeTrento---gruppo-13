@@ -5,6 +5,7 @@ const Venditore = require('./classes/Venditore.cjs');
 const DBClient = require('./models/clientModel.cjs');
 const DBVendor=require('./models/vendorModel.cjs');
 const DBEntrepreneur=require('./models/promoterModel.cjs');
+const DBAdmin=require('./models/adminModel.cjs');
 
 
 
@@ -25,6 +26,34 @@ async function compareDBbusiness(usermail, password) {
     try {
         // Find user by username
         const user = await DBEntrepreneur.findOne({ 
+            email: cc.email 
+        });
+        
+        if (!user) {
+            return false;
+            //var w=await hashPassword(cc.password);
+            //console.log(w);
+        }
+        else{
+
+        //var w= await hashPassword(cc.password)
+        //console.log(w);
+        return comparePassword(cc.password,user.password)
+        
+        }
+    } catch (error) {
+        console.error("Error in compareDB:", error);
+        return false;
+    }
+}
+
+async function compareDBadmin(usermail, password) {
+    // Create a new instance of the Client class
+
+    const cc = new Imprenditore('', '', new Date(),usermail, ' ', password, '', '', '');
+    try {
+        // Find user by username
+        const user = await DBAdmin.findOne({ 
             email: cc.email 
         });
         
@@ -91,4 +120,4 @@ async function compareDB(usermail, password) {
 };
 
 
-  module.exports= {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2,compareDB};
+  module.exports= {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2,compareDB,compareDBadmin};
