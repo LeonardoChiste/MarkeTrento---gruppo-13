@@ -135,29 +135,7 @@ app.use(express.static('public'));
         await CityTags.create(tagsToAdd);
         console.log("Tags inseriti con successo!");
         */
-       /*const imprenditore = new DBEntrepreneur({
-            nome: 'Franco',
-            cognome: 'Bollo',
-            birthdate: new Date('1980-01-01'),
-            email: 'franco@tmail.com',
-            username: 'francone',
-            password: await hashPassword('franco123'),
-            sede: 'Pressano',
-            descrizione: 'Promotore cantina',
-            tipo: 'Promotore',
-            carrello: [], 
-       });
-       await imprenditore.save()*/
-
-       /*const admin = new DBAdmin({ 
-           nome: 'Admin',
-           cognome: 'Admin',
-           birthdate: new Date('1990-01-01'),
-           email: 'admin@marketrento.com',
-           username: 'admin',
-           password: await hashPassword('admin123'),
-       });
-         await admin.save();*/
+       
 }
 
 
