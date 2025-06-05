@@ -86,7 +86,7 @@
 </head>
 <body>
   <div class="container">
-    <h1 id="candidatura"></h1>
+    <div id="candidatura"></div>
     <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
   </div>
 </body>
@@ -103,15 +103,15 @@
             }
             const candidature = await response.json();
 
-            await displayOrders(candidature);
+            await displayCand(candidature);
         } catch (error) {
             console.error('Errore:', error);
         }
     }
-    async function displayOrders(candidature) {
+    async function displayCand(candidature) {
 
         if (!candidature || candidature.length === 0) {
-            venditore.innerHTML = '<p>Nessun ordine trovato.</p>';
+            venditore.innerHTML = '<p>Nessuna candidatura trovato.</p>';
             return;
         }
         
@@ -119,39 +119,72 @@
             
             const candDiv = document.createElement('div');
             candDiv.className = 'cand';
+            if (!cand.imprenditore) {
+                console.warn('Candidatura senza imprenditoreId:', cand);
+                candDiv.innerHTML = '<p>Imprenditore non trovato per questa candidatura.</p>';
+                continue;
+            }
+
             //fetch the imprenditore details
-            const response = await fetch(`/api/v1/imprenditori/${cand.imprenditoreId}`);  //is undefined :-(
+            const res = await fetch(`/api/v1/imprenditori/${cand.imprenditore}`);  //durante registrazione non rileva l'id dell'imprenditore
+            const imprenditore = await res.json();
             candDiv.innerHTML = `
-                <strong>Imprenditore:</strong> ${response.nome + ' ' + response.cognome} <br>
-                <strong>Data di nascita:</strong> ${new Date(response.birthdate).toLocaleDateString()} <br>
-                <strong>Username:</strong> ${response.username} <br>
-                <strong>Email:</strong> ${response.email} <br>
-                <strong>Sede:</strong> ${response.sede} <br>
+                <strong>Imprenditore:</strong> ${imprenditore.nome + ' ' + imprenditore.cognome} <br>
+                <strong>Data di nascita:</strong> ${new Date(imprenditore.birthdate).toLocaleDateString()} <br>
+                <strong>Username:</strong> ${imprenditore.username} <br>
+                <strong>Email:</strong> ${imprenditore.email} <br>
+                <strong>Sede:</strong> ${imprenditore.sede} <br>
+                <strong>Data di registrazione:</strong> ${new Date(cand.uploadDate).toLocaleDateString()} <br>
+                <a href=/api/v1/upgrades/${cand._id}/file download>Visualizza file</a> <br>
             `;
-            /*if (order.stato === 'In elaborazione') {
-                const approveButton = document.createElement('button');
-                approveButton.className = 'approve-btn';
-                approveButton.textContent = 'Approva Ordine';
-                approveButton.onclick = async () => {
-                    try {
-                        const response = await fetch(`/api/v1/orders/approve/${order._id}`, {  
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                        if (!response.ok) {
-                            throw new Error('Errore nell\'approvazione dell\'ordine');
-                        }
-                        alert('Ordine approvato con successo!');
-                        window.location.reload();
-                    } catch (error) {
-                        console.error('Errore:', error);
+            
+            const approveButton = document.createElement('button');
+            approveButton.className = 'approve-btn';
+            approveButton.textContent = 'Promuovi a venditore';
+            approveButton.onclick = async () => {
+                /*try {
+                    const res = await fetch(`/api/v1/imprenditori/${imprenditore._id}`, {
+                        method: 'DELETE'
+                    });
+                    if (!res.ok) {
+                        throw new Error('Errore nella cancellazione dell\'imprenditore');
                     }
-                };
-                ordineDiv.appendChild(approveButton);
-            }*/
-            candidatura.appendChild(candDiv);
-        }
+                    
+                    const response = await fetch(`/api/v1/venditori/registrazione`, {  
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            _id: imprenditore._id,
+                            nome: imprenditore.nome,
+                            cognome: imprenditore.cognome,
+                            birthdate: imprenditore.birthdate,
+                            email: imprenditore.email,
+                            username: imprenditore.username,
+                            password: imprenditore.password, 
+                            sede: imprenditore.sede //incompleto
+                            descrizione: imprenditore.descrizione,
+                            tipo: imprenditore.tipo,
+                            datiPagamento: imprenditore.datiPagamento,
+                            carrello: imprenditore.carrello,
+                            
+                        })
+                    });
+                    if (!response.ok) {
+                        throw new Error('Errore nell\'approvazione dell\'ordine');
+                    }
+                    /*await fetch(`/api/v1/upgrades/${cand._id}`, {
+                        method: 'DELETE'
+                    });
+                    alert('Ordine approvato con successo!');
+                    window.location.reload();
+                } catch (error) {
+                    console.error('Errore:', error);
+                }*/
+            };
+            candDiv.appendChild(approveButton);
         
+            candidatura.appendChild(candDiv);
+       }
     }
     getCandidature();
 </script>

@@ -20,7 +20,7 @@ const upload = multer({
     }
 });
 
-router.post('/registrazione', upload.single('file'), tokenChecker('Imprenditore'), async (req, res) => {
+router.post('/registrazione', upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
             console.error('No PDF file uploaded');
@@ -28,7 +28,7 @@ router.post('/registrazione', upload.single('file'), tokenChecker('Imprenditore'
         }
 
         const newFile = new DBFormVend({
-            imprenditoreId: req.imprenditore, 
+            imprenditore: req.body.imprenditore, 
             file: {
                 data: req.file.buffer,
                 contentType: req.file.mimetype,
@@ -50,6 +50,9 @@ router.post('/registrazione', upload.single('file'), tokenChecker('Imprenditore'
 router.get('', async (req, res) => {
     try {
         const files = await DBFormVend.find();
+        if (!files || files.length === 0) {
+            return res.status(404).json({ error: 'No files found' });
+        }
         res.status(200).json(files);
     } catch (error) {
         console.error('Error retrieving files:', error);
@@ -57,7 +60,24 @@ router.get('', async (req, res) => {
     }
 });
 
-router.get('/registrazione/:id', async (req, res) => {
+router.get('/:id/file', async (req, res) => {
+    try {
+        const pdf = await DBFormVend.findById(req.params.id);
+        if (!pdf || !pdf.file.data) {
+            return res.status(404).send('File not found');
+        }
+
+        res.set({
+            'Content-Type': pdf.file.contentType,
+            'Content-Disposition': `inline; filename="${pdf.file.fileName || 'document.pdf'}"`
+        });
+        res.send(Buffer.from(pdf.file.data.buffer));
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+router.get('/:id/registrazione', async (req, res) => {
     try {
         const file = await DBFormVend.findById(req.params.id);
         if (!file) {
@@ -68,6 +88,19 @@ router.get('/registrazione/:id', async (req, res) => {
         res.send(file.file.data);
     } catch (error) {
         console.error('Error retrieving file:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const file = await DBFormVend.findByIdAndDelete(req.params.id);
+        if (!file) {
+            return res.status(404).json({ error: 'File not found' });
+        }
+        res.status(200).json({ message: 'File deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting file:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

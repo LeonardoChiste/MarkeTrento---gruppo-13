@@ -3,6 +3,7 @@ require('dotenv').config({ path: 'process.env' });
 const VenditoreServizio = require('../services/VenditoreService.cjs');
 const router = express.Router();
 const tokenChecker = require('../tokenchecker.cjs').tokenChecker;
+const DBVendor = require('../models/vendorModel.cjs');
 
 //api venditore
 router.get('', async (req, res) => {
@@ -49,5 +50,31 @@ router.put('/sede/:id', tokenChecker('Venditore'), async (req, res) => {
         res.status(500).json({ error: 'Errore del server' });
     }
 });
+
+router.post('/registrazione', async (req, res) => {
+    try {
+        const { _id, nome, cognome, birthdate, email, username, password, sede, descrizione, tipo, datiPagamento, carrello } = req.body;
+        const venditoreRegistrato = new DBVendor({
+            _id: _id,
+            nome: nome,
+            cognome: cognome,
+            birthdate: birthdate,
+            email: email,
+            username: username,
+            password: password, //await hashPassword(password) è già hashata
+            sede: sede,
+            descrizione: descrizione,
+            tipo: tipo,
+            datiPagamento: datiPagamento,
+            carrello: carrello
+        });
+        await venditoreRegistrato.save();
+        res.status(201).json(venditoreRegistrato);
+    } catch (error) {
+        console.error('Errore durante la registrazione del venditore:', error.message);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
 
 module.exports = router;

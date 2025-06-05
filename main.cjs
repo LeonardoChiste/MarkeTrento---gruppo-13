@@ -38,6 +38,7 @@ const order = require('./API/order.cjs');
 const mail = require('./API/mail.cjs');
 const clienti = require('./API/clienti.cjs');
 const upgrade = require('./API/upgrade.cjs');
+const imprenditore = require('./API/imprenditore.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -132,6 +133,29 @@ app.use(express.static('public'));
         await CityTags.create(tagsToAdd);
         console.log("Tags inseriti con successo!");
         */
+       /*const imprenditore = new DBEntrepreneur({
+            nome: 'Franco',
+            cognome: 'Bollo',
+            birthdate: new Date('1980-01-01'),
+            email: 'franco@tmail.com',
+            username: 'francone',
+            password: await hashPassword('franco123'),
+            sede: 'Pressano',
+            descrizione: 'Promotore cantina',
+            tipo: 'Promotore',
+            carrello: [], 
+       });
+       await imprenditore.save()*/
+
+       const admin = new DBAdmin({ 
+           nome: 'Admin',
+           cognome: 'Admin',
+           birthdate: new Date('1990-01-01'),
+           email: 'admin@marketrento.com',
+           username: 'admin',
+           password: await hashPassword('admin123'),
+       });
+         await admin.save();
 }
 
 
@@ -175,6 +199,7 @@ app.use('/api/v1/service',mail);
 app.use('/api/v1/clienti', clienti);
 app.use('/check', authcheck);
 app.use('/api/v1/upgrades', upgrade);
+app.use('/api/v1/imprenditori', imprenditore);
 
 //login stuff
 app.post('/login', async (req, res) => {
@@ -267,55 +292,7 @@ app.get('/homev1', (req, res) => {
 
 
 //AGGIUNTA DI API IN FONDO AL MAIN, DA ORGANIZZARE, UNA SU IMPRENDITORE, UNA SU CLIENTE
-app.put('/api/v1/imprenditori/descrizione/:id', tokenChecker('Imprenditore'), async (req, res) => {
-    try {
-        const { descrizione } = req.body;
-        const id = req.params.id;
-        const imprenditoreAggiornato = await ImprenditoreServizio.updateDescrizione(descrizione, id);
-        res.status(200).json(imprenditoreAggiornato);
-    } catch (error) {
-        console.error('Errore durante l\'aggiornamento della descrizione:', error.message);F
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
 
-app.put('/api/v1/imprenditori/sede/:id', tokenChecker('Imprenditore'), async (req, res) => {
-    try {
-        const { sede } = req.body;
-        const id = req.params.id;
-        const imprenditoreAggiornato = await ImprenditoreServizio.updateSede(sede, id);
-        res.status(200).json(imprenditoreAggiornato);
-    } catch (error) {
-        console.error('Errore durante l\'aggiornamento dell\'indirizzo:', error.message);
-        res.status(500).json({ error: 'Errore del server' });
-    }
-});
-
-app.get('/api/v1/imprenditori/:id', async (req, res) => {
-    try {
-        const imprenditore = await DBEntrepreneur.findById(req.params.id);
-        if (!imprenditore) {
-            return res.status(404).send('Imprenditore non trovato');
-        }
-        res.status(200).json(imprenditore);
-    } catch (error) {
-        console.error('Errore durante il recupero dell\'imprenditore:', error.message);
-        res.status(500).send('Errore del server');
-    }
-});
-
-
-/*app.get('/api/v1/imprenditore/:id', tokenChecker('Imprenditore'), async (req, res) => {
-    try {
-        const imprenditore = await ImprenditoreServizio.getImprenditoreById(req.params.id);
-        if (!imprenditore) {
-            return res.status(404).send('Imprenditore non trovato');
-        }
-        res.status(200).json(imprenditore);
-    } catch (error) {
-        res.status(500).send('Errore del server');
-    }
-});*/
 
 //DEBUGGING CARRELLI
 async function cleanCarts() {
