@@ -19,6 +19,7 @@ const DBVendor=require('./models/vendorModel.cjs');
 const DBTags=require('./models/tagsModel.cjs');
 const CityTags=require('./models/citytagsModel.cjs');
 const TagServizio=require('./services/tagService.cjs');
+const ImprenditoreServizio = require('./services/businessService.cjs');
 const DBEntrepreneur=require('./models/promoterModel.cjs');
 const Productv2=require('./models/productModel.cjs');  
 const DBPromotion=require('./models/promotionModel.cjs');
@@ -267,22 +268,6 @@ app.post('/loginbusiness', async (req, res) => {
 
 });
 
-app.get('/generateDevelopmentToken', (req, res) => {
-    const token = TokenGenVend('p@gm.com');//come se fossi Piscitelli Antonello.. da usare per test
-    res.send(`
-        <html>
-        <head><title>Token Generato</title></head>
-        <body>
-            <h1>Token Generato con successo!</h1>
-            <p>Token: ${token}</p>
-            <script>
-                localStorage.setItem('token', '${token}');
-                window.location.href = '/business.html';
-            </script>
-        </body>
-        </html>
-    `);
-});
 
 
 app.get('/homev1', (req, res) => {

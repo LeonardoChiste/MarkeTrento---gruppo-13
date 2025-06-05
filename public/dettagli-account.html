@@ -273,8 +273,9 @@
 
         async function caricaDettagliAccount() {
             const token = localStorage.getItem('token');
+            // Se non autenticato, torna a home client
             if (!token) {
-                document.getElementById('errore').textContent = "Token non trovato. Effettua il login.";
+                window.location.href = '/homev2-client.html';
                 return;
             }
             const payload = parseJwt(token);
@@ -441,7 +442,6 @@
                 };
             }
 
-            
             const btnIndirizzo = document.getElementById('cambiaIndirizzoBtn');
             const indirizzoBtnContainer = document.getElementById('indirizzoBtnContainer');
             if (btnIndirizzo) {
