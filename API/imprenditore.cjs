@@ -16,6 +16,16 @@ router.put('/descrizione/:id', tokenChecker('Imprenditore'), async (req, res) =>
     }
 });
 
+router.post('/add', tokenChecker('Cliente'), async (req, res) => {
+    try {
+        const imprenditore = new DBEntrepreneur(req.body);
+        await imprenditore.save();
+        res.status(201).json(imprenditore);
+    } catch (error) {
+        console.error('Errore durante la creazione dell\'imprenditore:', error.message);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
 router.put('/sede/:id', tokenChecker('Imprenditore'), async (req, res) => {
     try {
         const { sede } = req.body;

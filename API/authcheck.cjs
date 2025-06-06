@@ -32,6 +32,10 @@ router.get('/upgrade', tokenChecker('Imprenditore'), (req, res) => {
     res.sendFile(path.join(process.cwd(), 'public', 'registrazione-venditore.html'));
 });
 
+router.get('/upgrade-cliente', tokenChecker('Cliente'), (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'public', 'upgrade-cliente.html'));
+});
+
 router.get('/candidature', tokenChecker('Admin'), (req, res) => {
     res.sendFile(path.join(process.cwd(), 'public', 'candidature.html'));
 });

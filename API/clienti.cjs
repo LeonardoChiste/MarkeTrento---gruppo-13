@@ -17,4 +17,19 @@ router.get('/:id', async (req, res) => {
         res.status(500).send('Errore del server');
     }
 });
+
+router.delete('/:id', tokenChecker('Cliente'), async (req, res) => {
+    try {
+        const cliente = await DBClient.findByIdAndDelete(req.params.id);
+        if (!cliente) {
+            console.log("Cliente non trovato!");
+            return res.status(404).send('Cliente non trovato');
+        }
+        res.status(200).send('Cliente eliminato con successo');
+    } catch (error) {
+        console.error('Errore durante l\'eliminazione del cliente:', error);
+        res.status(500).send('Errore del server');
+    }
+});
+
 module.exports = router;

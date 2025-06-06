@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Post</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif; 
+        margin: 40px;
+        line-height: 1.6;
+    }
+    body {
+        color: #0066cc; 
+        border-bottom: 2px solid #0066cc;
+        padding-bottom: 10px;
+    }
+    
+  </style>
+</head>
+<body>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0fff0;
+        margin: 0;
+        padding: 20px;
+        color: #006400;
+    }
+    .upgrade-cliente {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+  </style>
+  <h1>Aggiungi richiesta</h1>
+  <button class="upgrade-cliente">Richiedi upgrade ad Imprenditore</button>
+  <div id="container">Status: </div>
+  <div class ="nav-links">
+    <a href="/business.html">Torna alla business area</a>
+  </div>
+  <script>
+    (async function() {
+      let userId = null;
+      let userTipo = null;
+      let userDati = null;
+      const container = document.getElementById('container');
+      function parseJwt(token) {
+        try {
+          return JSON.parse(atob(token.split('.')[1]));
+        } catch (e) {
+          return null;
+        }
+      }
+      const token = localStorage.getItem('token');
+      if (!token) {
+        container.innerHTML = '<span style="color:red;">Token non trovato. Effettua il login.</span>';
+        return;
+      } else {
+        container.innerHTML = 'Caricamento dati utente...';
+      }
+      const payload = parseJwt(token);
+      if (!payload || !payload.email || !payload.aut) {
+        container.innerHTML = '<span style="color:red;">Token non valido.</span>';
+        return;
+      } else {
+        container.innerHTML = `Caricamento dati per ${payload.email}...`;
+      }
+      let tipo = payload.aut.toLowerCase();
+      let email = encodeURIComponent(payload.email);
+      let endpoint = '';
+      if (tipo === 'cliente') {
+        endpoint = `/api/v1/accounts/cliente/${email}`;
+      } else {
+        container.innerHTML = `Tipo utente non riconosciuto. Tipo ${tipo} non supportato.`;
+        return;
+      }
+      
+      try {
+        const res = await fetch(endpoint, {
+          headers: { 'x-access-token': token }
+        });
+        if (!res.ok) {
+          container.innerHTML = '<span style="color:red;">Errore nel recupero dati account.</span>';
+          return;
+        }
+        const dati = await res.json();
+        userId = dati.id || dati._id || null;
+        userTipo = tipo;
+        userDati = dati;
+        container.innerHTML = `Benvenuto ${userDati.nome || 'Utente'}!`;
+      } catch (e) {
+        container.innerHTML = `<span style="color:red;">Errore di rete. ${userTipo}</span>`;
+        return;
+      }
+      document.querySelector('.upgrade-cliente').addEventListener('click', async () => {
+        try {
+            const response = await fetch('/api/v1/imprenditori/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': token
+                },
+                body: JSON.stringify({
+                    nome: userDati.nome,
+                    cognome: userDati.cognome,
+                    birthdate: userDati.birthdate,
+                    email: userDati.email,
+                    username: userDati.username,
+                    password: userDati.password,
+                    sede: userDati.sede,
+                    descrizione: userDati.descrizione,
+                    tipo: 'Imprenditore',
+                    carrello: userDati.carrello || []
+                })
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                container.innerHTML = `<span style="color:red;">Errore: ${errorData.message || 'Richiesta fallita.'}</span>`;
+                return;
+            }
+            const cancellazione = await fetch (`/api/v1/clienti/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': token
+                },
+                body: JSON.stringify({ email: userDati.email })
+            });
+            if (!cancellazione.ok) {
+                const errorData = await cancellazione.json();
+                container.innerHTML = `<span style="color:red;">Errore nella cancellazione del cliente: ${errorData.message || 'Richiesta fallita.'}</span>`;
+                return;
+            }
+            container.innerHTML = `<span style="color:green;">Upgrade effettuato con successo, ripeti Login</span>`;
+            localStorage.removeItem('token'); // Rimuovi il token per forzare il login
+            setTimeout(() => {
+                window.location.href = '/login.html'; // Reindirizza alla pagina di login
+            }, 500);
+        } catch (e) {
+          container.innerHTML = `<span style="color:red;">Errore durante la richiesta di upgrade.</span>`;
+          return;
+        }
+      });
+    
+    })();
+</script>
+</body>
+</html>
