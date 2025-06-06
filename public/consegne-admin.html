@@ -157,17 +157,16 @@
                 const consegnaDiv = document.createElement('div');
                 consegnaDiv.className = 'ordine';
                 consegnaDiv.innerHTML = `
-                    <strong>Status:</strong> ${consegna.status} <br>
                     <strong>Data:</strong> ${new Date(consegna.data).toLocaleDateString()} <br>
                 `;
                 consegna.ordini.forEach(ordine => {
-                    const res = fetch(`/api/v1/orders/${ordine}`, {
+                    const res = fetch(`/api/v1/orders/${ordine.id}`, {
                         headers: { 'x-access-token': token }
                     });
                     res.then(response => response.json()).then(order => {
                         consegnaDiv.innerHTML += `
-                            <strong>Venditore:</strong> ${order.venditore.nome + ' ' + order.venditore.cognome} <br>
-                            <strong>Cliente:</strong> ${order.cliente.nome + ' ' + order.cliente.cognome} <br>
+                            <strong>Venditore:</strong> ${order.venditore} <br>
+                            <strong>Cliente:</strong> ${order.cliente} <br>
                             <strong>Zona:</strong> ${order.zona} <br>
                         `;
                     }).catch(error => {
@@ -182,7 +181,7 @@
                 approveBtn.onclick = async () => {
                     try {
                         const response = await fetch(`/api/v1/consegne/${consegna.id}/approva`, {
-                            method: 'POST',
+                            method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'x-access-token': token

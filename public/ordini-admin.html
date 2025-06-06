@@ -154,6 +154,20 @@
                     approveButton.textContent = 'Approva Ordine';
                     approveButton.onclick = async () => {
                         try {
+                            const recentConsegna = await fetch(`/api/v1/consegne/inConsegna`, {
+                                headers: { 'x-access-token': token }
+                            });
+                            if (!recentConsegna.ok) {
+                                alert('Errore nel recupero delle consegne');
+                                throw new Error('Errore nel recupero delle consegne');
+                            }
+                            const recentConsegnaData = await recentConsegna.json();
+                            
+                            const consegnaId = recentConsegnaData._id;
+                            if( consegnaId == null ){
+                                alert('Nessuna consegna in corso. Crea una nuova consegna prima di approvare l\'ordine.');
+                                return;
+                            }
                             const response = await fetch(`/api/v1/orders/${order._id}/approve`, {  
                                 method: 'POST',
                                 headers: { 
@@ -162,11 +176,25 @@
                                  }
                             });
                             if (!response.ok) {
+                                alert('Errore nell\'approvazione dell\'ordine');
                                 throw new Error('Errore nell\'approvazione dell\'ordine');
+                            }
+                            const res = await fetch(`/api/v1/consegne/${consegnaId}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'x-access-token': token,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify( { id: order._id } )
+                            });
+                            if (!res.ok) {
+                                alert('Errore nell\'assegnazione dell\'ordine alla consegna');
+                                throw new Error('Errore nell\'assegnazione dell\'ordine alla consegna');
                             }
                             alert('Ordine approvato con successo!');
                             window.location.reload();
                         } catch (error) {
+                            alert('Errore JS: ' + error);
                             console.error('Errore:', error);
                         }
                     };

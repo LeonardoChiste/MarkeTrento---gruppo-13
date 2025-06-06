@@ -66,11 +66,11 @@ router.get('/:id', async (req, res) => {
         if (!order) {
             return res.status(404).json({ error: 'Ordine non trovato' });
         }
+        res.json(order);
     } catch (err) {
         console.error(err); 
         return res.status(500).json({ error: 'Errore nel recupero dell ordine' });
     }
-    res.json(order);
 });
 
 router.post('/:id/approve', tokenChecker('Admin'), async (req, res) => {
@@ -80,11 +80,6 @@ router.post('/:id/approve', tokenChecker('Admin'), async (req, res) => {
         if (!order) {
             return res.status(404).json({ error: 'Ordine non trovato' });
         }
-        const consegna = await Consegna.findOne({ status: 'In consegna' });
-        if (!consegna) {
-            return res.status(404).json({ error: 'Consegna non trovata' });
-        }
-        consegna.ordini.push(order._id);
         order.stato = 'In consegna';
         await order.save();
         res.status(200).json({ message: 'Ordine approvato con successo' });
