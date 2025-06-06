@@ -41,6 +41,7 @@ const mail = require('./API/mail.cjs');
 const clienti = require('./API/clienti.cjs');
 const upgrade = require('./API/upgrade.cjs');
 const imprenditore = require('./API/imprenditore.cjs');
+const recensioni = require('./API/recensioni.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -180,6 +181,7 @@ app.use('/api/v1/clienti', clienti);
 app.use('/check', authcheck);
 app.use('/api/v1/upgrades', upgrade);
 app.use('/api/v1/imprenditori', imprenditore);
+app.use('/api/v1/recensioni', recensioni);
 
 //login stuff
 app.post('/login', async (req, res) => {

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Lascia una Recensione - MarkeTrento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e6ffe6 0%, #b2f2b2 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #f6fff6;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #b2f2b2;
+            padding: 32px 28px;
+        }
+        h1 {
+            color: #218838;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        label {
+            display: block;
+            margin-top: 16px;
+            color: #155724;
+            font-weight: bold;
+        }
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 6px;
+            border-radius: 6px;
+            border: 1px solid #b2f2b2;
+            font-size: 1em;
+            background: #e6ffe6;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .review-stars {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .review-btn, .back-btn {
+            margin-top: 24px;
+            padding: 8px 22px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+            display: inline-block;
+        }
+        .review-btn:hover, .back-btn:hover {
+            background: #218838;
+        }
+        .back-btn {
+            margin-left: 10px;
+            background: #218838;
+        }
+        .success-msg {
+            color: #218838;
+            text-align: center;
+            margin-top: 18px;
+            font-weight: bold;
+        }
+        .error-msg {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lascia una Recensione</h1>
+        <form id="reviewForm">
+            <label for="titolo">Titolo</label>
+            <input type="text" id="titolo" name="titolo" maxlength="60" required>
+
+            <label for="testo">Recensione</label>
+            <textarea id="testo" name="testo" maxlength="500" required></textarea>
+
+            <label for="stelle">Stelle</label>
+            <select id="stelle" name="stelle" required>
+                <option value="">Seleziona...</option>
+                <option value="1">★☆☆☆☆</option>
+                <option value="2">★★☆☆☆</option>
+                <option value="3">★★★☆☆</option>
+                <option value="4">★★★★☆</option>
+                <option value="5">★★★★★</option>
+            </select>
+
+            <button type="submit" class="review-btn">Invia Recensione</button>
+            <button type="button" class="back-btn" id="backBtn">Annulla</button>
+        </form>
+        <div id="msg"></div>
+    </div>
+    <script>
+        function getOrderId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('orderId');
+        }
+
+        document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const orderId = getOrderId();
+            if (!orderId) {
+                document.getElementById('msg').innerHTML = '<div class="error-msg">Ordine non valido.</div>';
+                return;
+            }
+            const titolo = document.getElementById('titolo').value.trim();
+            const testo = document.getElementById('testo').value.trim();
+            const stelle = parseInt(document.getElementById('stelle').value, 10);
+
+            if (!titolo || !testo || !stelle) {
+                document.getElementById('msg').innerHTML = '<div class="error-msg">Compila tutti i campi.</div>';
+                return;
+            }
+
+            const reviewBody = {
+                titolo,
+                testo,
+                stelle,
+                ordine: orderId
+            };
+
+            try {
+                const res = await fetch('/api/v1/recensioni', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reviewBody)
+                });
+                if (res.ok) {
+                    document.getElementById('msg').innerHTML = '<div class="success-msg">Recensione inviata con successo!</div>';
+                    setTimeout(() => {
+                        window.location.href = '/ordini-cliente.html';
+                    }, 1200);
+                } else {
+                    const data = await res.json();
+                    document.getElementById('msg').innerHTML = `<div class="error-msg">${data.error || 'Errore durante l\'invio della recensione.'}</div>`;
+                }
+            } catch (e) {
+                document.getElementById('msg').innerHTML = '<div class="error-msg">Errore di rete.</div>';
+            }
+        });
+
+        document.getElementById('backBtn').addEventListener('click', () => {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>
