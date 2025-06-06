@@ -9,6 +9,7 @@ const consegnaSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    status: String
 });
 
 module.exports = mongoose.model('Consegna', consegnaSchema);

@@ -8,12 +8,12 @@ router.get('/:id', async (req, res) => {
     try {
         const cliente = await DBAdmin.findById(req.params.id);
         if (!cliente) {
-            console.log("Cliente non trovato!");
-            return res.status(404).send('Cliente non trovato');
+            console.log("Admin non trovato!");
+            return res.status(404).send('Admin non trovato');
         }
         res.status(200).json(cliente);
     } catch (error) {
-        console.error('Errore durante il recupero del cliente:', error);
+        console.error('Errore durante il recupero admin:', error);
         res.status(500).send('Errore del server');
     }
 });

@@ -41,6 +41,7 @@ const mail = require('./API/mail.cjs');
 const clienti = require('./API/clienti.cjs');
 const upgrade = require('./API/upgrade.cjs');
 const imprenditore = require('./API/imprenditore.cjs');
+const consegne = require('./API/consegne.cjs')
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -135,7 +136,20 @@ app.use(express.static('public'));
         await CityTags.create(tagsToAdd);
         console.log("Tags inseriti con successo!");
         */
-       
+       /*const imprenditore = new DBEntrepreneur({
+            nome: 'Maya',
+            cognome: 'Lona',
+            birthdate: new Date('1980-01-01'),
+            email: 'mayalona@tmail.com',
+            username: 'maya',
+            password: await hashPassword('maya123'),
+            sede: 'Pressano',
+            descrizione: 'Promotore di prodotti locali',
+            tipo: 'Imprenditore',
+            carrello: [], 
+       });
+       await imprenditore.save()*/
+
 }
 
 
@@ -180,6 +194,7 @@ app.use('/api/v1/clienti', clienti);
 app.use('/check', authcheck);
 app.use('/api/v1/upgrades', upgrade);
 app.use('/api/v1/imprenditori', imprenditore);
+app.use('/api/v1/consegne', consegne);
 
 //login stuff
 app.post('/login', async (req, res) => {

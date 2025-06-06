@@ -3,8 +3,10 @@ const router = express.Router();
 const sgMail = require('@sendgrid/mail');
 const Order = require('../models/orderModel.cjs');
 const Productv2 = require('../models/productModel.cjs');
+const tokenChecker = require('../tokenchecker.cjs').tokenChecker;
+const Consegna = require('../models/consegnaModel.cjs');
 
-router.get('/', async (req, res) => {
+router.get('/', tokenChecker('Admin'), async (req, res) => {
     try {
         const { userType, userId } = req.query;
         let filter = {};
@@ -71,13 +73,18 @@ router.get('/:id', async (req, res) => {
     res.json(order);
 });
 
-router.post('/approve/:id', async (req, res) => {
+router.post('/:id/approve', tokenChecker('Admin'), async (req, res) => {
     try {
         const orderId = req.params.id;
         const order = await Order.findById(orderId);
         if (!order) {
             return res.status(404).json({ error: 'Ordine non trovato' });
         }
+        const consegna = await Consegna.findOne({ status: 'In consegna' });
+        if (!consegna) {
+            return res.status(404).json({ error: 'Consegna non trovata' });
+        }
+        consegna.ordini.push(order._id);
         order.stato = 'In consegna';
         await order.save();
         res.status(200).json({ message: 'Ordine approvato con successo' });

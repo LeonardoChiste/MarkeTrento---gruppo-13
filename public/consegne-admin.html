@@ -1,0 +1,206 @@
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Prodotti del Venditore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e6ffe6 0%, #b2f2b2 100%);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #f6fff6;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #b2f2b2;
+            padding: 32px 28px;
+        }
+        h1 {
+            color: #218838;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .ordine {
+            background: #e6ffe6;
+            border-left: 6px solid #28a745;
+            margin-bottom: 18px;
+            padding: 14px 18px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px #d4f5d4;
+        }
+        .ordine strong {
+            color: #155724;
+        }
+        .back-btn {
+            display: block;
+            margin: 0 auto;
+            margin-top: 30px;
+            padding: 8px 22px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #218838;
+        }
+        .nuova-consegna {
+            display: block;
+            margin: 0 auto;
+            margin-top: 30px;
+            padding: 8px 22px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2f2b2;
+            transition: background 0.2s;
+        }
+        .nuova-consegna:hover {
+            background: #218838;
+        }
+        .approve-btn {
+            margin-top: 8px;
+            background: #218838;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+        }
+        .approve-btn:hover {
+            background: #155724;
+        }
+        .warning-limited {
+            display: flex;
+            align-items: center;
+            background: #fffbe6;
+            color: #856404;
+            border: 1px solid #ffe066;
+            border-radius: 6px;
+            padding: 7px 13px;
+            margin-bottom: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            gap: 8px;
+        }
+        .warning-limited .excl {
+            font-size: 1.3em;
+            color: #ffc107;
+        }
+    </style>
+    
+</head>
+<body>
+  <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
+  <button class="nuova-consegna">Crea consegna</button>
+  <div class="container">
+    <div id="consegneDisplay"></div>
+  </div>
+</body>
+<script>
+    const consegneDisplay = document.getElementById('consegneDisplay');
+    const addConsegna = document.querySelector('.nuova-consegna');
+    const token = localStorage.getItem('token');
+    addConsegna.addEventListener('click', () => {
+        fetch('/check/addConsegna', {
+            headers: {
+                'x-access-token': token
+            }
+        })
+        .then(res => {
+            if (res.ok) {
+                window.location.href = '/consegna-nuova.html';
+            } else {
+                alert("Accesso negato!");
+            }
+        });
+    });
+    async function getConsegne() {
+        try {
+            const response = await fetch('/api/v1/consegne', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': token
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Errore nella richiesta: ' + response.statusText);
+            }
+            displayConsegne(await response.json());
+        } catch (error) {
+            console.error('Errore nel recupero delle consegne:', error);
+            document.getElementById('consegneDisplay').innerHTML = '<span style="color:red;">Errore nel recupero delle consegne.</span>';
+            return;
+        }
+        if (consegne.length === 0) {
+            consegneDisplay.innerHTML = '<span style="color:blue;">Nessuna consegna disponibile.</span>';
+            return;
+        }
+    }
+    async function displayConsegne(consegne) {
+        consegneDisplay.innerHTML = '';
+        for (const consegna of consegne) {
+            
+            if (consegna.status === 'In consegna') {
+                const consegnaDiv = document.createElement('div');
+                consegnaDiv.className = 'ordine';
+                consegnaDiv.innerHTML = `
+                    <strong>Status:</strong> ${consegna.status} <br>
+                    <strong>Data:</strong> ${new Date(consegna.data).toLocaleDateString()} <br>
+                `;
+                consegna.ordini.forEach(ordine => {
+                    const res = fetch(`/api/v1/orders/${ordine}`, {
+                        headers: { 'x-access-token': token }
+                    });
+                    res.then(response => response.json()).then(order => {
+                        consegnaDiv.innerHTML += `
+                            <strong>Venditore:</strong> ${order.venditore.nome + ' ' + order.venditore.cognome} <br>
+                            <strong>Cliente:</strong> ${order.cliente.nome + ' ' + order.cliente.cognome} <br>
+                            <strong>Zona:</strong> ${order.zona} <br>
+                        `;
+                    }).catch(error => {
+                        console.error('Errore nel recupero dell\'ordine:', error);
+                    });
+                });
+                consegneDisplay.appendChild(consegnaDiv);
+
+                const approveBtn = document.createElement('button');
+                approveBtn.className = 'approve-btn';
+                approveBtn.textContent = 'Approva';
+                approveBtn.onclick = async () => {
+                    try {
+                        const response = await fetch(`/api/v1/consegne/${consegna.id}/approva`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-access-token': token
+                            }
+                        });
+                        if (!response.ok) {
+                            throw new Error('Errore nell\'approvazione della consegna');
+                        }
+                        consegnaDiv.innerHTML += '<span style="color:green;">Consegna approvata!</span>';
+                    } catch (error) {
+                        console.error('Errore nell\'approvazione della consegna:', error);
+                        alert('Errore nell\'approvazione della consegna.');
+                    }
+                };
+                consegnaDiv.appendChild(approveBtn);
+            }
+        }
+    }
+    getConsegne();
+</script>
+</html>

@@ -86,12 +86,16 @@
 </head>
 <body>
   <div class="container">
-    <h1 id="venditore"></h1>
     <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
+    <h1 id="venditore"></h1>
   </div>
 </body>
 <script>
     const venditore = document.getElementById('venditore');
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Token non trovato. Effettua il login.');
+    }
     venditore.innerHTML = '';
     async function getOrders() {
         try {
@@ -99,6 +103,7 @@
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'x-access-token': token
                 }
             });
             if (!response.ok) {
@@ -119,7 +124,7 @@
         }
         
         for (const order of orders) {
-            if(order.tipo === 'consegna' || order.tipo === 'Consegna') {
+            if((order.tipo === 'consegna' || order.tipo === 'Consegna') && order.stato === 'In elaborazione') {
                 const ordineDiv = document.createElement('div');
                 ordineDiv.className = 'ordine';
 
@@ -149,9 +154,12 @@
                     approveButton.textContent = 'Approva Ordine';
                     approveButton.onclick = async () => {
                         try {
-                            const response = await fetch(`/api/v1/orders/approve/${order._id}`, {  
+                            const response = await fetch(`/api/v1/orders/${order._id}/approve`, {  
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' }
+                                headers: { 
+                                    'Content-Type': 'application/json',
+                                    'x-access-token': token
+                                 }
                             });
                             if (!response.ok) {
                                 throw new Error('Errore nell\'approvazione dell\'ordine');

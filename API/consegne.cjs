@@ -3,8 +3,11 @@ const router = express.Router();
 const sgMail = require('@sendgrid/mail');
 const Order = require('../models/orderModel.cjs');
 const Consegna = require('../models/consegnaModel.cjs');
+const tokenChecker = require('../tokenchecker.cjs').tokenChecker;
+const multer = require('multer');
+const upload = multer();
 
-router.get('/', async (req, res) => {
+router.get('/', tokenChecker('Admin'), async (req, res) => {
     try {
         const consegne = await Consegna.find()
             .sort({ pubblicazione: -1 });
@@ -15,7 +18,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', tokenChecker('Admin'), async (req, res) => {
     try {
         const consegna = await Consegna.findById(req.params.id);
         res.json(consegna);
@@ -25,16 +28,19 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', tokenChecker('Admin'), upload.none(), async (req, res) => {
     try {
-        const Consegna = new Consegna({
-            ordine: [],
-            data: req.body.data || new Date()
+        const dati = req.body;
+        const consegna = new Consegna({
+            ordini: [],
+            data: dati.date || new Date(),
+            status: 'In consegna',
         });
-        if (!Consegna) {
+        if (!consegna) {
             return res.status(400).json({ error: 'Dati di consegna mancanti' });
         }
-        await Consegna.save();
+        await consegna.save();
+        console.log('Consegna creata con successo:', Consegna);
         res.status(201).json( { message: 'Consegna creata con successo', consegna: Consegna });
     } catch (err) {
         console.error(err);
@@ -42,7 +48,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', tokenChecker('Admin'), async (req, res) => {
     try {
         const Ordine = req.body;
         const Consegna = await Consegna.findById(req.params.id);
@@ -60,7 +66,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.put('/svuota/:id', async (req, res) => {
+router.put('/:id/svuota', tokenChecker('Admin'), async (req, res) => {
     try {
         const Ordine = req.body;
         const Consegna = await Consegna.findById(req.params.id);
@@ -74,6 +80,25 @@ router.put('/svuota/:id', async (req, res) => {
         Consegna.data = new Date(req.body.data) || new Date();
         await Consegna.save();
     } catch (err) { 
+        console.error(err);
+        res.status(500).json({ error: 'Errore durante l\'aggiornamento della consegna' });
+    }
+});
+
+router.put('/:id/ordine', tokenChecker('Admin'), async (req, res) => {
+    try {
+        const ordineId = req.body.ordineId;
+        const consegna = await Consegna.findById(req.params.id);
+        if (!consegna) {
+            return res.status(404).json({ error: 'Consegna non trovata' });
+        }
+        if (!ordineId) {
+            return res.status(400).json({ error: 'ID dell\'ordine mancante' });
+        }
+        consegna.ordine.push(ordineId);
+        await consegna.save();
+        res.status(200).json({ message: 'Ordine aggiunto alla consegna con successo', consegna });
+    } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Errore durante l\'aggiornamento della consegna' });
     }

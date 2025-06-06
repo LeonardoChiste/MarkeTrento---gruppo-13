@@ -59,7 +59,8 @@
             <a href="/mercato.html">Mercato</a>
             <button id="candidatureBtn">Visualizza candidature</button>
             <a href="/agenda.html">Agenda_Test</a>
-            <button id="consegnaBtn">Visualizza consegne</button>
+            <button id="orderBtn">Visualizza ordini</button>
+            <button id="consegneBtn">Visualizza consegne</button>
             <button id="dettagliAccountBtn">DettagliAccount</button>
         </div>
     </div>
@@ -78,8 +79,8 @@
                 }
             });
         });
-        document.getElementById('consegnaBtn').addEventListener('click', async function() {
-            fetch('/check/consegne', {
+        document.getElementById('orderBtn').addEventListener('click', async function() {
+            fetch('/check/ordini', {
                 headers: {
                     'x-access-token': localStorage.getItem('token')
                 }
@@ -101,6 +102,20 @@
             .then(res => {
                 if (res.ok) {
                     window.location.href = '/candidature.html';
+                } else {
+                    alert("Accesso negato!");
+                }
+            });
+        });
+        document.getElementById('consegneBtn').addEventListener('click', async function() {
+            fetch('/check/consegne', {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            })
+            .then(res => {
+                if (res.ok) {
+                    window.location.href = '/consegne-admin.html';
                 } else {
                     alert("Accesso negato!");
                 }
