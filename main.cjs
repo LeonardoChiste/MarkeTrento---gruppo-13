@@ -51,7 +51,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-const swaggerJSDoc = require('swagger-jsdoc');
+/*const swaggerJSDoc = require('swagger-jsdoc');
 
 const swaggerDefinition = {
   openapi: '3.0.0',
@@ -80,10 +80,10 @@ const swaggerDefinition = {
 const options = {
   swaggerDefinition,
   // Paths to files containing OpenAPI definitions
-  apis: ['./API/*.cjs'],
+  apis: ['.yaml'],
 };
 
-const swaggerSpec = swaggerJSDoc(options);
+const swaggerSpec = swaggerJSDoc(options);*/
     
     
     //FUNZIONE PER GENERARE COSE DA INSERIRE NEL DB PER TEST, con copilot su VSC SI FA MOLTO VELOCEMENTE
@@ -366,12 +366,8 @@ async function addCarrelloToPromoters() {
 
 
 
-const swaggerUi = require('swagger-ui-express');
-
-// ...
-
-
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+/*const swaggerUi = require('swagger-ui-express');
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));*/
 
 
 mongoose.connect(dbUrl).then( ()=> {

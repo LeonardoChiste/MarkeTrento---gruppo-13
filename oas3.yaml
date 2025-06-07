@@ -327,6 +327,8 @@ paths:
           description: Internal Server Error
   /api/v1/venditori/{id}/descrizione:
     put:
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -342,6 +344,8 @@ paths:
           description: Internal Server Error
   /api/v1/venditori/{id}/sede:
     put:
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -418,6 +422,8 @@ paths:
     delete:
       summary: Cancella un cliente 
       description: Cancella il cliente corrispondente all'id
+      security:
+        - bearerAuth: []
       responses:
         '200':
           description: Cliente eliminato con successo
@@ -490,6 +496,8 @@ paths:
     put:
       summary: Update user password
       description: Update the password of a user account (Cliente, Imprenditore, Venditore, Admin).
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content: 
@@ -1694,3 +1702,8 @@ components:
         uploadDate:
           type: string
           description: date-time
+  securitySchemes:
+    bearerAuth: 
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
