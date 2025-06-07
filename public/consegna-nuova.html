@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Post</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif; 
+        margin: 40px;
+        line-height: 1.6;
+    }
+    body {
+        color: #0066cc; 
+        border-bottom: 2px solid #0066cc;
+        padding-bottom: 10px;
+    }
+    
+  </style>
+</head>
+<body>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0fff0;
+        margin: 0;
+        padding: 20px;
+        color: #006400;
+    }
+    .nav-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+  </style>
+  <h1>Aggiungi promozione</h1>
+  <form enctype="multipart/form-data" action="/api/v1/consegne" method="POST">
+
+    <label for="date">Data inizio*:</label><br>
+    <input type="date" id="date" name="date" required><br><br>
+    <button type="submit">Crea consegna</button>
+
+  </form>
+  <div id="container">Status: </div>
+  <div class ="nav-links">
+    <a href="/consegne-admin.html">Torna indietro</a>
+  </div>
+  <script>
+    (async function(){
+    const token = localStorage.getItem('token');
+    if (!token) {
+        document.getElementById('container').innerHTML = '<span style="color:red;">Token non trovato. Effettua il login.</span>';
+        return;
+    }
+    document.querySelector('form').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        const data = new FormData(e.target);
+
+        try {
+            const response = await fetch('/api/v1/consegne', {
+                method: 'POST',
+                headers: {
+                    'x-access-token': token
+                },
+                body: data
+            });
+            
+            if (response.ok) {
+                document.getElementById('container').innerHTML = '<span style="color:green;">Consegna aggiunta con successo!</span>';
+                setTimeout(() => {
+                    window.location.href = '/consegne-admin.html';
+                }, 500);
+            } else {
+                document.getElementById('container').innerHTML = `<span style="color:red;">Errore durante la creazione</span>`;
+            }
+        } catch (error) {
+            document.getElementById('container').innerHTML = `<span style="color:red;">Errore: ${error.message}</span>`;
+        }
+    });
+})();
+    
+ </script>
+</body>
+</html>

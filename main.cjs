@@ -9,7 +9,7 @@ const {hashPassword,comparePassword,compareDBbusiness,compareDBbusinessv2,compar
 const {tokenChecker,TokenGen,TokenGenEnt,TokenGenVend, TokenGenAdmin, st} = require ("./tokenchecker.cjs");
 require('dotenv').config({ path: 'process.env' });
 const {LocalStorage} = require('node-localstorage');
-const authcheck = require('./API/authcheck.cjs');
+const authcheck = require('./API/authchecks.cjs');
 
 const Prodotto = require('./classes/prodotto.cjs');
 
@@ -29,19 +29,20 @@ const DBFormVend = require ('./models/upgradeModel.cjs');
 const DBAdmin = require('./models/adminModel.cjs');
 
 //API imports
-const carrelli = require('./API/carrello.cjs');
-const promozioni = require('./API/promozione.cjs');
-const venditori = require('./API/venditore.cjs');
-const prodotti = require('./API/prodotto.cjs');
-const accounts = require('./API/account.cjs');
+const carrelli = require('./API/carrelli.cjs');
+const promozioni = require('./API/promozioni.cjs');
+const venditori = require('./API/venditori.cjs');
+const prodotti = require('./API/prodotti.cjs');
+const accounts = require('./API/accounts.cjs');
 const tags = require('./API/tags.cjs');
 const citytags = require('./API/citytags.cjs');
-const order = require('./API/order.cjs');
-const mail = require('./API/mail.cjs');
+const order = require('./API/orders.cjs');
+const mail = require('./API/mails.cjs');
 const clienti = require('./API/clienti.cjs');
 const upgrade = require('./API/upgrade.cjs');
 const imprenditore = require('./API/imprenditore.cjs');
 const recensioni = require('./API/recensioni.cjs');
+const consegne = require('./API/consegne.cjs')
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -136,7 +137,20 @@ app.use(express.static('public'));
         await CityTags.create(tagsToAdd);
         console.log("Tags inseriti con successo!");
         */
-       
+       /*const imprenditore = new DBEntrepreneur({
+            nome: 'Maya',
+            cognome: 'Lona',
+            birthdate: new Date('1980-01-01'),
+            email: 'mayalona@tmail.com',
+            username: 'maya',
+            password: await hashPassword('maya123'),
+            sede: 'Pressano',
+            descrizione: 'Promotore di prodotti locali',
+            tipo: 'Imprenditore',
+            carrello: [], 
+       });
+       await imprenditore.save()*/
+
 }
 
 
@@ -182,6 +196,7 @@ app.use('/check', authcheck);
 app.use('/api/v1/upgrades', upgrade);
 app.use('/api/v1/imprenditori', imprenditore);
 app.use('/api/v1/recensioni', recensioni);
+app.use('/api/v1/consegne', consegne);
 
 //login stuff
 app.post('/login', async (req, res) => {

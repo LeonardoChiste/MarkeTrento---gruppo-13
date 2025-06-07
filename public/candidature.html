@@ -142,15 +142,15 @@
             approveButton.className = 'approve-btn';
             approveButton.textContent = 'Promuovi a venditore';
             approveButton.onclick = async () => {
-                /*try {
-                    const res = await fetch(`/api/v1/imprenditori/${imprenditore._id}`, {
+                try {
+                    const res = await fetch(`/api/v1/imprenditori/${imprenditore._id}`, {   //cancella imprenditore
                         method: 'DELETE'
                     });
                     if (!res.ok) {
                         throw new Error('Errore nella cancellazione dell\'imprenditore');
                     }
                     
-                    const response = await fetch(`/api/v1/venditori/registrazione`, {  
+                    const response = await fetch(`/api/v1/venditori/registrazione`, {     //crea venditore
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -161,25 +161,24 @@
                             email: imprenditore.email,
                             username: imprenditore.username,
                             password: imprenditore.password, 
-                            sede: imprenditore.sede //incompleto
+                            sede: imprenditore.sede, 
                             descrizione: imprenditore.descrizione,
                             tipo: imprenditore.tipo,
                             datiPagamento: imprenditore.datiPagamento,
                             carrello: imprenditore.carrello,
-                            
                         })
                     });
                     if (!response.ok) {
                         throw new Error('Errore nell\'approvazione dell\'ordine');
                     }
-                    /*await fetch(`/api/v1/upgrades/${cand._id}`, {
+                    await fetch(`/api/v1/upgrades/${cand._id}`, {       //cancella candidatura
                         method: 'DELETE'
                     });
                     alert('Ordine approvato con successo!');
                     window.location.reload();
                 } catch (error) {
                     console.error('Errore:', error);
-                }*/
+                }
             };
             candDiv.appendChild(approveButton);
         

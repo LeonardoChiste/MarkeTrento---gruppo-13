@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.14.1",
     "multer": "^2.0.0",
-    "node-localstorage": "^3.0.5"
+    "node-localstorage": "^3.0.5",
+    "swagger-jsdoc": "^6.2.8"
   }
 }

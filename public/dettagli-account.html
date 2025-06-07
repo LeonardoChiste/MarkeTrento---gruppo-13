@@ -374,6 +374,14 @@
                         </div>
                     </div>
                 `;
+            } else if (tipo === 'admin') {
+                html += `<div class="valore"><span class="label">Nome:</span> ${dati.nome || ''}</div>`;
+                html += `<div class="valore"><span class="label">Cognome:</span> ${dati.cognome || ''}</div>`;
+                html += `<div class="valore"><span class="label">Email:</span> ${dati.email || ''}</div>`;
+                html += `<div class="valore"><span class="label">Data di nascita:</span> ${dati.birthdate ? new Date(dati.birthdate).toLocaleDateString() : ''}</div>`;
+            } else {
+                document.getElementById('errore').textContent = "Tipo account sconosciuto.";
+                return;
             }
 
             document.getElementById('datiAccount').innerHTML = html;

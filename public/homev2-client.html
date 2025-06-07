@@ -127,7 +127,7 @@
 </head>
 <body>
     <div class="container">
-        <button class="upgrade-btn" onclick="window.location.href='/upgrade.html'">🔼 Upgrade a Account Business</button>
+        <button class="upgrade-btn" onclick="window.location.href='/upgrade-cliente.html'">🔼 Upgrade a Account Business</button>
         <h1>MarkeTrento WebApp 🥇</h1>
         <button class="btn-mercato" onclick="window.location.href='/mercato.html'">🛍️ Mercato</button>
         <div class="mini-btns-grid">
@@ -137,5 +137,33 @@
             <button class="mini-btn" onclick="window.location.href='/dettagli-account.html'">⚙️ Impostazioni</button>
         </div>
     </div>
+    <script>
+        (function() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const payload = parseJwt(token);
+                if (payload.aut !== 'Cliente') {
+                    const btn = document.getElementById('upgrade-btn');
+                    btn.classList.add('disabled');
+                    btn.disabled = true;
+                } else {
+                    document.getElementById('upgradeBtn').addEventListener('click', function() {
+                        fetch('/check/upgrade-cliente', {
+                            headers: {
+                                'x-access-token': localStorage.getItem('token')
+                            }
+                        })
+                        .then(res => {
+                            if (res.ok) {
+                                window.location.href = '/upgrade-cliente.html';
+                            } else {
+                                alert("Accesso negato!");
+                            }
+                        });
+                    });
+                }
+            }
+        })();
+    </script>
 </body>
 </html>
