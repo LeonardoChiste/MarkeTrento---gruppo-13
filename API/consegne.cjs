@@ -101,13 +101,13 @@ router.put('/:id/svuota', tokenChecker('Admin'), async (req, res) => {
     }
 });
 
-router.put('/approva', tokenChecker('Admin'), async (req, res) => {
+router.put('/:id/approva', tokenChecker('Admin'), async (req, res) => {
     try {
         const consegna = await Consegna.findById(req.params.id);
         if (!consegna) {
             return res.status(404).json({ error: 'Consegna non trovata' });
         }
-        consegna.status = 'Completata';
+        consegna.status = 'Consegnata';
         await consegna.save();
         res.status(200).json({ message: 'Consegna approvata con successo', consegna });
     } catch (err) {
