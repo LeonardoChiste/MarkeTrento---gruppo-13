@@ -36,11 +36,11 @@ const prodotti = require('./API/prodotti.cjs');
 const accounts = require('./API/accounts.cjs');
 const tags = require('./API/tags.cjs');
 const citytags = require('./API/citytags.cjs');
-const order = require('./API/orders.cjs');
+const orders = require('./API/orders.cjs');
 const mail = require('./API/mails.cjs');
 const clienti = require('./API/clienti.cjs');
-const upgrade = require('./API/upgrade.cjs');
-const imprenditore = require('./API/imprenditore.cjs');
+const upgrades = require('./API/upgrades.cjs');
+const imprenditori = require('./API/imprenditori.cjs');
 const recensioni = require('./API/recensioni.cjs');
 const consegne = require('./API/consegne.cjs')
 const app = express();
@@ -221,12 +221,12 @@ app.use('/api/v1/prodotti', prodotti);
 app.use('/api/v1/tags', tags);
 app.use('/api/v1/accounts',accounts)
 app.use('/api/v1/citytags', citytags);
-app.use('/api/v1/orders', order);
+app.use('/api/v1/orders', orders);
 app.use('/api/v1/service',mail);
 app.use('/api/v1/clienti', clienti);
 app.use('/check', authcheck);
-app.use('/api/v1/upgrades', upgrade);
-app.use('/api/v1/imprenditori', imprenditore);
+app.use('/api/v1/upgrades', upgrades);
+app.use('/api/v1/imprenditori', imprenditori);
 app.use('/api/v1/recensioni', recensioni);
 app.use('/api/v1/consegne', consegne);
 

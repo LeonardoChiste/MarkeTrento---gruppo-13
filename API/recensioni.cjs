@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 });
 
 // Ottieni tutte le recensioni per un venditore
-router.get('/venditore/:venditoreId', async (req, res) => {
+router.get('/venditore/:venditoreId', async (req, res) => {   //non dovrebbe essere /ordine/:venditoreId ?? -Leonardo
     try {
         const venditoreId = req.params.venditoreId;
         // Trova tutti gli ordini di questo venditore
@@ -42,7 +42,7 @@ router.get('/venditore/:venditoreId', async (req, res) => {
         const orderIds = orders.map(o => o._id);
         // Trova tutte le recensioni per questi ordini
         const recensioni = await Recensione.find({ ordine: { $in: orderIds } });
-        res.json(recensioni);
+        res.status(200).json(recensioni);
     } catch (err) {
         console.error('Errore caricamento recensioni:', err);
         res.status(500).json({ error: 'Errore durante il caricamento delle recensioni.' });
