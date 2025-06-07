@@ -94,7 +94,7 @@
         <p class="total" id="total-price">Totale: €0.00</p>
         <div class="button-row">
             <button class="back-btn" onclick="window.history.back()">Torna indietro</button>
-            <a href="ordine.html" class="order-btn">Procedi all'ordine</a>
+            <button type="button" class="order-btn">Procedi all'ordine</button>
         </div>
     </div>
 
@@ -218,7 +218,25 @@
                 totalPriceElement.textContent = `Totale: €0.00`;
             }
         }
-        document.addEventListener('DOMContentLoaded', loadCarrello);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCarrello();
+            const orderBtn = document.querySelector('.order-btn');
+            if (orderBtn) {
+                orderBtn.addEventListener('click', async function(e) {
+                    const userInfo = await getUserTypeAndIdFromToken();
+                    if (!userInfo) return; 
+                    const { userType, userId } = userInfo;
+                    const carrello = await getCarrello(userType, userId);
+                    if (!carrello || carrello.length === 0) {
+                        e.preventDefault();
+                        alert('Il carrello è vuoto! Aggiungi almeno un prodotto prima di procedere all\'ordine.');
+                        return;
+                    }
+                    window.location.href = 'ordine.html';
+                });
+            }
+        });
     </script>
 </body>
 </html>
