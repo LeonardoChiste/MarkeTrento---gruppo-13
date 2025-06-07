@@ -322,7 +322,6 @@
                 const datoricerca = await res.json();
                 var idricerca = datoricerca._id;
 
-                // 1. Prima crea il prodotto SENZA immagine
                 const dati = {
                     nome: String(this.nome.value),
                     descrizione: String(this.descrizione.value),
@@ -337,7 +336,7 @@
                     esito.innerHTML = `<span style="color:red;">Seleziona una categoria!</span>`;
                     return;
                 }
-                // Crea il prodotto
+             
                 const resProd = await fetch('/api/v1/prodotti', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -349,9 +348,9 @@
                     return;
                 }
                 
-                let prodottoCreato = await resProd.json();
-                let prodottoId = prodottoCreato.id || prodottoCreato._id || prodottoCreato.prodottoId;
-                
+                let prodottoCreatoId = await resProd.json();
+                if(!prodottoCreatoId) console.log("Errore ID Prodotto non reperibile");
+               
                 if (file && prodottoId) {
                     const formData = new FormData();
                     formData.append('image', file);

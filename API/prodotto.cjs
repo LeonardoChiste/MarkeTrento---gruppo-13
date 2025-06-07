@@ -51,7 +51,7 @@ router.post('', async (req, res) => {
         const { nome, descrizione, venditore, costo, quantita, tag } = req.body;
         const prodotto = new Prodotto(nome, descrizione, venditore, costo, quantita, tag);
         const nuovoProdotto = await ProdottoServizio.addProduct(prodotto);
-        res.status(201).json({ message: 'Prodotto aggiunto con successo', id: nuovoProdotto._id });
+        res.status(201).json({ id: nuovoProdotto._id });
     } catch (error) {
         console.error('Errore durante l\'aggiunta del prodotto:', error);
         res.status(500).json({ error: 'Errore del server' });
