@@ -114,6 +114,22 @@
         .filter-btn:hover {
             background: #155724;
         }
+        .review-btn {
+            padding: 6px 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95em;
+            cursor: pointer;
+            box-shadow: 0 1px 4px #b2f2b2;
+            margin-top: 10px;
+            transition: background 0.2s;
+            display: inline-block;
+        }
+        .review-btn:hover {
+            background: #218838;
+        }
     </style>
 </head>
 <body>
@@ -181,6 +197,7 @@
             const stato = ordine.stato || 'In attesa';
             const isRifiutato = stato.toLowerCase() === 'rifiutato';
             const ordineClass = isRifiutato ? 'ordine rifiutato' : 'ordine';
+            const canReview = stato === 'Consegnato' || stato === 'Ritirato';
             return `
                 <div class="${ordineClass}">
                     <div class="ordine-header">
@@ -196,6 +213,7 @@
                             </li>
                         `).join('')}
                     </ul>
+                    ${canReview ? `<button class="review-btn" data-order-id="${ordine._id}">Lascia una recensione</button>` : ''}
                 </div>
             `;
         }
@@ -220,6 +238,7 @@
                 return;
             }
             ordiniList.innerHTML = ordini.map(renderOrdine).join('');
+            addReviewButtonListeners();
         }
 
         async function caricaOrdini() {
@@ -251,6 +270,15 @@
             } catch (e) {
                 ordiniList.innerHTML = '<div class="no-orders">Errore di rete.</div>';
             }
+        }
+
+        function addReviewButtonListeners() {
+            document.querySelectorAll('.review-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const orderId = this.getAttribute('data-order-id');
+                    window.location.href = `/lascia-recensione.html?orderId=${orderId}`;
+                });
+            });
         }
 
         document.addEventListener('DOMContentLoaded', () => {

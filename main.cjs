@@ -39,8 +39,9 @@ const citytags = require('./API/citytags.cjs');
 const order = require('./API/orders.cjs');
 const mail = require('./API/mails.cjs');
 const clienti = require('./API/clienti.cjs');
-const upgrade = require('./API/upgrades.cjs');
-const imprenditore = require('./API/imprenditori.cjs');
+const upgrade = require('./API/upgrade.cjs');
+const imprenditore = require('./API/imprenditore.cjs');
+const recensioni = require('./API/recensioni.cjs');
 const consegne = require('./API/consegne.cjs')
 const app = express();
 const port = process.env.PORT || 3000;
@@ -226,6 +227,7 @@ app.use('/api/v1/clienti', clienti);
 app.use('/check', authcheck);
 app.use('/api/v1/upgrades', upgrade);
 app.use('/api/v1/imprenditori', imprenditore);
+app.use('/api/v1/recensioni', recensioni);
 app.use('/api/v1/consegne', consegne);
 
 //login stuff
