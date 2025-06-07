@@ -4,7 +4,7 @@ const router = express.Router();
 const tokenChecker = require('../tokenchecker.cjs').tokenChecker;
 const DBEntrepreneur = require('../models/promoterModel.cjs');
 
-router.put('/descrizione/:id', tokenChecker('Imprenditore'), async (req, res) => {
+router.put('/:id/descrizione', tokenChecker('Imprenditore'), async (req, res) => {
     try {
         const { descrizione } = req.body;
         const id = req.params.id;
@@ -26,7 +26,7 @@ router.post('/add', tokenChecker('Cliente'), async (req, res) => {
         res.status(500).json({ error: 'Errore del server' });
     }
 });
-router.put('/sede/:id', tokenChecker('Imprenditore'), async (req, res) => {
+router.put('/:id/sede', tokenChecker('Imprenditore'), async (req, res) => {
     try {
         const { sede } = req.body;
         const id = req.params.id;

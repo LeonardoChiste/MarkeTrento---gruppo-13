@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
 });
 
 
-router.put('/descrizione/:id', tokenChecker('Venditore'), async (req, res) => {
+router.put('/:id/descrizione', tokenChecker('Venditore'), async (req, res) => {
     try {
         const { descrizione } = req.body;
         const id = req.params.id;
@@ -39,7 +39,7 @@ router.put('/descrizione/:id', tokenChecker('Venditore'), async (req, res) => {
     }
 });
 
-router.put('/sede/:id', tokenChecker('Venditore'), async (req, res) => {
+router.put('/:id/sede', tokenChecker('Venditore'), async (req, res) => {
     try {
         const { sede } = req.body;
         const id = req.params.id;

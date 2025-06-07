@@ -1,3 +1,10 @@
+/**
+ * @swagger
+ * /accounts:
+ *   get:
+ *     summary: Retrieve a user account by email
+ *     description: Retrieve a user account (Cliente, Imprenditore, Venditore, Admin) by email.
+*/
 const express = require('express');
 const router = express.Router();
 const VendorModel= require('../models/vendorModel.cjs');

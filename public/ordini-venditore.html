@@ -310,7 +310,7 @@
                         if (!ordineId) return;
                         if (!confirm('Sei sicuro di voler rifiutare questo ordine?')) return;
                         try {
-                            const res = await fetch(`/api/v1/orders/rifiuta/${ordineId}`, {
+                            const res = await fetch(`/api/v1/orders/${ordineId}/rifiuta`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -345,7 +345,7 @@
                         if (!ordineId) return;
                         if (!confirm('Confermi che l\'ordine è stato ritirato dal cliente?')) return;
                         try {
-                            const res = await fetch(`/api/v1/orders/ritirato/${ordineId}`, {
+                            const res = await fetch(`/api/v1/orders/${ordineId}/ritirato`, {
                                 method: 'PUT',
                                 headers: {
                                     'Content-Type': 'application/json',

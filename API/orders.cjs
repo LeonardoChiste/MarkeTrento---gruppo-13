@@ -89,7 +89,7 @@ router.post('/:id/approve', tokenChecker('Admin'), async (req, res) => {
     }
 });
 
-router.post('/rifiuta/:id', async (req, res) => {
+router.post('/:id/rifiuta', async (req, res) => {
     try {
         const orderId = req.params.id;
         const order = await Order.findById(orderId);
@@ -106,7 +106,7 @@ router.post('/rifiuta/:id', async (req, res) => {
 }
 );
 
-router.put('/ritirato/:id', async (req, res) => {
+router.put('/:id/ritirato', async (req, res) => {
     try {
         const orderId = req.params.id;
         const order = await Order.findById(orderId);
@@ -123,7 +123,7 @@ router.put('/ritirato/:id', async (req, res) => {
 }
 );
 
-router.get('/venditori/:id', async (req, res) => {
+router.get('/venditore/:id', async (req, res) => {
     try {
         const venditoreId = req.params.id;
         const orders = await Order.find({ venditore: venditoreId });

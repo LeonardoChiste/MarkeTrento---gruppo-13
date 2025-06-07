@@ -417,8 +417,8 @@
                         document.getElementById('msgDescrizione').classList.remove('micro-err');
                         const token = localStorage.getItem('token');
                         let api = '';
-                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditori/descrizione/${userId}`;
-                        else if (userTipo === 'venditore') api = `/api/v1/venditori/descrizione/${userId}`;
+                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditori/${userId}/descrizione`;
+                        else if (userTipo === 'venditore') api = `/api/v1/venditori/${userId}/descrizione`;
                         else return;
                         try {
                             const res = await fetch(api, {
@@ -481,8 +481,8 @@
                         document.getElementById('msgSede').classList.remove('micro-err');
                         const token = localStorage.getItem('token');
                         let api = '';
-                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditori/sede/${userId}`;
-                        else if (userTipo === 'venditore') api = `/api/v1/venditori/sede/${userId}`;
+                        if (userTipo === 'imprenditore') api = `/api/v1/imprenditori/${userId}/sede`;
+                        else if (userTipo === 'venditore') api = `/api/v1/venditori/${userId}/sede`;
                         else return;
                         try {
                             const res = await fetch(api, {
