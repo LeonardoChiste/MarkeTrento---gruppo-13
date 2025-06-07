@@ -79,7 +79,6 @@
         .torna-indietro-top:hover {
             background: #0b3d1c;
         }
-        
         .tag-chip-simple {
             display: inline-flex;
             align-items: center;
@@ -108,6 +107,16 @@
         .tag-chip-simple .remove-tag:hover {
             color: #c82333;
         }
+        .image-preview {
+            display: block;
+            margin: 10px auto 0 auto;
+            max-width: 100%;
+            max-height: 180px;
+            border-radius: 8px;
+            border: 1px solid #b2f2b2;
+            background: #eee;
+            object-fit: contain;
+        }
         @media (max-width: 600px) {
             .container {
                 margin: 24px 8px;
@@ -126,7 +135,7 @@
     <button class="torna-indietro-top" onclick="window.history.back()">< - Torna indietro</button>
     <div class="container">
         <h1>Pubblica un nuovo prodotto</h1>
-        <form id="prodottoForm" autocomplete="off">
+        <form id="prodottoForm" autocomplete="off" enctype="multipart/form-data">
             <label for="nome">Nome prodotto</label>
             <input type="text" id="nome" name="nome" required>
 
@@ -148,12 +157,13 @@
             </div>
             <small>Scegli una sola categoria</small>
 
-            <label for="immagine">URL Immagini (una per riga, opzionale)</label>
-            <textarea id="immagine" name="immagine" rows="2" placeholder="https://..."></textarea>
+            <label for="immagineFile">Immagine prodotto (opzionale)</label>
+            <input type="file" id="immagineFile" name="immagineFile" accept="image/*">
+            <img id="imagePreview" class="image-preview" src="https://via.placeholder.com/300x180/cccccc/888888?text=Immagine+di+default" alt="Anteprima immagine">
 
             <button type="submit">Pubblica Prodotto</button>
         </form>
-        <button class="annulla-btn" onclick="document.getElementById('prodottoForm').reset();resetTagSelect();document.getElementById('esito').innerHTML='';">cancella campi</button>
+        <button class="annulla-btn" onclick="document.getElementById('prodottoForm').reset();resetTagSelect();resetImagePreview();document.getElementById('esito').innerHTML='';">cancella campi</button>
         <div id="esito" style="margin-top:20px;text-align:center;"></div>
     </div>
     <script>
@@ -231,6 +241,10 @@
             hideSelectedTagChip();
         }
 
+        function resetImagePreview() {
+            document.getElementById('imagePreview').src = "https://via.placeholder.com/300x180/cccccc/888888?text=Immagine+di+default";
+        }
+
         function parseJwt(token) {
             try {
                 return JSON.parse(atob(token.split('.')[1]));
@@ -238,6 +252,21 @@
                 return null;
             }
         }
+
+        // Anteprima immagine caricata
+        document.getElementById('immagineFile').addEventListener('change', function() {
+            const file = this.files[0];
+            const preview = document.getElementById('imagePreview');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                resetImagePreview();
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             caricaTagSimple();
@@ -251,84 +280,110 @@
             });
         });
 
-        
         document.getElementById('prodottoForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const tagString = selectedTagSimple ? selectedTagSimple : '';
+            let immagini = [];
 
-            const immaginiRaw = this.immagine.value.split('\n').map(s => s.trim()).filter(Boolean);
+            const fileInput = document.getElementById('immagineFile');
+            const file = fileInput.files[0];
 
-            
+            let imageUrl = "";
 
-        let userId = null;
-        let userTipo = null;
-        let userDati = null;
+            // Default image if not uploaded
+            const defaultImage = "https://via.placeholder.com/300x180/cccccc/888888?text=Immagine+di+default";
 
-        
+            let userId = null;
+
             const token = localStorage.getItem('token');
             if (!token) {
-                document.getElementById('errore').textContent = "Token non trovato. Effettua il login.";
+                document.getElementById('esito').innerHTML = "<span style='color:red;'>Token non trovato. Effettua il login.</span>";
                 return;
             }
             const payload = parseJwt(token);
             if (!payload || !payload.email || !payload.aut) {
-                document.getElementById('errore').textContent = "Token non valido. Effettua nuovamente il login.";
+                document.getElementById('esito').innerHTML = "<span style='color:red;'>Token non valido. Effettua nuovamente il login.</span>";
                 return;
             }
 
             let tipo = payload.aut.toLowerCase();
             let email = encodeURIComponent(payload.email);
 
-            endpoint = `/api/v1/accounts/venditore/${email}`
+            const endpoint = `/api/v1/accounts/venditore/${email}`;
             try {
                 const res = await fetch(endpoint, {
                     headers: { 'x-access-token': token }
                 });
                 if (!res.ok) {
-                    document.getElementById('errore').textContent = "Errore nel recupero dati account.";
+                    document.getElementById('esito').innerHTML = "<span style='color:red;'>Errore nel recupero dati account.</span>";
                     return;
                 }
                 const datoricerca = await res.json();
                 var idricerca = datoricerca._id;
 
+                const dati = {
+                    nome: String(this.nome.value),
+                    descrizione: String(this.descrizione.value),
+                    venditore: idricerca,
+                    costo: parseFloat(this.costo.value),
+                    quantita: parseInt(this.quantita.value),
+                    tag: tagString
+                };
 
-
-            const dati = {
-                nome: String(this.nome.value),
-                descrizione: String(this.descrizione.value),
-                venditore: idricerca,
-                costo: parseFloat(this.costo.value),
-                quantita: parseInt(this.quantita.value),
-                tag: tagString,
-                immagine: immaginiRaw
-            };
-            try {
                 const esito = document.getElementById('esito');
                 if (!tagString) {
                     esito.innerHTML = `<span style="color:red;">Seleziona una categoria!</span>`;
                     return;
                 }
-                const res = await fetch('/api/v1/prodotti', {
+             
+                const resProd = await fetch('/api/v1/prodotti', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dati)
                 });
-                if (res.ok) {
-                    esito.innerHTML = '<span style="color:green;">Prodotto pubblicato con successo!</span>';
-                    this.reset();
-                    resetTagSelect();
-                    setTimeout(() => {
-                        window.history.back();
-                    }, 400);
-                } else {
-                    const err = await res.text();
+                if (!resProd.ok) {
+                    const err = await resProd.text();
                     esito.innerHTML = `<span style="color:red;">Errore: ${err}</span>`;
+                    return;
                 }
-            } catch (error) {
-                document.getElementById('esito').innerHTML = '<span style="color:red;">Errore di rete!</span>';
+                
+                let prodottoCreatoId = await resProd.json();
+                if(!prodottoCreatoId) console.log("Errore ID Prodotto non reperibile");
+               
+                if (file && prodottoId) {
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    try {
+                        const uploadRes = await fetch(`/api/v1/prodotti/foto/${prodottoId}`, {
+                            method: 'POST',
+                            headers: {
+                                'x-access-token': token
+                            },
+                            body: formData
+                        });
+                        if (uploadRes.ok) {
+                            esito.innerHTML = '<span style="color:green;">Prodotto pubblicato con successo e immagine caricata!</span>';
+                        } else {
+                            esito.innerHTML = '<span style="color:orange;">Prodotto pubblicato, ma errore nel caricamento immagine.</span>';
+                        }
+                    } catch (err) {
+                        esito.innerHTML = '<span style="color:orange;">Prodotto pubblicato, ma errore nel caricamento immagine.</span>';
+                    }
+                } else if (!file) {
+                    esito.innerHTML = '<span style="color:green;">Prodotto pubblicato con successo!</span>';
+                } else {
+                    esito.innerHTML = '<span style="color:orange;">Prodotto pubblicato, ma non è stato possibile associare l\'immagine.</span>';
+                }
+
+                this.reset();
+                resetTagSelect();
+                resetImagePreview();
+                setTimeout(() => {
+                    window.history.back();
+                }, 700);
+
             }
-        }
             catch (error) {
                 document.getElementById('esito').innerHTML = '<span style="color:red;">Errore nel recupero dati account!</span>';
             }
