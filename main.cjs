@@ -39,8 +39,8 @@ const citytags = require('./API/citytags.cjs');
 const order = require('./API/orders.cjs');
 const mail = require('./API/mails.cjs');
 const clienti = require('./API/clienti.cjs');
-const upgrade = require('./API/upgrade.cjs');
-const imprenditore = require('./API/imprenditore.cjs');
+const upgrade = require('./API/upgrades.cjs');
+const imprenditore = require('./API/imprenditori.cjs');
 const recensioni = require('./API/recensioni.cjs');
 const consegne = require('./API/consegne.cjs')
 const app = express();
@@ -243,7 +243,7 @@ app.post('/login', async (req, res) => {
         <body>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/caricamento.html';
+                window.location.href = '/homev2-client.html';
             </script>
         </body>
         </html>
@@ -267,7 +267,7 @@ app.post('/loginbusiness', async (req, res) => {
         <body>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/caricamento-business.html';
+                window.location.href = '/homev2-business.html';
             </script>
         </body>
         </html>
@@ -285,7 +285,7 @@ app.post('/loginbusiness', async (req, res) => {
         <body>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/caricamento-business.html';
+                window.location.href = '/homev2-business.html';
             </script>
         </body>
         </html>
