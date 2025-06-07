@@ -243,7 +243,7 @@ app.post('/login', async (req, res) => {
         <body>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/caricamento.html';
+                window.location.href = '/homev2-client.html';
             </script>
         </body>
         </html>
@@ -267,7 +267,7 @@ app.post('/loginbusiness', async (req, res) => {
         <body>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/caricamento-business.html';
+                window.location.href = '/homev2-business.html';
             </script>
         </body>
         </html>
@@ -285,7 +285,7 @@ app.post('/loginbusiness', async (req, res) => {
         <body>
             <script>
                 localStorage.setItem('token', '${token}');
-                window.location.href = '/caricamento-business.html';
+                window.location.href = '/homev2-business.html';
             </script>
         </body>
         </html>

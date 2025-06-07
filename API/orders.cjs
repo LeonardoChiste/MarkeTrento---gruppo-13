@@ -6,7 +6,7 @@ const Productv2 = require('../models/productModel.cjs');
 const tokenChecker = require('../tokenchecker.cjs').tokenChecker;
 const Consegna = require('../models/consegnaModel.cjs');
 
-router.get('/', tokenChecker('Admin'), async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const { userType, userId } = req.query;
         let filter = {};
