@@ -1,6 +1,5 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
-const VenditoreServizio = require('../services/VenditoreService.cjs');
 const router = express.Router();
 const multer = require('multer');
 const tokenChecker = require('../tokenchecker.cjs').tokenChecker;
@@ -71,7 +70,7 @@ router.get('/:id/file', async (req, res) => {
             'Content-Type': pdf.file.contentType,
             'Content-Disposition': `inline; filename="${pdf.file.fileName || 'document.pdf'}"`
         });
-        res.send(Buffer.from(pdf.file.data.buffer));
+        res.send(Buffer.isBuffer(pdf.file.data) ? pdf.file.data : Buffer.from(pdf.file.data));
     } catch (error) {
         res.status(500).send(error.message);
     }

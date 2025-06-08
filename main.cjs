@@ -50,7 +50,6 @@ const port = process.env.PORT || 3000;
 //app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-
 /*const swaggerJSDoc = require('swagger-jsdoc');
 
 const swaggerDefinition = {
