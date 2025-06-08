@@ -1,3 +1,10 @@
+/*Inizialmente le API per la gestione del carrello erano generiche per evitare di dover scrivere una API
+per ogni tipo di utente che può effettuare acquisti. Tuttavia, siccome il format che avevamo non rispettava le
+convezioni REST, abbiamo deciso di scrivere una API per ogni tipo di utente. Le API sono state commentate e la 
+loro versione attuale è presente nei rispettivi file clienti.cjs, venditori.cjs e imprenditori.cjs.*/
+
+
+
 const express = require('express');
 require('dotenv').config({ path: 'process.env' });
 const CarrelloServizio = require('../services/CarrrelloService.cjs');
@@ -7,6 +14,8 @@ const DBVendor = require('../models/vendorModel.cjs');
 const DBEntrepreneur = require('../models/promoterModel.cjs');
 const router = express.Router();
 
+
+/*
 function getModelByUserType(userType) {
     if (userType === 'cliente') return DBClient;
     if (userType === 'venditore') return DBVendor;
@@ -135,3 +144,4 @@ router.post('/:userType/:userId/clear', async (req, res) => {
 });
 
 module.exports = router;
+*/

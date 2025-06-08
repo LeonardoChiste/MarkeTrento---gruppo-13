@@ -164,17 +164,16 @@
             let endpoint, userType;
             if (role === 'Cliente') {
                 endpoint = `/api/v1/clienti?email=${encodeURIComponent(email)}`;
-                userType = 'cliente';
+                userType = 'clienti';
             } else if (role === 'Venditore') {
                 endpoint = `/api/v1/venditori?email=${encodeURIComponent(email)}`;
-                userType = 'venditore';
-            } else if (role === 'Imprenditore') {
+                userType = 'venditori';
+            } else if (role === 'Imprenditori') {
                 endpoint = `/api/v1/imprenditori?email=${encodeURIComponent(email)}`;
-                userType = 'imprenditore';
+                userType = 'imprenditori';
             } else {
                 return null;
             }
-
             const res = await fetch(endpoint);
             if (!res.ok) return null;
             const user = await res.json();
@@ -182,7 +181,7 @@
         }
 
         async function getCarrello(userType, userId) {
-            const res = await fetch(`/api/v1/carrelli/${userType}/${userId}`);
+            const res = await fetch(`/api/v1/${userType}/${userId}/carrello`);
             if (!res.ok) throw new Error('Carrello non trovato');
             return await res.json();
         }
@@ -303,13 +302,13 @@
     // Determina il clienteModel corretto
     let clienteModel = '';
     switch (userType) {
-        case 'cliente':
+        case 'clienti':
             clienteModel = 'DBClient';
             break;
-        case 'venditore':
+        case 'venditori':
             clienteModel = 'DBVendor';
             break;
-        case 'imprenditore':
+        case 'imprenditori':
             clienteModel = 'DBEntrepreneur';
             break;
         default:
@@ -337,13 +336,13 @@
         if (res.ok) {
             alert('Ordine confermato e salvato!');
             // Svuota il carrello dopo l'ordine
-            await fetch(`/api/v1/carrelli/${userType}/${userId}/clear`, { method: 'POST' });
+            await fetch(`/api/v1/${userType}/${userId}/carrello/clear`, { method: 'POST' });
             switch (userType) {
-                case 'cliente':
+                case 'clienti':
                     window.location.href = '/homev2-client.html';
                     break;
-                case 'venditore':
-                case 'imprenditore':
+                case 'venditori':
+                case 'imprenditori':
                     window.location.href = '/homev2-business.html';
                     break;
                 default:

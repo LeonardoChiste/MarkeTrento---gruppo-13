@@ -150,11 +150,11 @@
             let endpoint, userType;
             if (role === 'Cliente') {
                 endpoint = `/api/v1/clienti?email=${encodeURIComponent(email)}`;
-                userType = 'cliente';
+                userType = 'clienti';
             } else if (role === 'Venditore') {
                 endpoint = `/api/v1/venditori?email=${encodeURIComponent(email)}`;
-                userType = 'venditore';
-            } else if (role === 'Imprenditore') {
+                userType = 'venditori';
+            } else if (role === 'Imprenditori') {
                 endpoint = `/api/v1/imprenditori?email=${encodeURIComponent(email)}`;
                 userType = 'imprenditore';
             } else if (role === 'Admin') {
@@ -290,7 +290,7 @@
                         quantity: quantity
                     };
                     try {
-                        const res = await fetch(`/api/v1/carrelli/${userType}/${userId}/add`, {
+                        const res = await fetch(`/api/v1/${userType}/${userId}/carrello/add`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(prodotto)
