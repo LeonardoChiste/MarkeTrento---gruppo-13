@@ -1073,9 +1073,6 @@ paths:
     get:
       summary: Ottieni tutti gli ordini
       description: Restituisce tutti gli ordini, con possibilità di filtrare per tipo utente e ID.
-      security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
       parameters:
         - in: query
           name: userType
