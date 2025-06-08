@@ -42,7 +42,8 @@ const clienti = require('./API/clienti.cjs');
 const upgrades = require('./API/upgrades.cjs');
 const imprenditori = require('./API/imprenditori.cjs');
 const recensioni = require('./API/recensioni.cjs');
-const consegne = require('./API/consegne.cjs')
+const consegne = require('./API/consegne.cjs');
+const admin = require('./API/admin.cjs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -228,7 +229,7 @@ app.use('/api/v1/upgrades', upgrades);
 app.use('/api/v1/imprenditori', imprenditori);
 app.use('/api/v1/recensioni', recensioni);
 app.use('/api/v1/consegne', consegne);
-
+app.use('/api/v1/admin', admin);
 //login stuff
 app.post('/login', async (req, res) => {
     const { usermail, password } = req.body;

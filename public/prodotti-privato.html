@@ -143,7 +143,7 @@
             let tipo = payload.aut.toLowerCase();
             let email = encodeURIComponent(payload.email);
 
-            endpoint = `/api/v1/accounts/venditore/${email}`
+            endpoint = `/api/v1/venditori?email=${email}`
             try {
                 const res = await fetch(endpoint, {
                     headers: { 'x-access-token': token }
@@ -201,7 +201,7 @@
             }
             titolo.textContent = `I tuoi prodotti disponibili`;
             try {
-                const res = await fetch(`/api/v1/prodotti/venditore/${id}`);
+                const res = await fetch(`/api/v1/venditori/${id}/prodotti`);
                 if (!res.ok) {
                     container.innerHTML = '<span style="color:red;">Nessun prodotto trovato o errore server.</span>';
                     return;

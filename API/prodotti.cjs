@@ -9,6 +9,7 @@ const FotoProdottoServizio = require('../services/fotoProdotto.cjs');
 const router = express.Router();
 
 //api prodotti
+/*
 router.get('/venditore/:id', async (req, res) => {
     try {
         const prodotto = await ProdottoServizio.getProductByVendor(req.params.id);
@@ -20,7 +21,7 @@ router.get('/venditore/:id', async (req, res) => {
         console.error('Errore durante il recupero del prodotto:', error);
         res.status(500).send('Errore del server');
     }
-});
+});*/
 
 router.get('/:id', async (req, res) => {
     try {

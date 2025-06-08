@@ -82,7 +82,7 @@
       let email = encodeURIComponent(payload.email);
       let endpoint = '';
       if (tipo === 'cliente') {
-        endpoint = `/api/v1/accounts/cliente/${email}`;
+        endpoint = `/api/v1/clienti?email=${email}`;
       } else {
         container.innerHTML = `Tipo utente non riconosciuto. Tipo ${tipo} non supportato.`;
         return;

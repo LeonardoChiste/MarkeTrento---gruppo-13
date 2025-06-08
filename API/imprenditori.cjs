@@ -64,4 +64,18 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+router.get('/', async (req, res) => {
+    try {
+        const { email } = req.query;
+        if (!email) return res.status(400).json({ error: 'Email richiesta' });
+        const entrepreneur = await DBEntrepreneur.findOne({ email: email });
+        if (!entrepreneur) {
+            return res.status(404).json({ error: 'Imprenditore non trovato' });
+        }
+        res.status(200).json(entrepreneur);
+    } catch (error) {
+        console.error('Errore durante il recupero dell account imprenditore:', error);
+        res.status(500).json({ error: 'Errore del server' });
+}});
+
 module.exports = router;

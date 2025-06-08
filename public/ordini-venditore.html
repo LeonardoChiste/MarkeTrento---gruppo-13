@@ -156,7 +156,7 @@
             if (!email) return null;
             
             // Ottieni l'ID del venditore
-            const res = await fetch(`/api/v1/accounts/venditore/${email}`);
+            const res = await fetch(`/api/v1/venditori?email=${encodeURIComponent(email)}`);
             if (!res.ok) return null;
             
             const venditore = await res.json();

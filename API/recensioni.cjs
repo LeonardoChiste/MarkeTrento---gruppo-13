@@ -33,8 +33,8 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Ottieni tutte le recensioni per un venditore
-router.get('/venditore/:venditoreId', async (req, res) => {   //non dovrebbe essere /ordine/:venditoreId ?? -Leonardo
+/*
+router.get('/venditore/:venditoreId', async (req, res) => {   
     try {
         const venditoreId = req.params.venditoreId;
         // Trova tutti gli ordini di questo venditore
@@ -47,6 +47,6 @@ router.get('/venditore/:venditoreId', async (req, res) => {   //non dovrebbe ess
         console.error('Errore caricamento recensioni:', err);
         res.status(500).json({ error: 'Errore durante il caricamento delle recensioni.' });
     }
-});
+});*/
 
 module.exports = router;

@@ -288,10 +288,10 @@
             let email = encodeURIComponent(payload.email);
             let endpoint = '';
 
-            if (tipo === 'cliente') endpoint = `/api/v1/accounts/cliente/${email}`;
-            else if (tipo === 'venditore') endpoint = `/api/v1/accounts/venditore/${email}`;
-            else if (tipo === 'imprenditore') endpoint = `/api/v1/accounts/imprenditore/${email}`;
-            else if (tipo === 'admin') endpoint = `/api/v1/accounts/admin/${email}`;
+            if (tipo === 'cliente') endpoint = `/api/v1/clienti?email=${email}`;
+            else if (tipo === 'venditore') endpoint = `/api/v1/venditori?email=${email}`;
+            else if (tipo === 'imprenditore') endpoint = `/api/v1/imprenditori?email=${email}`;
+            else if (tipo === 'admin') endpoint = `/api/v1/admin?email=${email}`;
             else {
                 document.getElementById('errore').textContent = "Tipo account sconosciuto.";
                 return;

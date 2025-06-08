@@ -41,4 +41,21 @@ router.post('/', async (req, res) => {
         res.status(500).json({ error: 'Errore del server' });
     }
 });
+
+
+router.get('/', async (req, res) => {
+    try {
+        const { email } = req.query;
+        if (!email) return res.status(400).json({ error: 'Email richiesta' });
+        const admin = await DBAdmin.findOne({ email: email });
+        if (!admin) {
+            return res.status(404).json({ error: 'Admin non trovato' });
+        }
+        res.status(200).json(admin);
+    } catch (error) {
+        console.error('Errore durante il recupero admin:', error);
+        res.status(500).json({ error: 'Errore del server' });
+    }
+});
+
 module.exports = router;
