@@ -34,6 +34,20 @@ router.delete('/:id', tokenChecker('Cliente'), async (req, res) => {
         res.status(500).send('Errore del server');
     }
 });
+router.get('/', async (req, res) => {
+    try {
+        const { email } = req.query;
+        if (!email) return res.status(400).json({ error: 'Email richiesta' });
+        const client = await DBClient.findOne({ email: email });
+        if (!client) {
+            return res.status(404).json({ error: 'Cliente non trovato' });
+        }
+        res.status(200).json(client);
+    } catch (error) {
+        console.error('Errore durante il recupero dell account cliente:', error);
+        res.status(500).json({ error: 'Errore del server' });
+}});
+
 
 //recupera il carrello del cliente
 router.get('/:id/carrello', async (req, res) => {

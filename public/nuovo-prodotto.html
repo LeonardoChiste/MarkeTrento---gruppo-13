@@ -310,7 +310,7 @@
             let tipo = payload.aut.toLowerCase();
             let email = encodeURIComponent(payload.email);
 
-            const endpoint = `/api/v1/accounts/venditore/${email}`;
+            const endpoint = `/api/v1/venditori?email=${email}`;
             try {
                 const res = await fetch(endpoint, {
                     headers: { 'x-access-token': token }

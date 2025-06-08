@@ -95,9 +95,9 @@
       let email = encodeURIComponent(payload.email);
       let endpoint = '';
       if (tipo === 'imprenditore') {
-        endpoint = `/api/v1/accounts/imprenditore/${email}`;
+        endpoint = `/api/v1/imprenditori?email=${email}`;
       } else if (tipo === 'venditore') {
-        endpoint = `/api/v1/accounts/venditore/${email}`;
+        endpoint = `/api/v1/venditori?email=${email}`;
       } else {
         container.innerHTML = `Tipo utente non riconosciuto. Tipo ${tipo} non supportato.`;
         return;

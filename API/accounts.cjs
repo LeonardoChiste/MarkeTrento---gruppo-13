@@ -11,7 +11,7 @@ const DBVendor = require('../models/vendorModel.cjs');
 const DBEntrepreneur = require('../models/promoterModel.cjs');
 const DBAdmin = require('../models/adminModel.cjs');
 const Cliente  = require('../classes/Cliente.cjs');
-
+/*
 router.get('/cliente/:email', async (req, res) => {
     try {
         const email = req.params.email;
@@ -63,7 +63,8 @@ router.get('/admin/:email', async (req, res) => {
         console.error('Errore durante il recupero admin:', error);
         res.status(500).json({ error: 'Errore del server' });
     }
-});
+});*/
+
 router.put('/password', tokenChecker('Cliente'), async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;

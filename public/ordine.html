@@ -163,11 +163,14 @@
 
             let endpoint, userType;
             if (role === 'Cliente') {
-                userType = 'clienti';
+                endpoint = `/api/v1/clienti?email=${encodeURIComponent(email)}`;
+                userType = 'cliente';
             } else if (role === 'Venditore') {
-                userType = 'venditori';
+                endpoint = `/api/v1/venditori?email=${encodeURIComponent(email)}`;
+                userType = 'venditore';
             } else if (role === 'Imprenditore') {
-                userType = 'imprenditori';
+                endpoint = `/api/v1/imprenditori?email=${encodeURIComponent(email)}`;
+                userType = 'imprenditore';
             } else {
                 return null;
             }
