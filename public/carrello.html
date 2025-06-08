@@ -118,20 +118,19 @@
 
             let endpoint, userType;
             if (role === 'Cliente') {
-                endpoint = `/api/v1/accounts/cliente/${email}`;
-                userType = 'cliente';
+                userType = 'clienti';
             } else if (role === 'Venditore') {
-                endpoint = `/api/v1/accounts/venditore/${email}`;
-                userType = 'venditore';
+                userType = 'venditori';
             } else if (role === 'Imprenditore') {
-                endpoint = `/api/v1/accounts/imprenditore/${email}`;
-                userType = 'imprenditore';
+                userType = 'imprenditori';
             } else {
                 return null;
             }
 
+            /*
             const res = await fetch(endpoint);
             if (!res.ok) return null;
+            */
             const user = await res.json();
             return { userType, userId: user._id };
         }
@@ -139,7 +138,7 @@
         // Recupera il carrello di un utente
         async function getCarrello(userType, userId) {
             try {
-                const response = await fetch(`/api/v1/carrelli/${userType}/${userId}`);
+                const response = await fetch(`/api/v1/${userType}/${userId}/carrello`);
                 if (!response.ok) {
                     throw new Error('Carrello non trovato');
                 }
@@ -197,7 +196,7 @@
                     btn.addEventListener('click', async function() {
                         const nome = this.getAttribute('data-nome');
                         try {
-                            const res = await fetch(`/api/v1/carrelli/${userType}/${userId}/removeOne`, {
+                            const res = await fetch(`/api/v1/${userType}/${userId}/carrello/removeOne`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ nome })

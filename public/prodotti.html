@@ -149,18 +149,18 @@
 
             let endpoint, userType;
             if (role === 'Cliente') {
-                endpoint = `/api/v1/accounts/cliente/${email}`;
-                userType = 'cliente';
+                userType = 'clienti';
             } else if (role === 'Venditore') {
-                endpoint = `/api/v1/accounts/venditore/${email}`;
-                userType = 'venditore';
+                userType = 'venditori';
             } else if (role === 'Imprenditore') {
-                endpoint = `/api/v1/accounts/imprenditore/${email}`;
-                userType = 'imprenditore';
+                userType = 'imprenditori';
             } else {
                 return null;
             }
 
+            if (!endpoint) {
+                endpoint = `/api/v1/accounts/${userType}/${email}`;
+            }
             const res = await fetch(endpoint);
             if (!res.ok) return null;
             const user = await res.json();
@@ -287,7 +287,7 @@
                         quantity: quantity
                     };
                     try {
-                        const res = await fetch(`/api/v1/carrelli/${userType}/${userId}/add`, {
+                        const res = await fetch(`/api/v1/${userType}/${userId}/carrello/add`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(prodotto)
