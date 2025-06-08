@@ -122,7 +122,7 @@ router.put('/:id/ritirato', async (req, res) => {
     }
 }
 );
-
+/*
 router.get('/venditore/:id', async (req, res) => {
     try {
         const venditoreId = req.params.id;
@@ -145,5 +145,7 @@ router.get('/venditore/:id', async (req, res) => {
         console.error(err);
         res.status(500).json({ error: 'Errore nel recupero degli ordini per il venditore' });
     }
-});
+});*/
+
+
 module.exports = router;

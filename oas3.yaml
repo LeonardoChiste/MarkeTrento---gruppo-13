@@ -114,21 +114,8 @@ paths:
             schema:
               type: object
               properties:
-                nome:
-                  type: string
-                descrizione:
-                  type: string
-                venditore:
-                  type: string
-                quantita:
-                  type: number  
-                costo:
-                  type: number    
-                tag:
-                  type: string
-                immagine:
-                  type: string
-                  description: uri
+                schema:
+                  $ref: "#/components/schemas/Product"
       responses:
         '201':
           description: Created
@@ -151,25 +138,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  nome:
-                    type: string
-                  descrizione:
-                    type: string
-                  venditore:
-                    type: string
-                  quantita:
-                    type: number  
-                  costo:
-                    type: number    
-                  tag:
-                    type: string
-                  immagine:
-                    type: string
-                    description: uri
+                $ref: "#/components/schemas/Product"
         '404':
           description: prodotto non trovato
         '500':
@@ -186,25 +155,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                nome:
-                  type: string
-                descrizione:
-                  type: string
-                venditore:
-                  type: string
-                quantita:
-                  type: number  
-                costo:
-                  type: number    
-                tag:
-                  type: string
-                immagine:
-                  type: string
-                  description: uri
+              $ref: "#/components/schemas/Product"
       responses:
         '200':
           description: Prodotto aggiornato
@@ -222,69 +173,12 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                nome:
-                  type: string
-                descrizione:
-                  type: string
-                venditore:
-                  type: string
-                quantita:
-                  type: number  
-                costo:
-                  type: number    
-                tag:
-                  type: string
-                immagine:
-                  type: string
-                  description: uri
+              $ref: "#/components/schemas/Product"
       responses:
         '200':
           description: Prodotto eliminato
         '500':
-          description: Internal Server Error
-  /api/v1/prodotti/venditore/{id}:
-    get:
-      description: Ottieni i prodotti del venditore associato all'ID 
-      parameters:
-        - in: path
-          required: true
-          name: id
-          schema:
-            type: string
-          description: 'ID del venditore'
-      responses:
-        '200':
-          description: A JSON array of products
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    nome:
-                      type: string
-                    descrizione:
-                      type: string
-                    venditore:
-                      type: string
-                    quantita:
-                      type: number  
-                    costo:
-                      type: number    
-                    tag:
-                      type: string
-                    immagine:
-                      type: string
-                      description: uri
-        '404':
-          description: Prodotto non trovato
-        '500':
-          description: Internal Server Error  
+          description: Internal Server Error 
   /api/v1/prodotti/{id}/foto:
     post: 
       description: Aggiungi un immagine al prodotto
@@ -336,34 +230,30 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    nome:
-                      type: string
-                    cognome:
-                      type: string
-                    birthdate:
-                      type: string
-                      description: date-time
-                    email:
-                      type: string
-                      description: email
-                    username:
-                      type: string    
-                    password:
-                      type: string
-                    sede:
-                      type: string
-                    descrizione:
-                      type: string
-                    tipo:
-                      type: string
-                    datiPagamento:
-                      type: string
+                  schema:
+                    $ref: '#/components/schemas/Venditore'
         '500':
           description: Internal Server Error
+    get:    
+      summary: Retrieve a vendor account by email
+      description: Retrieve a vendor account by email.
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          description: Email utente
+      responses:
+        '200':
+          description: Venditore trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Venditore'
+        '404':
+          description: Venditore non trovato
+        '500':
+          description: Errore del server
   /api/v1/venditori/{id}:
     get:
       description: Ottieni venditore associato all'ID
@@ -380,32 +270,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  nome:
-                    type: string
-                  cognome:
-                    type: string
-                  birthdate:
-                    type: string
-                    description: date-time
-                  email:
-                    type: string
-                    description: email
-                  username:
-                    type: string    
-                  password:
-                    type: string
-                  sede:
-                    type: string
-                  descrizione:
-                    type: string
-                  tipo:
-                    type: string
-                  datiPagamento:
-                    type: string
+              $ref: "#/components/schemas/Venditore"
+                  
         '404':
           description: Venditore non trovato
         '500':
@@ -489,6 +355,72 @@ paths:
                       type: string
         '500':
           description: Internal Server Error
+  /api/v1/venditori/{id}/orders: 
+    get: 
+      summary: Ottieni gli ordini di un venditore
+      description: Restituisce gli ordini associati a un venditore, esclusi quelli rifiutati e quelli consegnati/ritirati da più di 21 giorni.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del venditore'
+      responses:
+        '200':
+          description: Lista degli ordini del venditore
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '500':
+          description: Errore nel recupero degli ordini per il venditore
+  /api/v1/venditori/{venditoreId}/recensioni:
+    get:
+      description: Ottieni le recensioni per un venditore
+      parameters:
+        - in: path
+          required: true
+          name: venditoreId
+          schema:
+            type: string
+          description: 'ID del venditore'
+      responses:
+        '200':
+          description: Ottieni recensioni associate al venditore
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Recensione"
+        '500':
+          description: Errore del server
+  /api/v1/venditori/{id}/prodotti:
+    get:
+      description: Ottieni i prodotti del venditore associato all'ID 
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del venditore'
+      responses:
+        '200':
+          description: A JSON array of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        '404':
+          description: Prodotto non trovato
+        '500':
+          description: Internal Server Error 
   /api/v1/citytags:
     get:
       responses:
@@ -549,18 +481,17 @@ paths:
           description: Cliente non trovato
         '500':
           description: Errore del server
-  
-  /api/v1/accounts/cliente/{email}:
+  /api/v1/clienti:
     get:
       summary: Retrieve a user account by email
       description: Retrieve a user account (Cliente, Imprenditore, Venditore, Admin) by email.
       parameters:
-        - in: path
-          required: true
+        parameters:
+        - in: query
           name: email
           schema:
             type: string
-          description: 'email del cliente'
+          description: Email utente
       responses:
         '200':
           description: Cliente trovato
@@ -570,72 +501,6 @@ paths:
                 $ref: '#/components/schemas/Cliente'
         '404':
           description: Cliente non trovato
-        '500':
-          description: Errore del server
-  /api/v1/accounts/imprenditore/{email}:
-    get:
-      summary: Retrieve an entrepreneur account by email
-      description: Retrieve an entrepreneur account by email.
-      parameters:
-        - in: path
-          required: true
-          name: email
-          schema:
-            type: string
-          description: 'email dell'imprenditore'
-      responses:
-        '200':
-          description: Imprenditore trovato
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Imprenditore'
-        '404':
-          description: Imprenditore non trovato
-        '500':
-          description: Errore del server
-  /api/v1/accounts/venditore/{email}:
-    get:    
-      summary: Retrieve a vendor account by email
-      description: Retrieve a vendor account by email.
-      parameters:
-        - in: path
-          required: true
-          name: email
-          schema:
-            type: string
-          description: 'email del venditore'
-      responses:
-        '200':
-          description: Venditore trovato
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Venditore'
-        '404':
-          description: Venditore non trovato
-        '500':
-          description: Errore del server
-  /api/v1/accounts/admin/{email}:
-    get:
-      summary: Retrieve an admin account by email
-      description: Retrieve an admin account by email.
-      parameters:
-        - in: path
-          required: true
-          name: email
-          schema:
-            type: string
-          description: 'email dell'admin'
-      responses:
-        '200':
-          description: Admin trovato
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Admin'
-        '404':
-          description: Admin non trovato
         '500':
           description: Errore del server
   /api/v1/accounts/password:
@@ -1225,28 +1090,6 @@ paths:
         '500':
           description: Errore durante la marcatura dell'ordine come ritirato
 
-  /api/v1/orders/venditore/{id}:
-    get:
-      summary: Ottieni gli ordini di un venditore
-      description: Restituisce gli ordini associati a un venditore, esclusi quelli rifiutati e quelli consegnati/ritirati da più di 21 giorni.
-      parameters:
-        - in: path
-          required: true
-          name: id
-          schema:
-            type: string
-          description: 'ID del venditore'
-      responses:
-        '200':
-          description: Lista degli ordini del venditore
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Order'
-        '500':
-          description: Errore nel recupero degli ordini per il venditore
   /api/v1/admin/{id}:
     get:
       summary: Ottieni un admin
@@ -1298,7 +1141,26 @@ paths:
           description: Admin già esistente con questa email
         '500':
           description: Errore interno del server
-
+    get:
+      summary: Retrieve an admin account by email
+      description: Retrieve an admin account by email.
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          description: Email utente
+      responses:
+        '200':
+          description: Admin trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '404':
+          description: Admin non trovato
+        '500':
+          description: Errore del server
 
   /api/v1/upgrades/registrazione:
     post:
@@ -1429,7 +1291,27 @@ paths:
         '500':
           description: Errore durante l'eliminazione del file
 
-
+  /api/v1/imprenditori:
+    get:
+      summary: Retrieve an entrepreneur account by email
+      description: Retrieve an entrepreneur account by email.
+      parameters:
+        - in: query
+          name: email
+          schema:
+            type: string
+          description: Email utente
+      responses:
+        '200':
+          description: Imprenditore trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Imprenditore'
+        '404':
+          description: Imprenditore non trovato
+        '500':
+          description: Errore del server
   /api/v1/imprenditori/{id}/descrizione:
     put:
       summary: Aggiorna la descrizione di un imprenditore
@@ -1576,27 +1458,6 @@ paths:
           description: Errore nell'ordine (campi incompleti / già esistente)
         '404':  
           description: Ordine non trovato
-        '500':
-          description: Errore del server
-  /api/v1/recensioni/venditore/{venditoreId}:
-    get:
-      description: Ottieni le recensioni per un venditore
-      parameters:
-        - in: path
-          required: true
-          name: venditoreId
-          schema:
-            type: string
-          description: 'ID del venditore'
-      responses:
-        '200':
-          description: Ottieni recensioni associate al venditore
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Recensione"
         '500':
           description: Errore del server
   /api/v1/promozioni: 
@@ -1839,6 +1700,8 @@ components:
     Image: 
       type: object
       properties:
+        _id:
+          type: string
         data: 
           type: string
           description: binary
@@ -1847,6 +1710,8 @@ components:
     PDF:
       type: object
       properties:
+        _id:
+          type: string
         data:
           type: string
           description: binary
@@ -1857,6 +1722,8 @@ components:
     Cliente:
       type: object
       properties:
+        _id:
+          type: string
         nome:
           type: string
         cognome:
@@ -1876,6 +1743,8 @@ components:
     Imprenditore:
       type: object
       properties:
+        _id:
+          type: string
         nome:
           type: string
         cognome:
@@ -1901,6 +1770,8 @@ components:
     Venditore:
       type: object
       properties:
+        _id:
+          type: string
         nome:
           type: string
         cognome:
@@ -1928,6 +1799,8 @@ components:
     Admin:
       type: object
       properties:
+        _id:
+          type: string
         nome:
           type: string
         cognome:
@@ -1943,6 +1816,8 @@ components:
     Promotion:
       type: object
       properties:
+        _id:
+          type: string
         data:
           type: string
         titolo:
@@ -1958,6 +1833,8 @@ components:
     Product:
       type: object
       properties:
+        _id:
+          type: string
         nome:
           type: string
         descrizione:
@@ -1972,14 +1849,16 @@ components:
           type: string
         immagine:
           $ref: "#/components/schemas/Image"
+          
     Order:
       type: object
       properties:
+        _id:
+          type: string
         prodotti:
           type: array
           items:
-            items:
-              type: object
+            type: object
             properties:
               _id:
                 type: string
@@ -2007,6 +1886,8 @@ components:
     Consegna:
       type: object
       properties:
+        _id:
+          type: string
         ordini:
           type: array
           items:
@@ -2020,6 +1901,8 @@ components:
     Recensione:
       type: object
       properties:
+        _id:
+          type: string
         titolo:
           type: string
         testo:
@@ -2035,7 +1918,9 @@ components:
     Upgrade:
       type: object
       properties:
-        Imprenditore: 
+        _id:
+          type: string
+        imprenditore: 
           type: string
         file:
           $ref: "#/components/schemas/PDF"
