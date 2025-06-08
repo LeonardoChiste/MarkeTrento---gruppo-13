@@ -69,7 +69,7 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-router.post('/foto/:id',upload.single('image'), async (req, res) => {
+router.post('/:id/foto',upload.single('image'), async (req, res) => {
     try {
         const id = req.params.id;
         var foto = req.file.buffer;
@@ -84,7 +84,7 @@ router.post('/foto/:id',upload.single('image'), async (req, res) => {
     }
 });
 
-router.get('/foto/:id', async (req, res) => {
+router.get('/:id/foto', async (req, res) => {
     try {
         const id = req.params.id;
         const foto = await FotoProdottoServizio.getProductImage(id);
@@ -92,7 +92,7 @@ router.get('/foto/:id', async (req, res) => {
             return res.status(404).send('Foto non trovata');
         }
         res.set('Content-Type', foto.img.contentType);
-        res.send(foto.img.data);
+        res.status(200).send(foto.img.data);
     }
     catch (error) {
         console.error('Errore durante il recupero della foto del prodotto:', error);

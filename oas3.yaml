@@ -4,6 +4,8 @@ info:
   version: '1.0'
 servers:
   - url: https://api.server.test/v1
+  - url: https://markeTrento.onrender.com
+    description: render.com
 paths:
   /:
     get:
@@ -78,6 +80,32 @@ paths:
             html:
               schema:
                 type: string
+  /loginadmin:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            html:
+              schema:
+                type: string
   /api/v1/prodotti: 
     post: 
       requestBody:
@@ -108,6 +136,15 @@ paths:
           description: Internal Server Error
   /api/v1/prodotti/{id}:
     get:
+      description: Ottieni prodotto corrispondente all'id
+      summary: Ottieni prodotto corrispondente all'id
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del prodotto'
       responses:
         '200':
           description: A JSON with one product
@@ -138,6 +175,13 @@ paths:
         '500':
           description: Internal Server Error
     put: 
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del prodotto'
       requestBody:
         content:
           application/json:
@@ -167,6 +211,13 @@ paths:
         '500':
           description: Internal Server Error
     delete: 
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del prodotto'
       requestBody:
         content:
           application/json:
@@ -197,29 +248,14 @@ paths:
           description: Internal Server Error
   /api/v1/prodotti/venditore/{id}:
     get:
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                nome:
-                  type: string
-                descrizione:
-                  type: string
-                venditore:
-                  type: string
-                quantita:
-                  type: number  
-                costo:
-                  type: number    
-                tag:
-                  type: string
-                immagine:
-                  type: string
-                  description: uri
+      description: Ottieni i prodotti del venditore associato all'ID 
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del venditore'
       responses:
         '200':
           description: A JSON array of products
@@ -249,6 +285,47 @@ paths:
           description: Prodotto non trovato
         '500':
           description: Internal Server Error  
+  /api/v1/prodotti/{id}/foto:
+    post: 
+      description: Aggiungi un immagine al prodotto
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del prodotto'
+      requestBody: 
+          $ref: '#/components/schemas/Image'
+      responses:
+        '200':
+          description: Foto del prodotto aggiornata con successo
+        '500':
+          description: Errore del server
+    get:
+      description: Ottieni immagine associata al prodotto
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del prodotto'
+      responses:
+        '200':
+          description: Ottieni immagine associata al prodotto
+          content:
+            binary:
+              schema:
+                type: object
+                properties:
+                    data: 
+                      type: string
+                      description: binary
+        '404':
+          description: Foto non trovata
+        '500':
+          description: Errore del server
   /api/v1/venditori: 
     get:
       responses:
@@ -289,6 +366,14 @@ paths:
           description: Internal Server Error
   /api/v1/venditori/{id}:
     get:
+      description: Ottieni venditore associato all'ID
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del venditore'
       responses:
         '200':
           description: A JSON with one seller
@@ -327,8 +412,17 @@ paths:
           description: Internal Server Error
   /api/v1/venditori/{id}/descrizione:
     put:
+      description:  Modifica descrizione del venditore 
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del venditore'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         content:
           application/json:
@@ -344,8 +438,17 @@ paths:
           description: Internal Server Error
   /api/v1/venditori/{id}/sede:
     put:
+      description: Update venditori sede
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del venditore'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         content:
           application/json:
@@ -408,6 +511,13 @@ paths:
     get:
       summary: Ottieni un cliente 
       description: Ottieni il cliente corrispondente all'id
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del cliente'
       responses:
         '200':
           description: Cliente trovato
@@ -422,8 +532,16 @@ paths:
     delete:
       summary: Cancella un cliente 
       description: Cancella il cliente corrispondente all'id
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del cliente'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Cliente eliminato con successo
@@ -436,6 +554,13 @@ paths:
     get:
       summary: Retrieve a user account by email
       description: Retrieve a user account (Cliente, Imprenditore, Venditore, Admin) by email.
+      parameters:
+        - in: path
+          required: true
+          name: email
+          schema:
+            type: string
+          description: 'email del cliente'
       responses:
         '200':
           description: Cliente trovato
@@ -451,6 +576,13 @@ paths:
     get:
       summary: Retrieve an entrepreneur account by email
       description: Retrieve an entrepreneur account by email.
+      parameters:
+        - in: path
+          required: true
+          name: email
+          schema:
+            type: string
+          description: 'email dell'imprenditore'
       responses:
         '200':
           description: Imprenditore trovato
@@ -466,6 +598,13 @@ paths:
     get:    
       summary: Retrieve a vendor account by email
       description: Retrieve a vendor account by email.
+      parameters:
+        - in: path
+          required: true
+          name: email
+          schema:
+            type: string
+          description: 'email del venditore'
       responses:
         '200':
           description: Venditore trovato
@@ -481,6 +620,13 @@ paths:
     get:
       summary: Retrieve an admin account by email
       description: Retrieve an admin account by email.
+      parameters:
+        - in: path
+          required: true
+          name: email
+          schema:
+            type: string
+          description: 'email dell'admin'
       responses:
         '200':
           description: Admin trovato
@@ -497,7 +643,8 @@ paths:
       summary: Update user password
       description: Update the password of a user account (Cliente, Imprenditore, Venditore, Admin).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         required: true
         content: 
@@ -573,6 +720,19 @@ paths:
     get:
       summary: Ottieni il carrello dell'utente
       description: Restituisce i prodotti presenti nel carrello di un utente specifico (cliente, venditore, imprenditore).
+      parameters:
+        - in: path
+          required: true
+          name: userType
+          schema:
+            type: string
+          description: 'Tipo utente [Cliente, Imprenditore, Venditore, Admin]'
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: string
+          description: 'ID dell'utente'
       responses:
         '200':
           description: Lista dei prodotti nel carrello
@@ -591,6 +751,19 @@ paths:
     post:
       summary: Aggiungi un prodotto al carrello
       description: Aggiunge un prodotto al carrello dell'utente. Tutti i prodotti devono appartenere allo stesso venditore.
+      parameters:
+        - in: path
+          required: true
+          name: userType
+          schema:
+            type: string
+          description: 'Tipo utente [Cliente, Imprenditore, Venditore, Admin]'
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: string
+          description: 'ID dell'utente'
       requestBody:
         required: true
         content:
@@ -628,6 +801,19 @@ paths:
     post:
       summary: Rimuovi una quantità di un prodotto dal carrello
       description: Rimuove una quantità di un prodotto dal carrello dell'utente.
+      parameters:
+        - in: path
+          required: true
+          name: userType
+          schema:
+            type: string
+          description: 'Tipo utente [Cliente, Imprenditore, Venditore, Admin]'
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: string
+          description: 'ID dell'utente'
       requestBody:
         required: true
         content:
@@ -656,6 +842,19 @@ paths:
     post:
       summary: Svuota il carrello dell'utente
       description: Svuota completamente il carrello dell'utente.
+      parameters:
+        - in: path
+          required: true
+          name: userType
+          schema:
+            type: string
+          description: 'Tipo utente [Cliente, Imprenditore, Venditore, Admin]'
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: string
+          description: 'ID dell'utente'
       responses:
         '200':
           description: Carrello svuotato
@@ -675,7 +874,8 @@ paths:
       summary: Ottieni tutte le consegne
       description: Restituisce tutte le consegne, ordinate per data di pubblicazione decrescente.
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Lista delle consegne
@@ -692,7 +892,8 @@ paths:
       summary: Crea una nuova consegna
       description: Crea una nuova consegna con status "In consegna".
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         required: true
         content:
@@ -725,7 +926,8 @@ paths:
       summary: Ottieni la consegna più recente "In consegna"
       description: Restituisce la consegna più recente con status "In consegna".
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Consegna trovata o null se nessuna trovata
@@ -740,8 +942,16 @@ paths:
     get:
       summary: Ottieni una consegna per ID
       description: Restituisce una consegna dato il suo ID.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID della consegna'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Consegna trovata
@@ -757,8 +967,16 @@ paths:
     put:
       summary: Aggiungi un ordine a una consegna
       description: Aggiunge un ordine (id) all'array ordini della consegna.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID della consegna'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         required: true
         content:
@@ -792,8 +1010,16 @@ paths:
     put:
       summary: Svuota gli ordini di una consegna
       description: Svuota l'array degli ordini di una consegna e aggiorna la data.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID della consegna'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         required: false
         content:
@@ -816,8 +1042,16 @@ paths:
     put:
       summary: Approva una consegna
       description: Imposta lo status della consegna a "Consegnata".
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID della consegna'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Consegna approvata con successo
@@ -840,7 +1074,8 @@ paths:
       summary: Ottieni tutti gli ordini
       description: Restituisce tutti gli ordini, con possibilità di filtrare per tipo utente e ID.
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       parameters:
         - in: query
           name: userType
@@ -893,6 +1128,13 @@ paths:
     get:
       summary: Ottieni un ordine per ID
       description: Restituisce un ordine dato il suo ID.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'ordine'
       responses:
         '200':
           description: Ordine trovato
@@ -909,8 +1151,16 @@ paths:
     post:
       summary: Approva un ordine
       description: Imposta lo stato dell'ordine a "In consegna".
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'ordine'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Ordine approvato con successo
@@ -930,6 +1180,13 @@ paths:
     post:
       summary: Rifiuta un ordine
       description: Imposta lo stato dell'ordine a "Rifiutato".
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'ordine'
       responses:
         '200':
           description: Ordine rifiutato con successo
@@ -949,6 +1206,13 @@ paths:
     put:
       summary: Marca un ordine come ritirato
       description: Imposta lo stato dell'ordine a "Ritirato".
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'ordine'
       responses:
         '200':
           description: Ordine marcato come ritirato con successo
@@ -968,6 +1232,13 @@ paths:
     get:
       summary: Ottieni gli ordini di un venditore
       description: Restituisce gli ordini associati a un venditore, esclusi quelli rifiutati e quelli consegnati/ritirati da più di 21 giorni.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID del venditore'
       responses:
         '200':
           description: Lista degli ordini del venditore
@@ -983,6 +1254,13 @@ paths:
     get:
       summary: Ottieni un admin
       description: Ottieni Admin corrispondente all'id
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'admin'
       responses:
         '200':
           description: Admin
@@ -1085,6 +1363,13 @@ paths:
     get:
       summary: Scarica il file PDF di una richiesta di upgrade
       description: Restituisce il file PDF associato a una richiesta di upgrade.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'upgrade'
       responses:
         '200':
           description: File PDF restituito
@@ -1101,6 +1386,13 @@ paths:
     get:
       summary: Scarica il file PDF come attachment
       description: Restituisce il file PDF come allegato per il download.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'upgrade'
       responses:
         '200':
           description: File PDF restituito come attachment
@@ -1118,6 +1410,13 @@ paths:
     delete:
       summary: Elimina una richiesta di upgrade
       description: Elimina una richiesta di upgrade dal database.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'upgrade'
       responses:
         '200':
           description: File eliminato con successo
@@ -1138,8 +1437,16 @@ paths:
     put:
       summary: Aggiorna la descrizione di un imprenditore
       description: Aggiorna la descrizione di un imprenditore dato il suo ID.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'imprenditore'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         required: true
         content:
@@ -1163,8 +1470,16 @@ paths:
     put:
       summary: Aggiorna la sede di un imprenditore
       description: Aggiorna la sede di un imprenditore dato il suo ID.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'imprenditore'
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         required: true
         content:
@@ -1189,7 +1504,8 @@ paths:
       summary: Crea un nuovo imprenditore
       description: Crea un nuovo imprenditore.
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       requestBody:
         required: true
         content:
@@ -1210,6 +1526,13 @@ paths:
     get:
       summary: Ottieni un imprenditore per ID
       description: Restituisce un imprenditore dato il suo ID.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: 'ID dell'imprenditore'
       responses:
         '200':
           description: Imprenditore trovato
@@ -1261,6 +1584,13 @@ paths:
   /api/v1/recensioni/venditore/{venditoreId}:
     get:
       description: Ottieni le recensioni per un venditore
+      parameters:
+        - in: path
+          required: true
+          name: venditoreId
+          schema:
+            type: string
+          description: 'ID del venditore'
       responses:
         '200':
           description: Ottieni recensioni associate al venditore
@@ -1277,7 +1607,8 @@ paths:
       summary: Crea una nuova promozione
       description: Crea una nuova promozione
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Ottieni promozioni
@@ -1291,7 +1622,8 @@ paths:
       summary: Crea una nuova promozione
       description: Crea una nuova promozione
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '201': 
           description: Promozione creata con successo
@@ -1324,7 +1656,8 @@ paths:
       summary: Interfaccia venditore
       description: Restituisce la pagina HTML dell'interfaccia venditore (solo per utenti con ruolo Venditore).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1340,7 +1673,8 @@ paths:
       summary: Carrello cliente
       description: Restituisce la pagina HTML del carrello (solo per utenti con ruolo Cliente).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1356,7 +1690,8 @@ paths:
       summary: Dettagli account cliente
       description: Restituisce la pagina HTML dei dettagli account (solo per utenti con ruolo Cliente).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1372,7 +1707,8 @@ paths:
       summary: Aggiungi promozione (imprenditore)
       description: Restituisce la pagina HTML per aggiungere una promozione (solo per utenti con ruolo Imprenditore).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1388,7 +1724,8 @@ paths:
       summary: Ordini amministratore
       description: Restituisce la pagina HTML degli ordini (solo per utenti con ruolo Admin).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1404,7 +1741,8 @@ paths:
       summary: Dettagli account amministratore
       description: Restituisce la pagina HTML dei dettagli account (solo per utenti con ruolo Admin).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1420,7 +1758,8 @@ paths:
       summary: Registrazione venditore (imprenditore)
       description: Restituisce la pagina HTML per la registrazione venditore (solo per utenti con ruolo Imprenditore).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1436,7 +1775,8 @@ paths:
       summary: Upgrade cliente
       description: Restituisce la pagina HTML per l'upgrade cliente (solo per utenti con ruolo Cliente).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1452,7 +1792,8 @@ paths:
       summary: Candidature amministratore
       description: Restituisce la pagina HTML delle candidature (solo per utenti con ruolo Admin).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1468,7 +1809,8 @@ paths:
       summary: Consegne amministratore
       description: Restituisce la pagina HTML delle consegne (solo per utenti con ruolo Admin).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1484,7 +1826,8 @@ paths:
       summary: Aggiungi consegna (admin)
       description: Restituisce la pagina HTML per aggiungere una consegna (solo per utenti con ruolo Admin).
       security:
-        - bearerAuth: []
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         '200':
           description: Pagina HTML restituita
@@ -1703,7 +2046,20 @@ components:
           type: string
           description: date-time
   securitySchemes:
-    bearerAuth: 
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    XAccessTokenHeaderAuth: # arbitrary name for the security scheme
+      description: >-
+        The API authentication.
+        The API key must be passed in the header 'x-access-token'.
+        The API key must be a valid JWT token.
+      type: apiKey
+      in: header
+      name: x-access-token
+    
+    TokenQueryAuth: # arbitrary name for the security scheme
+      description: >-
+        The API authentication.
+        The API key must be passed in the query string 'token'.
+        The API key must be a valid JWT token.
+      type: apiKey
+      in: query
+      name: token

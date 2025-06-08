@@ -355,7 +355,7 @@
                     const formData = new FormData();
                     formData.append('image', file);
                     try {
-                        const uploadRes = await fetch(`/api/v1/prodotti/foto/${prodottoId}`, {
+                        const uploadRes = await fetch(`/api/v1/prodotti/${prodottoId}/foto`, {
                             method: 'POST',
                             headers: {
                                 'x-access-token': token
