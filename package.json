@@ -5,7 +5,7 @@
   "main": "main.cjs",
   "scripts": {
     "start": "node main.cjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -22,5 +22,9 @@
     "node-localstorage": "^3.0.5",
     "swagger-jsdoc": "5.0.1",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.1.1"
   }
 }
