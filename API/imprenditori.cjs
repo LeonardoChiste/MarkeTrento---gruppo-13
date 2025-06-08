@@ -1,3 +1,12 @@
+const express =require( 'express');
+require('dotenv').config({ path: 'process.env' });
+
+const router = express.Router();
+const DBEntrepreneur=require('../models/clientModel.cjs');
+const CarrelloServizio = require('../services/CarrrelloService.cjs');
+const Productv2 = require('../models/productModel.cjs');
+const tokenChecker = require('../tokenchecker.cjs').tokenChecker;
+
 //recupera il carrello dell'imprenditore
 router.get('/:id/carrello', async (req, res) => {
     try {

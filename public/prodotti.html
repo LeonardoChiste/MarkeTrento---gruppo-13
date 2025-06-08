@@ -150,11 +150,11 @@
             let endpoint, userType;
             if (role === 'Cliente') {
                 endpoint = `/api/v1/clienti?email=${encodeURIComponent(email)}`;
-                userType = 'cliente';
+                userType = 'clienti';
             } else if (role === 'Venditore') {
                 endpoint = `/api/v1/venditori?email=${encodeURIComponent(email)}`;
-                userType = 'venditore';
-            } else if (role === 'Imprenditore') {
+                userType = 'venditori';
+            } else if (role === 'Imprenditori') {
                 endpoint = `/api/v1/imprenditori?email=${encodeURIComponent(email)}`;
                 userType = 'imprenditore';
             } else if (role === 'Admin') {
@@ -164,9 +164,6 @@
                 return null;
             }
 
-            if (!endpoint) {
-                endpoint = `/api/v1/accounts/${userType}/${email}`;
-            }
             const res = await fetch(endpoint);
             if (!res.ok) return null;
             const user = await res.json();
