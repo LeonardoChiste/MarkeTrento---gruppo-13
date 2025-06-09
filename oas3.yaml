@@ -4,7 +4,7 @@ info:
   version: "1.0"
 servers:
   - url: https://api.server.test/v1
-  - url: https://markeTrento.onrender.com
+  - url: https://marketrento-gruppo-13.onrender.com
     description: render.com
 paths:
   /:
