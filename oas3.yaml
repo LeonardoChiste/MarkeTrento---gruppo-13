@@ -171,13 +171,7 @@ paths:
         "200":
           description: Ottieni immagine associata al prodotto
           content:
-            binary:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: string
-                    description: binary
+            $ref: "#/components/requestBodies/ImageReq"
         "404":
           description: Foto non trovata
         "500":
@@ -248,8 +242,7 @@ paths:
             type: string
           description: ID del venditore
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       requestBody:
         $ref: "#/components/requestBodies/DescrizioneUpdate"
       responses:
@@ -268,8 +261,7 @@ paths:
             type: string
           description: ID del venditore
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       requestBody:
         $ref: "#/components/requestBodies/SedeUpdate"
       responses:
@@ -525,8 +517,7 @@ paths:
             type: string
           description: ID del cliente
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Cliente eliminato con successo
@@ -672,8 +663,7 @@ paths:
       description: Update the password of a user account (Cliente, Imprenditore,
         Venditore, Admin).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       requestBody:
         $ref: "#/components/requestBodies/PasswordReq"
       responses:
@@ -725,8 +715,7 @@ paths:
       description: Restituisce tutte le consegne, ordinate per data di pubblicazione
         decrescente.
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Lista delle consegne
@@ -742,8 +731,7 @@ paths:
       summary: Crea una nuova consegna
       description: Crea una nuova consegna con status "In consegna".
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       requestBody:
         $ref: "#/components/requestBodies/DateReq"
       responses:
@@ -767,8 +755,7 @@ paths:
       summary: Ottieni la consegna più recente "In consegna"
       description: Restituisce la consegna più recente con status "In consegna".
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Consegna trovata o null se nessuna trovata
@@ -790,8 +777,7 @@ paths:
             type: string
           description: ID della consegna
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Consegna trovata
@@ -814,8 +800,7 @@ paths:
             type: string
           description: ID della consegna
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       requestBody:
         $ref: "#/components/requestBodies/OrdineIdReq"
       responses:
@@ -848,8 +833,7 @@ paths:
             type: string
           description: ID della consegna
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       requestBody:
         $ref: "#/components/requestBodies/DateReq"  #false
       responses:
@@ -871,8 +855,7 @@ paths:
             type: string
           description: ID della consegna
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Consegna approvata con successo
@@ -973,8 +956,7 @@ paths:
             type: string
           description: ID dell'ordine
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Ordine approvato con successo
@@ -1237,8 +1219,7 @@ paths:
             type: string
           description: ID dell'imprenditore
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       requestBody:
         $ref: "#/components/requestBodies/DescrizioneUpdate"
       responses:
@@ -1262,8 +1243,7 @@ paths:
             type: string
           description: ID dell'imprenditore
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       requestBody:
         $ref: "#/components/requestBodies/SedeUpdate"
       responses:
@@ -1280,8 +1260,7 @@ paths:
       summary: Crea un nuovo imprenditore
       description: Crea un nuovo imprenditore.
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       requestBody:
         $ref: "#/components/requestBodies/ImprenditoreReq"
       responses:
@@ -1319,8 +1298,7 @@ paths:
       summary: Elimina un imprenditore
       description: Elimina un imprenditore dato il suo ID.
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Imprenditore eliminato con successo
@@ -1452,8 +1430,7 @@ paths:
       summary: Crea una nuova promozione
       description: Crea una nuova promozione
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Ottieni promozioni
@@ -1467,8 +1444,7 @@ paths:
       summary: Crea una nuova promozione
       description: Crea una nuova promozione
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "201":
           description: Promozione creata con successo
@@ -1502,8 +1478,7 @@ paths:
       description: Restituisce la pagina HTML dell'interfaccia venditore (solo per
         utenti con ruolo Venditore).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1519,8 +1494,7 @@ paths:
       description: Restituisce la pagina HTML del carrello (solo per utenti con ruolo
         Cliente).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1536,8 +1510,7 @@ paths:
       description: Restituisce la pagina HTML dei dettagli account (solo per utenti
         con ruolo Cliente).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1553,8 +1526,7 @@ paths:
       description: Restituisce la pagina HTML per aggiungere una promozione (solo per
         utenti con ruolo Imprenditore).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1570,8 +1542,7 @@ paths:
       description: Restituisce la pagina HTML degli ordini (solo per utenti con ruolo
         Admin).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1587,8 +1558,7 @@ paths:
       description: Restituisce la pagina HTML dei dettagli account (solo per utenti
         con ruolo Admin).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1604,8 +1574,7 @@ paths:
       description: Restituisce la pagina HTML per la registrazione venditore (solo per
         utenti con ruolo Imprenditore).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1621,8 +1590,7 @@ paths:
       description: Restituisce la pagina HTML per l'upgrade cliente (solo per utenti
         con ruolo Cliente).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1638,8 +1606,7 @@ paths:
       description: Restituisce la pagina HTML delle candidature (solo per utenti con
         ruolo Admin).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1655,8 +1622,7 @@ paths:
       description: Restituisce la pagina HTML delle consegne (solo per utenti con
         ruolo Admin).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1672,8 +1638,7 @@ paths:
       description: Restituisce la pagina HTML per aggiungere una consegna (solo per
         utenti con ruolo Admin).
       security:
-        - TokenQueryAuth: []
-          XAccessTokenHeaderAuth: []
+        - XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Pagina HTML restituita
@@ -1760,7 +1725,7 @@ components:
           type: string
         sede:
           type: string
-        descrizone:
+        descrizione:
           type: string
         tipo:
           type: string
@@ -1787,7 +1752,7 @@ components:
           type: string
         sede:
           type: string
-        descrizone:
+        descrizione:
           type: string
         tipo:
           type: string
@@ -1934,12 +1899,6 @@ components:
       type: apiKey
       in: header
       name: x-access-token
-    TokenQueryAuth:
-      description: The API authentication. The API key must be passed in the query
-        string 'token'. The API key must be a valid JWT token.
-      type: apiKey
-      in: query
-      name: token
   requestBodies:
     Login: 
       required: true
@@ -2136,7 +2095,7 @@ components:
     ImageReq:
       required: true
       content:
-        application/json:  # Specify media type
+        multipart/form-data:  # Specify media type
           schema: 
             $ref: "#/components/schemas/Image"
     VenditoreReq: 
