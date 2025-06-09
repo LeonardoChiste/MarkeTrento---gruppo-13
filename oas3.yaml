@@ -609,7 +609,7 @@ paths:
       parameters:
         - in: path
           required: true
-          name: userId
+          name: id
           schema:
             type: string
           description: ID dell'utente
@@ -1373,7 +1373,7 @@ paths:
       parameters:
         - in: path
           required: true
-          name: userId
+          name: id
           schema:
             type: string
           description: ID dell'utente

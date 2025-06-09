@@ -29,7 +29,7 @@ const DBFormVend = require ('./models/upgradeModel.cjs');
 const DBAdmin = require('./models/adminModel.cjs');
 
 //API imports
-const carrelli = require('./API/carrelli.cjs');
+//const carrelli = require('./API/carrelli.cjs');
 const promozioni = require('./API/promozioni.cjs');
 const venditori = require('./API/venditori.cjs');
 const prodotti = require('./API/prodotti.cjs');
@@ -214,7 +214,7 @@ app.get('/products', async (req, res) => {
 });
 */
 
-app.use('/api/v1/carrelli', carrelli);
+//app.use('/api/v1/carrelli', carrelli);
 app.use('/api/v1/promozioni', promozioni);  
 app.use('/api/v1/venditori', venditori);    
 app.use('/api/v1/prodotti', prodotti);  
