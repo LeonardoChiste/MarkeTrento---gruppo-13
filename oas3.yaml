@@ -1305,6 +1305,9 @@ paths:
     delete:
       summary: Elimina un imprenditore
       description: Elimina un imprenditore dato il suo ID.
+      security:
+        - TokenQueryAuth: []
+          XAccessTokenHeaderAuth: []
       responses:
         "200":
           description: Imprenditore eliminato con successo

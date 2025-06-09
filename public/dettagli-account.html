@@ -285,13 +285,13 @@
             }
 
             let tipo = payload.aut.toLowerCase();
-            let email = encodeURIComponent(payload.email);
+            let email = payload.email;
             let endpoint = '';
 
-            if (tipo === 'cliente') endpoint = `/api/v1/clienti?email=${email}`;
-            else if (tipo === 'venditore') endpoint = `/api/v1/venditori?email=${email}`;
-            else if (tipo === 'imprenditore') endpoint = `/api/v1/imprenditori?email=${email}`;
-            else if (tipo === 'admin') endpoint = `/api/v1/admin?email=${email}`;
+            if (tipo === 'cliente') endpoint = `/api/v1/clienti?email=${encodeURIComponent(email)}`;
+            else if (tipo === 'venditore') endpoint = `/api/v1/venditori?email=${encodeURIComponent(email)}`;
+            else if (tipo === 'imprenditore') endpoint = `/api/v1/imprenditori?email=${encodeURIComponent(email)}`;
+            else if (tipo === 'admin') endpoint = `/api/v1/admin?email=${encodeURIComponent(email)}`;
             else {
                 document.getElementById('errore').textContent = "Tipo account sconosciuto.";
                 return;
@@ -300,9 +300,9 @@
             // Imposta l'azione del pulsante "torna indietro" in base al tipo di account
             const backButton = document.getElementById('backButton');
             if (tipo === 'cliente') {
-                backButton.onclick = function() { window.location.href = '/homev2-client.html'; };
+                backButton.onclick = function() { window.history.back(); };
             } else {
-                backButton.onclick = function() { window.location.href = '/homev2-business.html'; };
+                backButton.onclick = function() { window.history.back(); };
             }
 
             if (tipo === 'venditore' || tipo === 'imprenditore') {
@@ -316,7 +316,7 @@
                     headers: { 'x-access-token': token }
                 });
                 if (!res.ok) {
-                    document.getElementById('errore').textContent = "Errore nel recupero dati account.";
+                    document.getElementById('errore').textContent = `Errore nel recupero dati account. ${email}`;
                     return;
                 }
                 const dati = await res.json();

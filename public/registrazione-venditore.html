@@ -126,7 +126,7 @@
           if (response.ok) {
             msgDiv.textContent = "Richiesta creata con successo!";
             setTimeout(() => {
-              window.location.href = '/business.html';
+              window.history.back();
             }, 500); 
           } else {
             msgDiv.textContent = "Errore durante la creazione della richiesta.";

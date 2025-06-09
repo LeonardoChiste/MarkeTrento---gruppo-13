@@ -34,7 +34,7 @@ router.delete('/:id', tokenChecker('Cliente'), async (req, res) => {
         res.status(500).send('Errore del server');
     }
 });
-router.get('/', async (req, res) => {
+router.get('', async (req, res) => {
     try {
         const { email } = req.query;
         if (!email) return res.status(400).json({ error: 'Email richiesta' });
