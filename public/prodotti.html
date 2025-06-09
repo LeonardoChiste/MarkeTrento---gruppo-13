@@ -156,12 +156,13 @@
                 userType = 'venditori';
             } else if (role === 'Imprenditore') {
                 endpoint = `/api/v1/imprenditori?email=${encodeURIComponent(email)}`;
-                userType = 'imprenditore';
+                userType = 'imprenditori';
             } else if (role === 'Admin') {
                 endpoint = `/api/v1/admin?email=${encodeURIComponent(email)}`;
                 userType = 'admin';
             } else {
-                return null;
+                userType = 'nonRegistrato';
+                return Promise.resolve({ userType, userId: 'nonRegistrato' });
             }
 
             const res = await fetch(endpoint);
@@ -259,11 +260,11 @@
             // ID di test per il carrello
             //const clientId =  '68245a82ef2a089ff02b2a7b';
             const userInfo = await getUserTypeAndIdFromToken();
-            if (!userInfo) {
+            /*if (!userInfo) {
                 alert('Utente non autenticato!');
                 window.history.back();
                 return;
-            }
+            }*/
             const { userType, userId } = userInfo;
 
             container.querySelectorAll('.add-cart-btn').forEach(btn => {
@@ -289,20 +290,22 @@
                         prezzo: prezzo,
                         quantity: quantity
                     };
-                    try {
-                        const res = await fetch(`/api/v1/${userType}/${userId}/carrello/add`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(prodotto)
-                        });
-                        if (res.ok) {
-                            alert('Prodotto aggiunto al carrello!');
-                        } else {
-                            const data = await res.json();
-                            alert(data.error || 'Errore durante l\'aggiunta al carrello');
+                    if(userType !== 'nonRegistrato') {
+                        try {
+                            const res = await fetch(`/api/v1/${userType}/${userId}/carrello/add`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(prodotto)
+                            });
+                            if (res.ok) {
+                                alert('Prodotto aggiunto al carrello!');
+                            } else {
+                                const data = await res.json();
+                                alert(data.error || 'Errore durante l\'aggiunta al carrello');
+                            }
+                        } catch (e) {
+                            alert('Errore di rete durante l\'aggiunta al carrello');
                         }
-                    } catch (e) {
-                        alert('Errore di rete durante l\'aggiunta al carrello');
                     }
                 });
             });

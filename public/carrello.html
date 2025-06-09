@@ -233,7 +233,19 @@
                         alert('Il carrello è vuoto! Aggiungi almeno un prodotto prima di procedere all\'ordine.');
                         return;
                     }
-                    window.location.href = 'ordine.html';
+                    //window.location.href = 'ordine.html';
+                    fetch('/check/ordine', {
+                        headers: {
+                            'x-access-token': localStorage.getItem('token')
+                        }
+                    })
+                    .then(res => {
+                        if (res.ok) {
+                            window.location.href = '/ordine.html';
+                        } else {
+                            alert("Accesso negato!");
+                        }
+                    });
                 });
             }
         });

@@ -102,7 +102,7 @@ router.post('/registrazione', async (req, res) => {
             return res.status(400).json({ error: 'Tutti i campi sono obbligatori' });
         }
         const hashedPassword = await hashPassword(password);
-        const cliente=new Cliente(nome, cognome, birthdate, email, username, hashedPassword);
+        const cliente=new Cliente(nome, cognome, birthdate, email, username, hashedPassword, []);
         const result = await ClientService.nuovaregistrazione(cliente);
     if (result.success) {
     res.status(201).json({ success: true, message: result.message });

@@ -48,5 +48,9 @@ router.get('/addConsegna', tokenChecker('Admin'), (req, res) => {
     res.sendFile(path.join(process.cwd(), 'public', 'consegna-nuova.html'));
 });
 
+router.get('/ordine', tokenChecker('Cliente'), (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'public', 'ordine.html'));
+});
+
 
 module.exports = router;

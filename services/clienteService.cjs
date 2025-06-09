@@ -94,6 +94,7 @@ async function nuovaregistrazione(cliente) {
     try {
         cliente.email = email1;
         cliente.username = username1;
+        cliente.carrello = Array.isArray(cliente.carrello) ? cliente.carrello : [];
         const daSalvare = new DBClient(cliente);
         await daSalvare.save();
         const msg = "Registrazione completata con successo!";

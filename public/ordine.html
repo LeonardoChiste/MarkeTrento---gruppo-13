@@ -155,7 +155,10 @@
 
         async function getUserTypeAndIdFromToken() {
             const token = localStorage.getItem('token');
-            if (!token) return null;
+            if (!token) { 
+                alert('no token');
+                return null;
+            } 
             const payload = parseJwt(token);
             const email = payload && (payload.email || payload.usermail);
             const role = payload && (payload.aut || payload.role);
@@ -175,8 +178,12 @@
                 return null;
             }
             const res = await fetch(endpoint);
-            if (!res.ok) return null;
+            if (!res.ok) {
+                alert('failed to fetch user data');
+                return null;
+            }
             const user = await res.json();
+            //document.getElementById('ordine-error').innerHTML(`${userType}, ${userId}`);
             return { userType, userId: user._id };
         }
 
@@ -374,7 +381,7 @@
             const userInfo = await getUserTypeAndIdFromToken();
             if (!userInfo) {
                 alert('Utente non autenticato!');
-                window.location.href = '/caricamento.html';
+                window.history.back();
                 return;
             }
             userType = userInfo.userType;

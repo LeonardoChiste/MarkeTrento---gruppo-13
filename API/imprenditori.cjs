@@ -14,6 +14,7 @@ router.get('', async (req, res) => {
         if (!email) return res.status(400).json({ error: 'Email richiesta' });
         const imprenditore = await DBEntrepreneur.findOne({ email: email });
         if (!imprenditore) {
+            console.log('Error Imprenditore search email');
             return res.status(404).json({ error: 'Imprenditore non trovato' });
         }
         res.status(200).json(imprenditore);
