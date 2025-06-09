@@ -128,11 +128,16 @@
 
             //fetch the imprenditore details
             const res = await fetch(`/api/v1/imprenditori/${cand.imprenditore}`);  //durante registrazione non rileva l'id dell'imprenditore
+            if (!res.ok) {
+                candDiv.innerHTML = '<p>Imprenditore non trovato per questa candidatura.</p>';
+                candidatura.appendChild(candDiv);
+                continue;
+            }
             const imprenditore = await res.json();
             candDiv.innerHTML = `
-                <strong>Imprenditore:</strong> ${imprenditore.nome + ' ' + imprenditore.cognome} <br>
+                <strong>Imprenditore:</strong> ${imprenditore ? (imprenditore.nome + ' ' + imprenditore.cognome) : ' '} <br>
                 <strong>Data di nascita:</strong> ${new Date(imprenditore.birthdate).toLocaleDateString()} <br>
-                <strong>Username:</strong> ${imprenditore.username} <br>
+                <strong>Username:</strong> ${imprenditore ? imprenditore.username : ' '} <br>
                 <strong>Email:</strong> ${imprenditore.email} <br>
                 <strong>Sede:</strong> ${imprenditore.sede} <br>
                 <strong>Data di registrazione:</strong> ${new Date(cand.uploadDate).toLocaleDateString()} <br>
