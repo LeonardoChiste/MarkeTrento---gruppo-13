@@ -4,7 +4,7 @@ info:
   version: "1.0"
 servers:
   - url: https://api.server.test/v1
-  - url: https://marketrento-gruppo-13.onrender.com
+  - url: https://markeTrento.onrender.com
     description: render.com
 paths:
   /:
@@ -608,7 +608,7 @@ paths:
       parameters:
         - in: path
           required: true
-          name: userId
+          name: id
           schema:
             type: string
           description: ID dell'utente
@@ -1372,7 +1372,7 @@ paths:
       parameters:
         - in: path
           required: true
-          name: userId
+          name: id
           schema:
             type: string
           description: ID dell'utente
