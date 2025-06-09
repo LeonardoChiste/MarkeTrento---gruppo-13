@@ -277,7 +277,7 @@
             }
             
             try {
-                const res = await fetch(`/api/v1/orders/venditori/${venditoreId}`);
+                const res = await fetch(`/api/v1/venditori/${venditoreId}/orders`);
                 if (!res.ok) {
                     ordiniList.innerHTML = '<div class="no-orders">Errore nel caricamento degli ordini.</div>';
                     return;
