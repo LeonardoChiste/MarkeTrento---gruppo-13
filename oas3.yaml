@@ -1670,6 +1670,19 @@ paths:
                 type: string
         "401":
           description: Non autorizzato
+  /authchecks/ordine:
+    get:
+      summary: Aggiungi ordine 
+      description: Restituisce la pagina HTML per aggiungere un ordine 
+      responses:
+        "200":
+          description: Pagina HTML restituita
+          content:
+            text/html:
+              schema:
+                type: string
+        "401":
+          description: Non autorizzato
 components:
   schemas:
     Image:
