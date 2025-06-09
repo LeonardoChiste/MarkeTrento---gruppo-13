@@ -145,13 +145,13 @@
             document.getElementById('consegneDisplay').innerHTML = '<span style="color:red;">Errore nel recupero delle consegne.</span>';
             return;
         }
+    }
+    async function displayConsegne(consegne) {
+        consegneDisplay.innerHTML = '';
         if (consegne.length === 0) {
             consegneDisplay.innerHTML = '<span style="color:blue;">Nessuna consegna disponibile.</span>';
             return;
         }
-    }
-    async function displayConsegne(consegne) {
-        consegneDisplay.innerHTML = '';
         for (const consegna of consegne) {
             if (consegna.status === 'In consegna') {
                 const consegnaDiv = document.createElement('div');
@@ -164,29 +164,43 @@
                         const orderRes = await fetch(`/api/v1/orders/${ordine.id}`, {
                             headers: { 'x-access-token': token }
                         });
-                        const order = await orderRes.json();
-
+                        let order;  
+                        if (orderRes.ok) {
+                            order = await orderRes.json();
+                        } else {
+                            inner += '<span style="color:red;">Ordine non trovato.</span><br>';
+                        }
                         const vendRes = await fetch(`/api/v1/venditori/${order.venditore}`, {
                             headers: { 'x-access-token': token }
                         });
-                        const vend = await vendRes.json();
-
+                        let vend;
+                        if (vendRes.ok) {
+                            vend = await vendRes.json();
+                        } else {
+                            inner += '<span style="color:red;">Venditore non trovato.</span><br>';
+                        }
                         const clientRes = await fetch(`/api/v1/clienti/${order.cliente}`, {
                             headers: { 'x-access-token': token }
                         });
-                        const client = await clientRes.json();
+                        let client;
+                        if (clientRes.ok) {
+                            client = await clientRes.json();
+                        } else {
+                            inner += '<span style="color:red;">Cliente non trovato.</span><br>';
+                        }
 
                         inner += `
-                            <strong>Venditore:</strong> ${vend.nome + ' ' + vend.cognome} <br>
-                            <strong>Venditore email:</strong> ${vend.email} <br>
-                            <strong>Cliente:</strong> ${client.nome + ' ' + client.cognome} <br>
-                            <strong>Cliente email:</strong> ${client.email} <br>
-                            <strong>Residenza venditore:</strong> ${vend.sede} <br>
-                            <strong>Zona:</strong> ${order.zona} <br>
+                            <strong>Venditore:</strong> ${vend ? (vend.nome + ' ' + vend.cognome) : 'N/A'} <br>
+                            <strong>Venditore email:</strong> ${vend ? vend.email : ' '} <br>
+                            <strong>Cliente:</strong> ${client ? (client.nome + ' ' + client.cognome) : 'N/A'} <br>
+                            <strong>Cliente email:</strong> ${client ? (client.email) : ' '} <br>
+                            <strong>Residenza venditore:</strong> ${vend ? vend.sede: ' '} <br>
+                            <strong>Zona:</strong> ${order ? order.zona : ' '} <br>
                         `;
                     } catch (e) {
                         inner += '<span style="color:red;">Errore nel recupero dei dati dell\'ordine.</span>';
                         console.error('Errore nel recupero dei dati dell\'ordine:', e);
+                        continue;
                     }
                 }
 
