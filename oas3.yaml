@@ -1,7 +1,8 @@
-openapi: '3.0.3'
+
+openapi: 3.0.3
 info:
   title: API MarkeTrento
-  version: '1.0'
+  version: "1.0"
 servers:
   - url: https://api.server.test/v1
   - url: https://markeTrento.onrender.com
@@ -12,7 +13,7 @@ paths:
       summary: Default page
       description: Returns the default page of the API.
       responses:
-        '200':
+        "200":
           description: Home page
           content:
             html:
@@ -23,7 +24,7 @@ paths:
       summary: Market page
       description: Returns the market page of the API.
       responses:
-        '200':
+        "200":
           description: Market page
           content:
             html:
@@ -32,23 +33,15 @@ paths:
   /login:
     post:
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
+        $ref: "#/components/requestBodies/Login"
       responses:
-        '200':
+        "200":
           description: Login successful
           content:
             html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Unauthorized
           content:
             html:
@@ -57,24 +50,15 @@ paths:
   /loginbusiness:
     post:
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  description: email
-                password:
-                  type: string
+        $ref: "#/components/requestBodies/LoginBusiness"
       responses:
-        '200':
+        "200":
           description: Login successful
           content:
             html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Unauthorized
           content:
             html:
@@ -83,43 +67,28 @@ paths:
   /loginadmin:
     post:
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  description: email
-                password:
-                  type: string
+        $ref: "#/components/requestBodies/LoginAdmin"
       responses:
-        '200':
+        "200":
           description: Login successful
           content:
             html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Unauthorized
           content:
             html:
               schema:
                 type: string
-  /api/v1/prodotti: 
-    post: 
+  /api/v1/prodotti:
+    post:
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                schema:
-                  $ref: "#/components/schemas/Product"
+        $ref: "#/components/requestBodies/ReqProduct"
       responses:
-        '201':
+        "201":
           description: Created
-        '500':
+        "500":
           description: Internal Server Error
   /api/v1/prodotti/{id}:
     get:
@@ -131,56 +100,50 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID del prodotto'
+          description: ID del prodotto
       responses:
-        '200':
+        "200":
           description: A JSON with one product
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Product"
-        '404':
+        "404":
           description: prodotto non trovato
-        '500':
+        "500":
           description: Internal Server Error
-    put: 
+    put:
       parameters:
         - in: path
           required: true
           name: id
           schema:
             type: string
-          description: 'ID del prodotto'
+          description: ID del prodotto
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Product"
+        $ref: "#/components/requestBodies/ReqProduct"
       responses:
-        '200':
+        "200":
           description: Prodotto aggiornato
-        '500':
+        "500":
           description: Internal Server Error
-    delete: 
+    delete:
       parameters:
         - in: path
           required: true
           name: id
           schema:
             type: string
-          description: 'ID del prodotto'
+          description: ID del prodotto
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Product"
+        $ref: "#/components/requestBodies/ReqProduct"
       responses:
-        '200':
+        "200":
           description: Prodotto eliminato
-        '500':
-          description: Internal Server Error 
+        "500":
+          description: Internal Server Error
   /api/v1/prodotti/{id}/foto:
-    post: 
+    post:
       description: Aggiungi un immagine al prodotto
       parameters:
         - in: path
@@ -188,13 +151,13 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID del prodotto'
-      requestBody: 
-          $ref: '#/components/schemas/Image'
+          description: ID del prodotto
+      requestBody:
+        $ref: "#/components/requestBodies/ImageReq"
       responses:
-        '200':
+        "200":
           description: Foto del prodotto aggiornata con successo
-        '500':
+        "500":
           description: Errore del server
     get:
       description: Ottieni immagine associata al prodotto
@@ -204,37 +167,24 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID del prodotto'
+          description: ID del prodotto
       responses:
-        '200':
+        "200":
           description: Ottieni immagine associata al prodotto
           content:
             binary:
               schema:
                 type: object
                 properties:
-                    data: 
-                      type: string
-                      description: binary
-        '404':
+                  data:
+                    type: string
+                    description: binary
+        "404":
           description: Foto non trovata
-        '500':
+        "500":
           description: Errore del server
-  /api/v1/venditori: 
+  /api/v1/venditori:
     get:
-      responses:
-        '200':
-          description: A JSON array of sellers
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  schema:
-                    $ref: '#/components/schemas/Venditore'
-        '500':
-          description: Internal Server Error
-    get:    
       summary: Retrieve a vendor account by email
       description: Retrieve a vendor account by email.
       parameters:
@@ -244,15 +194,15 @@ paths:
             type: string
           description: Email utente
       responses:
-        '200':
+        "200":
           description: Venditore trovato
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Venditore'
-        '404':
+                $ref: "#/components/schemas/Venditore"
+        "404":
           description: Venditore non trovato
-        '500':
+        "500":
           description: Errore del server
   /api/v1/venditori/{id}:
     get:
@@ -263,44 +213,37 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID del venditore'
+          description: ID del venditore
       responses:
-        '200':
+        "200":
           description: A JSON with one seller
           content:
             application/json:
-              schema:
+              schema: null
               $ref: "#/components/schemas/Venditore"
-                  
-        '404':
+        "404":
           description: Venditore non trovato
-        '500':
+        "500":
           description: Internal Server Error
   /api/v1/venditori/{id}/descrizione:
     put:
-      description:  Modifica descrizione del venditore 
+      description: Modifica descrizione del venditore
       parameters:
         - in: path
           required: true
           name: id
           schema:
             type: string
-          description: 'ID del venditore'
+          description: ID del venditore
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                descrizione:
-                  type: string
+        $ref: "#/components/requestBodies/DescrizioneUpdate"
       responses:
-        '200':
+        "200":
           description: Venditore aggiornato
-        '500':
+        "500":
           description: Internal Server Error
   /api/v1/venditori/{id}/sede:
     put:
@@ -311,36 +254,30 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID del venditore'
+          description: ID del venditore
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                sede:
-                  type: string
+        $ref: "#/components/requestBodies/SedeUpdate"
       responses:
-        '200':
+        "200":
           description: Sede aggiornata
-        '500':
+        "500":
           description: Internal Server Error
   /api/v1/venditori/registrazione:
     post:
       requestBody:
-          $ref: '#/components/schemas/Venditore'
+        $ref: "#/components/requestBodies/VenditoreReq"
       responses:
-        '201':
+        "201":
           description: Venditore creato
-        '500':
+        "500":
           description: Errore del server
   /api/v1/tags:
     get:
       responses:
-        '200':
+        "200":
           description: A JSON array of tags
           content:
             application/json:
@@ -353,29 +290,30 @@ paths:
                       type: integer
                     nome:
                       type: string
-        '500':
+        "500":
           description: Internal Server Error
-  /api/v1/venditori/{id}/orders: 
-    get: 
+  /api/v1/venditori/{id}/orders:
+    get:
       summary: Ottieni gli ordini di un venditore
-      description: Restituisce gli ordini associati a un venditore, esclusi quelli rifiutati e quelli consegnati/ritirati da più di 21 giorni.
+      description: Restituisce gli ordini associati a un venditore, esclusi quelli
+        rifiutati e quelli consegnati/ritirati da più di 21 giorni.
       parameters:
         - in: path
           required: true
           name: id
           schema:
             type: string
-          description: 'ID del venditore'
+          description: ID del venditore
       responses:
-        '200':
+        "200":
           description: Lista degli ordini del venditore
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Order'
-        '500':
+                  $ref: "#/components/schemas/Order"
+        "500":
           description: Errore nel recupero degli ordini per il venditore
   /api/v1/venditori/{venditoreId}/recensioni:
     get:
@@ -386,9 +324,9 @@ paths:
           name: venditoreId
           schema:
             type: string
-          description: 'ID del venditore'
+          description: ID del venditore
       responses:
-        '200':
+        "200":
           description: Ottieni recensioni associate al venditore
           content:
             application/json:
@@ -396,20 +334,20 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Recensione"
-        '500':
+        "500":
           description: Errore del server
   /api/v1/venditori/{id}/prodotti:
     get:
-      description: Ottieni i prodotti del venditore associato all'ID 
+      description: Ottieni i prodotti del venditore associato all'ID
       parameters:
         - in: path
           required: true
           name: id
           schema:
             type: string
-          description: 'ID del venditore'
+          description: ID del venditore
       responses:
-        '200':
+        "200":
           description: A JSON array of products
           content:
             application/json:
@@ -417,14 +355,119 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Product"
-        '404':
+        "404":
           description: Prodotto non trovato
-        '500':
-          description: Internal Server Error 
+        "500":
+          description: Internal Server Error
+  /api/v1/venditori/{id}/carrello/add:
+    post:
+      summary: Aggiungi un prodotto al carrello
+      description: Aggiunge un prodotto al carrello del venditore
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: ID dell'utente
+      requestBody:
+        $ref: "#/components/requestBodies/ProdottoCarrello"
+      responses:
+        "200":
+          description: Prodotto aggiunto al carrello
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Errore di validazione (es. prodotti di venditori diversi)
+        "404":
+          description: Utente o prodotto non trovato
+        "500":
+          description: Errore del server
+  /api/v1/venditori/{id}/carrello:
+    get:
+      summary: Ottieni il carrello dell'utente venditore
+      description: Restituisce i prodotti presenti nel carrello di un venditore
+      parameters:
+        - in: path
+          description: ID dell'utente
+          required: true
+          name: id
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista dei prodotti nel carrello
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "404":
+          description: Carrello non trovato
+        "500":
+          description: Errore del server
+  /api/v1/venditori/{id}/carrello/removeOne:
+    post:
+      summary: Rimuovi una quantità di un prodotto dal carrello
+      description: Rimuove una quantità di un prodotto dal carrello del venditore
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: ID dell'utente
+      requestBody:
+        $ref: "#/components/requestBodies/ReqProduct"
+      responses:
+        "200":
+          description: Prodotto aggiornato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Utente non trovato
+        "500":
+          description: Errore del server
+  /api/v1/venditori/{id}/carrello/clear:
+    post:
+      summary: Svuota il carrello del venditore
+      description: Svuota completamente il carrello del venditore.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: ID dell'utente
+      responses:
+        "200":
+          description: Carrello svuotato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Utente non trovato
+        "500":
+          description: Errore durante lo svuotamento del carrello
   /api/v1/citytags:
     get:
       responses:
-        '200':
+        "200":
           description: A JSON array of city tags
           content:
             application/json:
@@ -435,13 +478,11 @@ paths:
                   properties:
                     tag:
                       type: string
-        '500':
+        "500":
           description: Internal Server Error
-
-
-  /api/v1/clienti/{id}: 
+  /api/v1/clienti/{id}:
     get:
-      summary: Ottieni un cliente 
+      summary: Ottieni un cliente
       description: Ottieni il cliente corrispondente all'id
       parameters:
         - in: path
@@ -449,20 +490,20 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID del cliente'
+          description: ID del cliente
       responses:
-        '200':
+        "200":
           description: Cliente trovato
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Cliente'
-        '404':
+                $ref: "#/components/schemas/Cliente"
+        "404":
           description: Cliente non trovato
-        '500':
+        "500":
           description: Errore del server
     delete:
-      summary: Cancella un cliente 
+      summary: Cancella un cliente
       description: Cancella il cliente corrispondente all'id
       parameters:
         - in: path
@@ -470,93 +511,178 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID del cliente'
+          description: ID del cliente
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Cliente eliminato con successo
-        '404':
+        "404":
           description: Cliente non trovato
-        '500':
+        "500":
           description: Errore del server
   /api/v1/clienti:
     get:
       summary: Retrieve a user account by email
-      description: Retrieve a user account (Cliente, Imprenditore, Venditore, Admin) by email.
+      description: Retrieve a user account (Cliente, Imprenditore, Venditore, Admin)
+        by email.
       parameters:
         parameters:
-        - in: query
-          name: email
-          schema:
-            type: string
-          description: Email utente
+          - in: query
+            name: email
+            schema:
+              type: string
+            description: Email utente
       responses:
-        '200':
+        "200":
           description: Cliente trovato
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Cliente'
-        '404':
+                $ref: "#/components/schemas/Cliente"
+        "404":
           description: Cliente non trovato
-        '500':
+        "500":
           description: Errore del server
+  /api/v1/clienti/{id}/carrello:
+    get:
+      summary: Ottieni il carrello dell'utente
+      description: Restituisce i prodotti presenti nel carrello di un utente
+      parameters:
+        - in: path
+          description: ID dell'utente
+          required: true
+          name: id
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista dei prodotti nel carrello
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "404":
+          description: Carrello non trovato
+        "500":
+          description: Errore del server
+  
+  
+  /api/v1/clienti/{id}/carrello/add:
+    post:
+      summary: Aggiungi un prodotto al carrello
+      description: Aggiunge un prodotto al carrello del cliente
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: ID dell'utente
+      requestBody:
+        $ref: "#/components/requestBodies/ProdottoCarrello"
+      responses:
+        "200":
+          description: Prodotto aggiunto al carrello
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Errore di validazione (es. prodotti di venditori diversi)
+        "404":
+          description: Utente o prodotto non trovato
+        "500":
+          description: Errore del server
+  
+ 
+  /api/v1/clienti/{id}/carrello/removeOne:
+    post:
+      summary: Rimuovi una quantità di un prodotto dal carrello
+      description: Rimuove una quantità di un prodotto dal carrello del cliente
+      parameters:
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: string
+          description: ID dell'utente
+      requestBody:
+        $ref: "#/components/requestBodies/ProdottoRemove"
+      responses:
+        "200":
+          description: Prodotto aggiornato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Utente non trovato
+        "500":
+          description: Errore del server
+  /api/v1/clienti/{id}/carrello/clear:
+    post:
+      summary: Svuota il carrello del cliente
+      description: Svuota completamente il carrello del cliente.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: ID dell'utente
+      responses:
+        "200":
+          description: Carrello svuotato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Utente non trovato
+        "500":
+          description: Errore durante lo svuotamento del carrello
   /api/v1/accounts/password:
     put:
       summary: Update user password
-      description: Update the password of a user account (Cliente, Imprenditore, Venditore, Admin).
+      description: Update the password of a user account (Cliente, Imprenditore,
+        Venditore, Admin).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       requestBody:
-        required: true
-        content: 
-          application/json:
-            schema:
-              type: object
-              properties:
-                oldPassword:
-                  type: string
-                newPassword:
-                  type: string
+        $ref: "#/components/requestBodies/PasswordReq"
       responses:
-        '200':
+        "200":
           description: Password aggiornata con successo
-        '400':
+        "400":
           description: Richiesta non valida
-        '401':
+        "401":
           description: Vecchia password errata
-        '404':
+        "404":
           description: Utente non trovato
-        '500':
+        "500":
           description: Errore del server
   /api/v1/accounts/registrazione:
     post:
       summary: Register a new user account
       description: Register a new user account (Cliente) with the provided details.
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                nome:
-                  type: string
-                cognome:
-                  type: string
-                birthdate:
-                  type: string
-                email:
-                  type: string
-                username:
-                  type: string
-                password:
-                  type: string
+        $ref: "#/components/requestBodies/RegistrazioneReq"
       responses:
-        '201':
+        "201":
           description: Registrazione avvenuta con successo
           content:
             application/json:
@@ -567,7 +693,7 @@ paths:
                     type: boolean
                   message:
                     type: string
-        '400':
+        "400":
           description: Richiesta non valida, campi mancanti
           content:
             application/json:
@@ -578,181 +704,28 @@ paths:
                     type: boolean
                   error:
                     type: string
-        '500':
+        "500":
           description: Errore del server
-
-  /api/v1/carrelli/{userType}/{userId}:
-    get:
-      summary: Ottieni il carrello dell'utente
-      description: Restituisce i prodotti presenti nel carrello di un utente specifico (cliente, venditore, imprenditore).
-      parameters:
-        - in: path
-          required: true
-          name: userType
-          schema:
-            type: string
-          description: 'Tipo utente [Cliente, Imprenditore, Venditore, Admin]'
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: string
-          description: 'ID dell'utente'
-      responses:
-        '200':
-          description: Lista dei prodotti nel carrello
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Product' 
-        '404':
-          description: Carrello non trovato
-        '500':
-          description: Errore del server
-
-  /api/v1/carrelli/{userType}/{userId}/add:
-    post:
-      summary: Aggiungi un prodotto al carrello
-      description: Aggiunge un prodotto al carrello dell'utente. Tutti i prodotti devono appartenere allo stesso venditore.
-      parameters:
-        - in: path
-          required: true
-          name: userType
-          schema:
-            type: string
-          description: 'Tipo utente [Cliente, Imprenditore, Venditore, Admin]'
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: string
-          description: 'ID dell'utente'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                _id:
-                  type: string
-                  description: ID del prodotto
-                nome:
-                  type: string
-                prezzo:
-                  type: number
-                quantity:
-                  type: integer
-      responses:
-        '200':
-          description: Prodotto aggiunto al carrello
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '400':
-          description: Errore di validazione (es. prodotti di venditori diversi)
-        '404':
-          description: Utente o prodotto non trovato
-        '500':
-          description: Errore del server
-
-  /api/v1/carrelli/{userType}/{userId}/removeOne:
-    post:
-      summary: Rimuovi una quantità di un prodotto dal carrello
-      description: Rimuove una quantità di un prodotto dal carrello dell'utente.
-      parameters:
-        - in: path
-          required: true
-          name: userType
-          schema:
-            type: string
-          description: 'Tipo utente [Cliente, Imprenditore, Venditore, Admin]'
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: string
-          description: 'ID dell'utente'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                nome:
-                  type: string
-      responses:
-        '200':
-          description: Prodotto aggiornato
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '404':
-          description: Utente non trovato
-        '500':
-          description: Errore del server
-
-  /api/v1/carrelli/{userType}/{userId}/clear:
-    post:
-      summary: Svuota il carrello dell'utente
-      description: Svuota completamente il carrello dell'utente.
-      parameters:
-        - in: path
-          required: true
-          name: userType
-          schema:
-            type: string
-          description: 'Tipo utente [Cliente, Imprenditore, Venditore, Admin]'
-        - in: path
-          required: true
-          name: userId
-          schema:
-            type: string
-          description: 'ID dell'utente'
-      responses:
-        '200':
-          description: Carrello svuotato
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '404':
-          description: Utente non trovato
-        '500':
-          description: Errore durante lo svuotamento del carrello
+  
   /api/v1/consegne:
     get:
       summary: Ottieni tutte le consegne
-      description: Restituisce tutte le consegne, ordinate per data di pubblicazione decrescente.
+      description: Restituisce tutte le consegne, ordinate per data di pubblicazione
+        decrescente.
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Lista delle consegne
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Consegna'
-        '500':
+                  $ref: "#/components/schemas/Consegna"
+        "500":
           description: Errore nel recupero delle consegne
-
     post:
       summary: Crea una nuova consegna
       description: Crea una nuova consegna con status "In consegna".
@@ -760,17 +733,9 @@ paths:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                date:
-                  type: string
-                  format: date
+        $ref: "#/components/requestBodies/DateReq"
       responses:
-        '201':
+        "201":
           description: Consegna creata con successo
           content:
             application/json:
@@ -780,12 +745,11 @@ paths:
                   message:
                     type: string
                   consegna:
-                    $ref: '#/components/schemas/Consegna'
-        '400':
+                    $ref: "#/components/schemas/Consegna"
+        "400":
           description: Dati di consegna mancanti
-        '500':
+        "500":
           description: Errore durante la creazione della consegna
-
   /api/v1/consegne/inConsegna:
     get:
       summary: Ottieni la consegna più recente "In consegna"
@@ -794,15 +758,14 @@ paths:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Consegna trovata o null se nessuna trovata
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Consegna'
-        '500':
+                $ref: "#/components/schemas/Consegna"
+        "500":
           description: Errore nel recupero delle consegne
-
   /api/v1/consegne/{id}:
     get:
       summary: Ottieni una consegna per ID
@@ -813,22 +776,21 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID della consegna'
+          description: ID della consegna
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Consegna trovata
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Consegna'
-        '404':
+                $ref: "#/components/schemas/Consegna"
+        "404":
           description: Consegna non trovata
-        '500':
+        "500":
           description: Errore nel recupero delle consegne
-
     put:
       summary: Aggiungi un ordine a una consegna
       description: Aggiunge un ordine (id) all'array ordini della consegna.
@@ -838,22 +800,14 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID della consegna'
+          description: ID della consegna
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                  description: ID dell'ordine da aggiungere
+        $ref: "#/components/requestBodies/OrdineIdReq"
       responses:
-        '200':
+        "200":
           description: Ordine aggiunto alla consegna
           content:
             application/json:
@@ -863,14 +817,13 @@ paths:
                   message:
                     type: string
                   consegna:
-                    $ref: '#/components/schemas/Consegna'
-        '400':
+                    $ref: "#/components/schemas/Consegna"
+        "400":
           description: ID ordine mancante
-        '404':
+        "404":
           description: Consegna non trovata
-        '500':
+        "500":
           description: Errore durante l'aggiornamento della consegna
-
   /api/v1/consegne/{id}/svuota:
     put:
       summary: Svuota gli ordini di una consegna
@@ -881,28 +834,19 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID della consegna'
+          description: ID della consegna
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                data:
-                  type: string
-                  format: date
+        $ref: "#/components/requestBodies/DateReq"  #false
       responses:
-        '200':
+        "200":
           description: Consegna svuotata con successo
-        '404':
+        "404":
           description: Consegna non trovata
-        '500':
+        "500":
           description: Errore durante l'aggiornamento della consegna
-
   /api/v1/consegne/{id}/approva:
     put:
       summary: Approva una consegna
@@ -913,12 +857,12 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID della consegna'
+          description: ID della consegna
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Consegna approvata con successo
           content:
             application/json:
@@ -928,22 +872,25 @@ paths:
                   message:
                     type: string
                   consegna:
-                    $ref: '#/components/schemas/Consegna'
-        '404':
+                    $ref: "#/components/schemas/Consegna"
+        "404":
           description: Consegna non trovata
-        '500':
+        "500":
           description: Errore durante l'approvazione della consegna
-
   /api/v1/orders:
     get:
       summary: Ottieni tutti gli ordini
-      description: Restituisce tutti gli ordini, con possibilità di filtrare per tipo utente e ID.
+      description: Restituisce tutti gli ordini, con possibilità di filtrare per tipo
+        utente e ID.
       parameters:
         - in: query
           name: userType
           schema:
             type: string
-            enum: [cliente, venditore, imprenditore]
+            enum:
+              - cliente
+              - venditore
+              - imprenditore
           description: Tipo di utente per filtrare gli ordini
         - in: query
           name: userId
@@ -951,28 +898,23 @@ paths:
             type: string
           description: ID dell'utente per filtrare gli ordini
       responses:
-        '200':
+        "200":
           description: Lista degli ordini
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Order'
-        '500':
+                  $ref: "#/components/schemas/Order"
+        "500":
           description: Errore nel recupero degli ordini
-
     post:
       summary: Crea un nuovo ordine
       description: Crea un nuovo ordine e aggiorna la quantità dei prodotti.
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Order'
+        $ref: "#/components/requestBodies/OrderReq"
       responses:
-        '201':
+        "201":
           description: Ordine creato con successo
           content:
             application/json:
@@ -981,11 +923,10 @@ paths:
                 properties:
                   message:
                     type: string
-        '400':
+        "400":
           description: Quantità insufficiente per uno o più prodotti
-        '500':
+        "500":
           description: Errore durante il salvataggio dell'ordine
-
   /api/v1/orders/{id}:
     get:
       summary: Ottieni un ordine per ID
@@ -996,19 +937,18 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'ordine'
+          description: ID dell'ordine
       responses:
-        '200':
+        "200":
           description: Ordine trovato
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Order'
-        '404':
+                $ref: "#/components/schemas/Order"
+        "404":
           description: Ordine non trovato
-        '500':
+        "500":
           description: Errore nel recupero dell'ordine
-
   /api/v1/orders/{id}/approve:
     post:
       summary: Approva un ordine
@@ -1019,12 +959,12 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'ordine'
+          description: ID dell'ordine
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Ordine approvato con successo
           content:
             application/json:
@@ -1033,11 +973,10 @@ paths:
                 properties:
                   message:
                     type: string
-        '404':
+        "404":
           description: Ordine non trovato
-        '500':
+        "500":
           description: Errore durante l'approvazione dell'ordine
-
   /api/v1/orders/{id}/rifiuta:
     post:
       summary: Rifiuta un ordine
@@ -1048,9 +987,9 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'ordine'
+          description: ID dell'ordine
       responses:
-        '200':
+        "200":
           description: Ordine rifiutato con successo
           content:
             application/json:
@@ -1059,11 +998,10 @@ paths:
                 properties:
                   message:
                     type: string
-        '404':
+        "404":
           description: Ordine non trovato
-        '500':
+        "500":
           description: Errore durante il rifiuto dell'ordine
-
   /api/v1/orders/{id}/ritirato:
     put:
       summary: Marca un ordine come ritirato
@@ -1074,9 +1012,9 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'ordine'
+          description: ID dell'ordine
       responses:
-        '200':
+        "200":
           description: Ordine marcato come ritirato con successo
           content:
             application/json:
@@ -1085,11 +1023,10 @@ paths:
                 properties:
                   message:
                     type: string
-        '404':
+        "404":
           description: Ordine non trovato
-        '500':
+        "500":
           description: Errore durante la marcatura dell'ordine come ritirato
-
   /api/v1/admin/{id}:
     get:
       summary: Ottieni un admin
@@ -1100,46 +1037,30 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'admin'
+          description: ID dell'admin
       responses:
-        '200':
+        "200":
           description: Admin
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Admin'
-        '404':
+                $ref: "#/components/schemas/Admin"
+        "404":
           description: Admin non trovato
-        '500':
+        "500":
           description: Errore del server
   /api/v1/admin:
     post:
       summary: Crea Admin
       description: Crea Admin
       requestBody:
-        content:
-          application/json:
-            schema: 
-              type: object
-              properties:
-                nome:
-                  type: string
-                cognome:
-                  type: string
-                birthdate:
-                  type: string
-                email:
-                  type: string
-                username:
-                  type: string
-                password:
-                  type: string
+        $ref: "#/components/requestBodies/AdminReq"
       responses:
-        '201':
+        "201":
           description: Admin creato con successo
-        '400':
+        "400":
           description: Admin già esistente con questa email
-        '500':
+        "500":
           description: Errore interno del server
     get:
       summary: Retrieve an admin account by email
@@ -1151,40 +1072,25 @@ paths:
             type: string
           description: Email utente
       responses:
-        '200':
+        "200":
           description: Admin trovato
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Admin'
-        '404':
+                $ref: "#/components/schemas/Admin"
+        "404":
           description: Admin non trovato
-        '500':
+        "500":
           description: Errore del server
-
   /api/v1/upgrades/registrazione:
     post:
       summary: Carica una richiesta di upgrade con PDF
-      description: Permette a un imprenditore di caricare una richiesta di upgrade allegando un file PDF.
+      description: Permette a un imprenditore di caricare una richiesta di upgrade
+        allegando un file PDF.
       requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                imprenditore:
-                  type: string
-                  description: ID dell'imprenditore
-                uploadDate:
-                  type: string
-                  format: date-time
-                file:
-                  type: string
-                  format: binary
-                  description: PDF da caricare
+        $ref: "#/components/requestBodies/UpgradeReq"
       responses:
-        '201':
+        "201":
           description: File caricato con successo
           content:
             application/json:
@@ -1195,29 +1101,27 @@ paths:
                     type: string
                   id:
                     type: string
-        '400':
+        "400":
           description: Nessun file PDF caricato
-        '500':
+        "500":
           description: Errore durante il caricamento del file
-
   /api/v1/upgrades:
     get:
       summary: Ottieni tutte le richieste di upgrade
       description: Restituisce tutte le richieste di upgrade caricate.
       responses:
-        '200':
+        "200":
           description: Lista delle richieste di upgrade
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Upgrade'
-        '404':
+                  $ref: "#/components/schemas/Upgrade"
+        "404":
           description: Nessun file trovato
-        '500':
+        "500":
           description: Errore interno del server
-
   /api/v1/upgrades/{id}/file:
     get:
       summary: Scarica il file PDF di una richiesta di upgrade
@@ -1228,19 +1132,18 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'upgrade'
+          description: ID dell'upgrade
       responses:
-        '200':
+        "200":
           description: File PDF restituito
           content:
             application/pdf:
               schema:
                 $ref: "#/components/schemas/PDF"
-        '404':
+        "404":
           description: File non trovato
-        '500':
+        "500":
           description: Errore durante il recupero del file
-
   /api/v1/upgrades/{id}/registrazione:
     get:
       summary: Scarica il file PDF come attachment
@@ -1251,20 +1154,19 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'upgrade'
+          description: ID dell'upgrade
       responses:
-        '200':
+        "200":
           description: File PDF restituito come attachment
           content:
             application/pdf:
               schema:
                 type: string
                 format: binary
-        '404':
+        "404":
           description: File non trovato
-        '500':
+        "500":
           description: Errore durante il recupero del file
-
   /api/v1/upgrades/{id}:
     delete:
       summary: Elimina una richiesta di upgrade
@@ -1275,9 +1177,9 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'upgrade'
+          description: ID dell'upgrade
       responses:
-        '200':
+        "200":
           description: File eliminato con successo
           content:
             application/json:
@@ -1286,11 +1188,10 @@ paths:
                 properties:
                   message:
                     type: string
-        '404':
+        "404":
           description: File non trovato
-        '500':
+        "500":
           description: Errore durante l'eliminazione del file
-
   /api/v1/imprenditori:
     get:
       summary: Retrieve an entrepreneur account by email
@@ -1302,15 +1203,15 @@ paths:
             type: string
           description: Email utente
       responses:
-        '200':
+        "200":
           description: Imprenditore trovato
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Imprenditore'
-        '404':
+                $ref: "#/components/schemas/Imprenditore"
+        "404":
           description: Imprenditore non trovato
-        '500':
+        "500":
           description: Errore del server
   /api/v1/imprenditori/{id}/descrizione:
     put:
@@ -1322,29 +1223,21 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'imprenditore'
+          description: ID dell'imprenditore
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                descrizione:
-                  type: string
+        $ref: "#/components/requestBodies/DescrizioneUpdate"
       responses:
-        '200':
+        "200":
           description: Descrizione aggiornata con successo
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Imprenditore'
-        '500':
+                $ref: "#/components/schemas/Imprenditore"
+        "500":
           description: Errore del server
-
   /api/v1/imprenditori/{id}/sede:
     put:
       summary: Aggiorna la sede di un imprenditore
@@ -1355,29 +1248,21 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'imprenditore'
+          description: ID dell'imprenditore
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                sede:
-                  type: string
+        $ref: "#/components/requestBodies/SedeUpdate"
       responses:
-        '200':
+        "200":
           description: Sede aggiornata con successo
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Imprenditore'
-        '500':
+                $ref: "#/components/schemas/Imprenditore"
+        "500":
           description: Errore del server
-
   /api/v1/imprenditori/add:
     post:
       summary: Crea un nuovo imprenditore
@@ -1386,21 +1271,16 @@ paths:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Imprenditore'
+        $ref: "#/components/requestBodies/ImprenditoreReq"
       responses:
-        '201':
+        "201":
           description: Imprenditore creato con successo
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Imprenditore'
-        '500':
+                $ref: "#/components/schemas/Imprenditore"
+        "500":
           description: Errore del server
-
   /api/v1/imprenditori/{id}:
     get:
       summary: Ottieni un imprenditore per ID
@@ -1411,56 +1291,148 @@ paths:
           name: id
           schema:
             type: string
-          description: 'ID dell'imprenditore'
+          description: ID dell'imprenditore
       responses:
-        '200':
+        "200":
           description: Imprenditore trovato
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Imprenditore'
-        '404':
+                $ref: "#/components/schemas/Imprenditore"
+        "404":
           description: Imprenditore non trovato
-        '500':
+        "500":
           description: Errore del server
-
     delete:
       summary: Elimina un imprenditore
       description: Elimina un imprenditore dato il suo ID.
       responses:
-        '200':
+        "200":
           description: Imprenditore eliminato con successo
-        '404':
+        "404":
           description: Imprenditore non trovato
-        '500':
+        "500":
           description: Errore del server
+  /api/v1/imprenditori/{id}/carrello:
+    get:
+      summary: Ottieni il carrello dell'utente imprenditore
+      description: Restituisce i prodotti presenti nel carrello di un imprenditore
+      parameters:
+        - in: path
+          description: ID dell'utente
+          required: true
+          name: id
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista dei prodotti nel carrello
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+        "404":
+          description: Carrello non trovato
+        "500":
+          description: Errore del server
+  /api/v1/imprenditori/{id}/carrello/add:
+    post:
+      summary: Aggiungi un prodotto al carrello
+      description: Aggiunge un prodotto al carrello dell'imprenditore
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: ID dell'utente
+      requestBody:
+        $ref: "#/components/requestBodies/ProdottoCarrello"
+      responses:
+        "200":
+          description: Prodotto aggiunto al carrello
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: Errore di validazione (es. prodotti di venditori diversi)
+        "404":
+          description: Utente o prodotto non trovato
+        "500":
+          description: Errore del server
+  /api/v1/imprenditori/{id}/carrello/removeOne:
+    post:
+      summary: Rimuovi una quantità di un prodotto dal carrello
+      description: Rimuove una quantità di un prodotto dal carrello dell'imprenditore
+      parameters:
+        - in: path
+          required: true
+          name: userId
+          schema:
+            type: string
+          description: ID dell'utente
+      requestBody:
+        $ref: "#/components/requestBodies/ProdottoRemove"
+      responses:
+        "200":
+          description: Prodotto aggiornato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Utente non trovato
+        "500":
+          description: Errore del server
+  /api/v1/imprenditori/{id}/carrello/clear:
+    post:
+      summary: Svuota il carrello dell'imprenditore
+      description: Svuota completamente il carrello dell'imprenditore.
+      parameters:
+        - in: path
+          required: true
+          name: id
+          schema:
+            type: string
+          description: ID dell'utente
+      responses:
+        "200":
+          description: Carrello svuotato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Utente non trovato
+        "500":
+          description: Errore durante lo svuotamento del carrello
   /api/v1/recensioni:
     post:
       description: Aggiungi Recensione
       requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                titolo: 
-                  type: string
-                testo: 
-                  type: string
-                stelle: 
-                  type: integer
-                ordine:
-                  type: string
+        $ref: "#/components/requestBodies/RecensioneReq"
       responses:
-        '201':
+        "201":
           description: Recensione salvata con successo!
-        '400':
+        "400":
           description: Errore nell'ordine (campi incompleti / già esistente)
-        '404':  
+        "404":
           description: Ordine non trovato
-        '500':
+        "500":
           description: Errore del server
-  /api/v1/promozioni: 
+  /api/v1/promozioni:
     get:
       summary: Crea una nuova promozione
       description: Crea una nuova promozione
@@ -1468,13 +1440,13 @@ paths:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Ottieni promozioni
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Promotion'
-        '500':
+                $ref: "#/components/schemas/Promotion"
+        "500":
           description: Internal server error
     post:
       summary: Crea una nuova promozione
@@ -1483,229 +1455,230 @@ paths:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '201': 
+        "201":
           description: Promozione creata con successo
           content:
             application/formDta:
               schema:
-                $ref: '#/components/schemas/Promotion'
-        '500':
+                $ref: "#/components/schemas/Promotion"
+        "500":
           description: Errore durante la creazione della promozione
   /api/v1/service/mail:
     post:
       summary: Manda una mail di conferma registrazione
       description: Manda una mail di conferma registrazione
       responses:
-        '200':
+        "200":
           description: Email inviata con successo!
-        '500':
+        "500":
           description: Errore durante l'invio dell'email
   /api/v1/service/mail/rifiuto-ordini:
     post:
       summary: Manda una mail di rifiuto ordine
       description: Manda una mail di rifiuto ordine
       responses:
-        '200':
+        "200":
           description: Email inviata con successo!
-        '500':
+        "500":
           description: Errore durante l'invio dell'email di rifiuto
   /authchecks/interfacciavenditore:
     get:
       summary: Interfaccia venditore
-      description: Restituisce la pagina HTML dell'interfaccia venditore (solo per utenti con ruolo Venditore).
+      description: Restituisce la pagina HTML dell'interfaccia venditore (solo per
+        utenti con ruolo Venditore).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/carrello:
     get:
       summary: Carrello cliente
-      description: Restituisce la pagina HTML del carrello (solo per utenti con ruolo Cliente).
+      description: Restituisce la pagina HTML del carrello (solo per utenti con ruolo
+        Cliente).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/dettagliaccount:
     get:
       summary: Dettagli account cliente
-      description: Restituisce la pagina HTML dei dettagli account (solo per utenti con ruolo Cliente).
+      description: Restituisce la pagina HTML dei dettagli account (solo per utenti
+        con ruolo Cliente).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/addPromo:
     get:
       summary: Aggiungi promozione (imprenditore)
-      description: Restituisce la pagina HTML per aggiungere una promozione (solo per utenti con ruolo Imprenditore).
+      description: Restituisce la pagina HTML per aggiungere una promozione (solo per
+        utenti con ruolo Imprenditore).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/ordini:
     get:
       summary: Ordini amministratore
-      description: Restituisce la pagina HTML degli ordini (solo per utenti con ruolo Admin).
+      description: Restituisce la pagina HTML degli ordini (solo per utenti con ruolo
+        Admin).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/admin:
     get:
       summary: Dettagli account amministratore
-      description: Restituisce la pagina HTML dei dettagli account (solo per utenti con ruolo Admin).
+      description: Restituisce la pagina HTML dei dettagli account (solo per utenti
+        con ruolo Admin).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/upgrade:
     get:
       summary: Registrazione venditore (imprenditore)
-      description: Restituisce la pagina HTML per la registrazione venditore (solo per utenti con ruolo Imprenditore).
+      description: Restituisce la pagina HTML per la registrazione venditore (solo per
+        utenti con ruolo Imprenditore).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/upgrade-cliente:
     get:
       summary: Upgrade cliente
-      description: Restituisce la pagina HTML per l'upgrade cliente (solo per utenti con ruolo Cliente).
+      description: Restituisce la pagina HTML per l'upgrade cliente (solo per utenti
+        con ruolo Cliente).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/candidature:
     get:
       summary: Candidature amministratore
-      description: Restituisce la pagina HTML delle candidature (solo per utenti con ruolo Admin).
+      description: Restituisce la pagina HTML delle candidature (solo per utenti con
+        ruolo Admin).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/consegne:
     get:
       summary: Consegne amministratore
-      description: Restituisce la pagina HTML delle consegne (solo per utenti con ruolo Admin).
+      description: Restituisce la pagina HTML delle consegne (solo per utenti con
+        ruolo Admin).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
-
   /authchecks/addConsegna:
     get:
       summary: Aggiungi consegna (admin)
-      description: Restituisce la pagina HTML per aggiungere una consegna (solo per utenti con ruolo Admin).
+      description: Restituisce la pagina HTML per aggiungere una consegna (solo per
+        utenti con ruolo Admin).
       security:
         - TokenQueryAuth: []
           XAccessTokenHeaderAuth: []
       responses:
-        '200':
+        "200":
           description: Pagina HTML restituita
           content:
             text/html:
               schema:
                 type: string
-        '401':
+        "401":
           description: Non autorizzato
 components:
   schemas:
-    Image: 
+    Image:
       type: object
       properties:
         _id:
           type: string
-        data: 
+        data:
           type: string
           description: binary
-        contentType: 
+        contentType:
           type: string
     PDF:
       type: object
@@ -1738,7 +1711,7 @@ components:
           type: string
         carrello:
           type: array
-          items: 
+          items:
             $ref: "#/components/schemas/Product"
     Imprenditore:
       type: object
@@ -1765,7 +1738,7 @@ components:
           type: string
         carrello:
           type: array
-          items: 
+          items:
             $ref: "#/components/schemas/Product"
     Venditore:
       type: object
@@ -1794,7 +1767,7 @@ components:
           type: string
         carrello:
           type: array
-          items: 
+          items:
             $ref: "#/components/schemas/Product"
     Admin:
       type: object
@@ -1826,7 +1799,7 @@ components:
           type: string
         descrizione:
           type: string
-        img: 
+        img:
           $ref: "#/components/schemas/Image"
         tipoAnnuncio:
           type: string
@@ -1849,7 +1822,6 @@ components:
           type: string
         immagine:
           $ref: "#/components/schemas/Image"
-          
     Order:
       type: object
       properties:
@@ -1893,7 +1865,7 @@ components:
           items:
             type: string
           description: array of id of orders
-        data: 
+        data:
           type: string
           description: date-time
         status:
@@ -1907,12 +1879,12 @@ components:
           type: string
         testo:
           type: string
-        stelle: 
+        stelle:
           type: integer
-        data: 
+        data:
           type: string
           description: date-time
-        ordine: 
+        ordine:
           type: object
           description: reference to the order
     Upgrade:
@@ -1920,7 +1892,7 @@ components:
       properties:
         _id:
           type: string
-        imprenditore: 
+        imprenditore:
           type: string
         file:
           $ref: "#/components/schemas/PDF"
@@ -1928,20 +1900,226 @@ components:
           type: string
           description: date-time
   securitySchemes:
-    XAccessTokenHeaderAuth: # arbitrary name for the security scheme
-      description: >-
-        The API authentication.
-        The API key must be passed in the header 'x-access-token'.
-        The API key must be a valid JWT token.
+    XAccessTokenHeaderAuth:
+      description: The API authentication. The API key must be passed in the header
+        'x-access-token'. The API key must be a valid JWT token.
       type: apiKey
       in: header
       name: x-access-token
-    
-    TokenQueryAuth: # arbitrary name for the security scheme
-      description: >-
-        The API authentication.
-        The API key must be passed in the query string 'token'.
-        The API key must be a valid JWT token.
+    TokenQueryAuth:
+      description: The API authentication. The API key must be passed in the query
+        string 'token'. The API key must be a valid JWT token.
       type: apiKey
       in: query
       name: token
+  requestBodies:
+    Login: 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+    LoginBusiness: 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: email
+              password:
+                type: string
+    LoginAdmin: 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: email
+              password:
+                type: string
+    ReqProduct:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              schema:
+                $ref: "#/components/schemas/Product"
+    DescrizioneUpdate: 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              descrizione:
+                type: string
+    SedeUpdate:  
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              sede:
+                type: string
+    ProdottoCarrello:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              _id:
+                type: string
+                description: ID del prodotto
+              nome:
+                type: string
+              prezzo:
+                type: number
+              quantity:
+                type: integer
+    ProdottoRemove:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              nome:
+                type: string
+    PasswordReq: 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              oldPassword:
+                type: string
+              newPassword:
+                type: string
+    RegistrazioneReq: 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              nome:
+                type: string
+              cognome:
+                type: string
+              birthdate:
+                type: string
+              email:
+                type: string
+              username:
+                type: string
+              password:
+                type: string
+    DateReq:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+    OrdineIdReq:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID dell'ordine da aggiungere
+    OrderReq: 
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Order"
+    AdminReq: 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              nome:
+                type: string
+              cognome:
+                type: string
+              birthdate:
+                type: string
+              email:
+                type: string
+              username:
+                type: string
+              password:
+                type: string
+    UpgradeReq:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              imprenditore:
+                type: string
+                description: ID dell'imprenditore
+              uploadDate:
+                type: string
+                format: date-time
+              file:
+                $ref: "#/components/schemas/PDF"
+    RecensioneReq:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              titolo:
+                type: string
+              testo:
+                type: string
+              stelle:
+                type: integer
+              ordine:
+                type: string
+    ImageReq:
+      required: true
+      content:
+        application/json:  # Specify media type
+          schema: 
+            $ref: "#/components/schemas/Image"
+    VenditoreReq: 
+      required: true
+      content:
+        application/json:  # Specify media type
+          schema: 
+            $ref: "#/components/schemas/Venditore"
+    ImprenditoreReq:
+      required: true
+      content:
+        application/json:  # Specify media type
+          schema: 
+            $ref: "#/components/schemas/Imprenditore"
