@@ -203,6 +203,19 @@ paths:
           description: Venditore non trovato
         "500":
           description: Errore del server
+  /api/v1/venditori/all:
+    get:
+      summary: Retrieve all vendor accounts
+      description: Retrieve all vendor accounts
+      responses:
+        "200":
+          description: Venditore trovato
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Venditore"
+        "500":
+          description: Errore del server
   /api/v1/venditori/{id}:
     get:
       description: Ottieni venditore associato all'ID
