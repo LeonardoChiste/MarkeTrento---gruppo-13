@@ -87,7 +87,7 @@
 <body>
   <div class="container">
     <button class="back-btn" onclick="window.history.back()">Torna Indietro</button>
-    <h1 id="venditore"></h1>
+    <div id="venditore"></div>
   </div>
 </body>
 <script>
@@ -107,6 +107,7 @@
                 }
             });
             if (!response.ok) {
+                alert("Errore nel recupero ordini");
                 throw new Error('Errore nel recupero degli ordini');
             }
             const orders = await response.json();
@@ -129,8 +130,8 @@
                 ordineDiv.className = 'ordine';
 
                 ordineDiv.innerHTML = `
-                    <strong>Venditore:</strong> ${order.venditore.nome + ' ' + order.venditore.cognome} <br>
-                    <strong>Cliente:</strong> ${order.cliente.nome + ' ' + order.cliente.cognome} <br>
+                    <strong>Venditore:</strong> ${order.venditore ? (order.venditore.nome + ' ' + order.venditore.cognome) : 'N/A'} <br>
+                    <strong>Cliente:</strong> ${order.cliente ? (order.cliente.nome + ' ' + order.cliente.cognome) : 'N/A'} <br>
                     <strong>Zona:</strong> ${order.zona} <br>
                     <strong>Tipo:</strong> ${order.tipo} <br>
                     <strong>Pubblicazione:</strong> ${new Date(order.pubblicazione).toLocaleDateString()} <br>

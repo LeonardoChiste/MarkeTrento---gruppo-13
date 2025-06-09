@@ -71,7 +71,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', tokenChecker('Imprenditore'), async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const imprenditore = await DBEntrepreneur.findByIdAndDelete(req.params.id);
         if (!imprenditore) {
