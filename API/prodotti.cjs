@@ -1,12 +1,15 @@
 const express =require( 'express');
 require('dotenv').config({ path: 'process.env' });
 const multer = require('multer');
-const upload = multer();
-
+const Productv2 = require('../models/productModel.cjs'); 
 const Prodotto = require('../classes/prodotto.cjs');
 const ProdottoServizio = require('../services/ProdottoService.cjs');
 const FotoProdottoServizio = require('../services/fotoProdotto.cjs');
 const router = express.Router();
+const DBPictureProduct = require('../models/pictureProductModel.cjs');
+//const { default: pictureProductModel } = require('../models/pictureProductModel.cjs');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage, limits: { fileSize: 5 * 1024 * 1024 } }); // Limit to 5MB
 
 //api prodotti
 /*
@@ -70,13 +73,21 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-router.post('/:id/foto',upload.single('image'), async (req, res) => {
+router.post('/:id/foto', upload.single('image'), async (req, res) => {
     try {
-        const id = req.params.id;
+        /*const id = req.params.id;
         var foto = req.file.buffer;
-        var ct = req.file.mimetype;
-
-        await FotoProdottoServizio.addProductImage(id,foto ,ct)
+        var ct = req.file.mimetype;*/
+        console.log(req.params.id);
+        const image = new DBPictureProduct ({
+            prodottoId: String(req.params.id),
+            img: {
+                data: req.file.buffer,
+                contentType: req.file.mimetype
+            }
+        });
+        image.save();
+        //await FotoProdottoServizio.addProductImage(id, foto ,ct)
         res.status(200).json({ message: 'Foto del prodotto aggiornata con successo' });
     }
     catch (error) {
@@ -87,8 +98,7 @@ router.post('/:id/foto',upload.single('image'), async (req, res) => {
 
 router.get('/:id/foto', async (req, res) => {
     try {
-        const id = req.params.id;
-        const foto = await FotoProdottoServizio.getProductImage(id);
+        const foto = await DBPictureProduct.findOne( {prodottoId : req.params.id} );
         if (!foto) {
             return res.status(404).send('Foto non trovata');
         }

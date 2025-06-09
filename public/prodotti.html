@@ -212,11 +212,19 @@
                     return;
                 }
                 container.innerHTML = '';
-                prodotti.forEach(p => {
+                prodotti.forEach( async (p) => {
                     const div = document.createElement('div');
                     div.className = 'prodotto';
                     let warning = '';
                     let isOut = false;
+                    const picRes = await fetch(`/api/v1/prodotti/${p._id}/foto`);
+                    let imgSrc;
+                    if (picRes.ok) {
+                        const blob = await picRes.blob();
+                        imgSrc = URL.createObjectURL(blob);
+                    } else {
+                        imgSrc = 'https://placehold.co/100x100?text=No+Image';
+                    }
                     const quantitaNum = parseInt(p.quantita, 10);
                     if (isNaN(quantitaNum) || quantitaNum === 0) {
                         warning = `
@@ -233,10 +241,10 @@
                                 Disponibilità limitata!
                             </div>
                         `;
-                    }
+                    }                      //(p.immagine && p.immagine.startsWith('http'))
                     div.innerHTML = `
                         <div style="display:flex;align-items:center;gap:18px;">
-                            <img src="${(p.immagine && p.immagine.startsWith('http')) ? p.immagine : 'https://placehold.co/100x100?text=No+Image'}"
+                            <img src="${imgSrc}"
                                 alt="${p.nome}" 
                                 style="width:100px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;">
                             <div style="flex:1;">

@@ -344,18 +344,18 @@
                 });
                 if (!resProd.ok) {
                     const err = await resProd.text();
-                    esito.innerHTML = `<span style="color:red;">Errore: ${err}</span>`;
+                    esito.innerHTML = `<span style="color:red;">Errore post prodotti: ${err}</span>`;
                     return;
                 }
                 
                 let prodottoCreatoId = await resProd.json();
                 if(!prodottoCreatoId) console.log("Errore ID Prodotto non reperibile");
                
-                if (file && prodottoId) {
+                if (file && prodottoCreatoId) {
                     const formData = new FormData();
-                    formData.append('image', file);
+                    formData.append('image', document.getElementById('immagineFile').files[0]);
                     try {
-                        const uploadRes = await fetch(`/api/v1/prodotti/${prodottoId}/foto`, {
+                        const uploadRes = await fetch(`/api/v1/prodotti/${prodottoCreatoId.id}/foto`, {
                             method: 'POST',
                             headers: {
                                 'x-access-token': token
@@ -385,7 +385,7 @@
 
             }
             catch (error) {
-                document.getElementById('esito').innerHTML = '<span style="color:red;">Errore nel recupero dati account!</span>';
+                document.getElementById('esito').innerHTML = `<span style="color:red;">Errore nel recupero dati account! ${error}</span>`;
             }
         });
     </script>

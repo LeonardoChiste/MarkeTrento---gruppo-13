@@ -218,7 +218,7 @@
             lista.innerHTML = 'Caricamento...';
             try {
                 // Utilizzo Api per caricare i venditori
-                const res = await fetch('/api/v1/venditori');
+                const res = await fetch('/api/v1/venditori/all');
                 const venditori = await res.json();
                 venditoriGlobal = Array.isArray(venditori) ? venditori : [];
                 await aggiungiTagsAVenditori();

@@ -9,5 +9,5 @@ module.exports = mongoose.model('Productv2', new Schema({
     quantita:Number,
     costo:Number,
     tag:String, //tag come enum ossia array di valore impostato a tipologia prodotto scelta
-    immagine:String
+    immagine:String,
 }));

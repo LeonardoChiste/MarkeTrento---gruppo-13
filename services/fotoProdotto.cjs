@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 async function addProductImage(productId, imageBuffer, contentType) {
     try {
-        const existingImage = await DBPictureProduct.findOne({ prodottoId });
+        const existingImage = await DBPictureProduct.findOne({ prodottoId: productId });
         if (existingImage) {
             // Update existing image
             existingImage.img.data = imageBuffer;
@@ -13,16 +13,17 @@ async function addProductImage(productId, imageBuffer, contentType) {
         } else {
             // Create new image entry
             const newImage = new DBPictureProduct({
-                prodottoId,
+                productId,
                 img: {
                     data: imageBuffer,
                     contentType
                 }
             });
-            await newImage.save();
+            //await newImage.save();
         }
         //console.log('Immagine del prodotto aggiunta con successo');
     } catch (error) {
         console.error('Errore durante l\'aggiunta dell\'immagine del prodotto:', error);
     }
 }
+module.exports={addProductImage};

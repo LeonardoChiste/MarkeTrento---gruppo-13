@@ -31,6 +31,7 @@ async function addProduct(prodotto) {
     try {
         const nuovoProdotto = new Productv2(prodotto);
         await nuovoProdotto.save();
+        return nuovoProdotto;
     } catch (error) {
         console.error('Errore durante l\'aggiunta del prodotto:', error.message);
         throw error;

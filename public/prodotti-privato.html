@@ -211,11 +211,20 @@
                     container.innerHTML = '<em>Nessun prodotto trovato per questo venditore.</em>';
                     return;
                 }
+
                 container.innerHTML = '';
-                prodotti.forEach(p => {
+                prodotti.forEach( async(p) => {
                     const div = document.createElement('div');
                     div.className = 'prodotto';
                     let alertEsaurito = '';
+                    const picRes = await fetch(`/api/v1/prodotti/${p._id}/foto`);
+                    let imgSrc;
+                    if (picRes.ok) {
+                        const blob = await picRes.blob();
+                        imgSrc = URL.createObjectURL(blob);
+                    } else {
+                        imgSrc = 'https://placehold.co/100x100?text=No+Image';
+                    }
                     // Mostra alert se il prodotto è esaurito (quantità 0 o null o non definita)
                     if (!p.quantita || p.quantita === 0) {
                         alertEsaurito = `
@@ -232,7 +241,7 @@
                         <button class="remove-btn" title="Rimuovi prodotto">&#10006;</button>
                         ${alertEsaurito}
                         <div style="display:flex;align-items:center;gap:18px;">
-                            <img src="${(p.immagine && p.immagine.startsWith('http')) ? p.immagine : 'https://placehold.co/100x100?text=No+Image'}"
+                            <img src="${imgSrc}"
                                 alt="${p.nome}" 
                                 style="width:100px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;">
                             <div style="flex:1;">

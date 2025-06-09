@@ -12,7 +12,8 @@ const CarrelloServizio = require('../services/CarrrelloService.cjs');
 const Productv2 = require('../models/productModel.cjs');
 
 //api venditore
-router.get('', async (req, res) => {
+
+router.get('/all', async (req, res) => {
     try {
         const venditori = await VenditoreServizio.getAllVenditori();
         res.status(200).json(venditori);
@@ -111,12 +112,13 @@ router.get('/:id/prodotti', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('', async (req, res) => {
     try {
         const { email } = req.query;
         if (!email) return res.status(400).json({ error: 'Email richiesta' });
         const vendor = await DBVendor.findOne({ email: email });
         if (!vendor) {
+            console.log("venditore non trovato");
             return res.status(404).json({ error: 'Venditore non trovato' });
         }
         res.status(200).json(vendor);
