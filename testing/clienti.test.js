@@ -61,11 +61,11 @@ describe('Clienti Carrello API - Authenticated/Valid requests', () => {
     const token = jwt.sign({ userId: REAL_USER_ID, userType: 'cliente' },
         process.env.SUPER_SECRET, { expiresIn: '86400' });
 
-    test('GET /api/v1/clienti/:id/carrello (should return 200 or 404)', async () => {
+    test('GET /api/v1/clienti/:id/carrello with valid user', async () => {
         const response = await request(app)
             .get(`/api/v1/clienti/${REAL_USER_ID}/carrello`)
             .set('Authorization', `Bearer ${token}`);
-        expect([200, 404]).toContain(response.statusCode);
+        expect(response.statusCode).toBe(200);
     });
 
     test('POST /api/v1/clienti/:id/carrello/add with valid data', async () => {
@@ -73,7 +73,7 @@ describe('Clienti Carrello API - Authenticated/Valid requests', () => {
             .post(`/api/v1/clienti/${REAL_USER_ID}/carrello/add`)
             .set('Authorization', `Bearer ${token}`)
             .send({ _id: PRODUCT_ID, nome: 'ProdottoTest', prezzo: 10, quantity: 1 });
-        expect([200, 404, 400]).toContain(response.statusCode);
+        expect(response.statusCode).toBe(200);
     });
 
     test('POST /api/v1/clienti/:id/carrello/removeOne with valid data', async () => {
@@ -81,13 +81,13 @@ describe('Clienti Carrello API - Authenticated/Valid requests', () => {
             .post(`/api/v1/clienti/${REAL_USER_ID}/carrello/removeOne`)
             .set('Authorization', `Bearer ${token}`)
             .send({ nome: 'ProdottoTest' });
-        expect([200, 404]).toContain(response.statusCode);
+        expect(response.statusCode).toBe(200);
     });
 
     test('POST /api/v1/clienti/:id/carrello/clear with valid user', async () => {
         const response = await request(app)
             .post(`/api/v1/clienti/${REAL_USER_ID}/carrello/clear`)
             .set('Authorization', `Bearer ${token}`);
-        expect([200, 404]).toContain(response.statusCode);
+        expect(response.statusCode).toBe(200);
     });
 });
