@@ -152,14 +152,7 @@ paths:
             type: string
           description: ID del prodotto
       requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  description: binary
+        $ref: "#/components/requestBodies/ReqFile"
       responses:
         "200":
           description: Foto del prodotto aggiornata con successo
@@ -1157,21 +1150,7 @@ paths:
       description: |
         Permette di caricare un file PDF associato a una richiesta di upgrade (ad esempio, la registrazione di un imprenditore).
       requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  description: binary
-                imprenditore:
-                  type: string
-                  description: L'ID dell'imprenditore associato
-                uploadDate:
-                  type: string
-                  description: date-time
+        $ref: "#/components/requestBodies/RegReq"
       responses:
         "201":
           description: File caricato con successo
@@ -2269,3 +2248,28 @@ components:
                 description: binary
               tipoAnnuncio:
                 type: string
+    ReqFile:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              file:
+                type: string
+                description: binary
+    RegReq:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              file:
+                type: string
+                description: binary
+              imprenditore:
+                type: string
+                description: L'ID dell'imprenditore associato
+              uploadDate:
+                type: string
+                description: date-time
