@@ -33,6 +33,40 @@ describe('imprenditoriRouter module should be defined', () => {
     });
 });
 
+describe('Imprenditori Carrello API - Unauthenticated/Invalid requests', () => {
+
+    test('GET /api/v1/imprenditori/:id/carrello with non-existent user', async () => {
+        const response = await request(app)
+            .get(`/api/v1/imprenditori/${DUMMY_USER_ID}/carrello`);
+        expect(response.statusCode).toBe(404);
+        expect(response.text).toBe('Carrello non trovato');
+    });
+
+    test('POST /api/v1/imprenditori/:id/carrello/add with non-existent user', async () => {
+        const response = await request(app)
+            .post(`/api/v1/imprenditori/${DUMMY_USER_ID}/carrello/add`)
+            .send({ _id: 'fake', nome: 'Prodotto', prezzo: 10, quantity: 1 });
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ error: 'Utente non trovato' });
+    });
+
+    test('POST /api/v1/imprenditori/:id/carrello/removeOne with non-existent user', async () => {
+        const response = await request(app)
+            .post(`/api/v1/imprenditori/${DUMMY_USER_ID}/carrello/removeOne`)
+            .send({ nome: 'Prodotto' });
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ error: 'Utente non trovato' });
+    });
+
+    test('POST /api/v1/imprenditori/:id/carrello/clear with non-existent user', async () => {
+        const response = await request(app)
+            .post(`/api/v1/imprenditori/${DUMMY_USER_ID}/carrello/clear`);
+        expect(response.statusCode).toBe(404);
+        expect(response.body).toEqual({ error: 'Utente non trovato' });
+    });
+
+});
+
 describe('Imprenditori Carrello API - Authenticated/Valid requests', () => {
     const token = jwt.sign({ email: EMAIL_IMPRENDITORE, aut: 'Imprenditore' },
         process.env.SUPER_SECRET, { expiresIn: '86400' });
@@ -68,41 +102,6 @@ describe('Imprenditori Carrello API - Authenticated/Valid requests', () => {
     });
 });
 
-describe('Imprenditori Carrello API - Unauthenticated/Invalid requests', () => {
-
-    test('GET /api/v1/imprenditori/:id/carrello with non-existent user', async () => {
-        const response = await request(app)
-            .get(`/api/v1/imprenditori/${DUMMY_USER_ID}/carrello`);
-        expect(response.statusCode).toBe(404);
-        expect(response.text).toBe('Carrello non trovato');
-    });
-
-    test('POST /api/v1/imprenditori/:id/carrello/add with non-existent user', async () => {
-        const response = await request(app)
-            .post(`/api/v1/imprenditori/${DUMMY_USER_ID}/carrello/add`)
-            .send({ _id: 'fake', nome: 'Prodotto', prezzo: 10, quantity: 1 });
-        expect(response.statusCode).toBe(404);
-        expect(response.body).toEqual({ error: 'Utente non trovato' });
-    });
-
-    test('POST /api/v1/imprenditori/:id/carrello/removeOne with non-existent user', async () => {
-        const response = await request(app)
-            .post(`/api/v1/imprenditori/${DUMMY_USER_ID}/carrello/removeOne`)
-            .send({ nome: 'Prodotto' });
-        expect(response.statusCode).toBe(404);
-        expect(response.body).toEqual({ error: 'Utente non trovato' });
-    });
-
-    test('POST /api/v1/imprenditori/:id/carrello/clear with non-existent user', async () => {
-        const response = await request(app)
-            .post(`/api/v1/imprenditori/${DUMMY_USER_ID}/carrello/clear`);
-        expect(response.statusCode).toBe(404);
-        expect(response.body).toEqual({ error: 'Utente non trovato' });
-    });
-
-});
-
-
 describe('Query parameter con email, Clienti, Imprenditori e Venditori', ()=>{
 
     const tokenI = jwt.sign({ email: EMAIL_IMPRENDITORE, aut: 'Imprenditore' },
@@ -137,8 +136,6 @@ describe('Create and delete imprenditore', () => {
         process.env.SUPER_SECRET, { expiresIn: '86400' });
     const tokenI = jwt.sign({ email: EMAIL_IMPRENDITORE, aut: 'Imprenditore' },
         process.env.SUPER_SECRET, { expiresIn: '86400' });
-    const nuovaDescrizione = 'Nuova descrizione';
-    const nuovaSede = 'Rovereto';
     let id;
     test('POST /api/v1/imprenditori/add with valid user', async () => {
         const response = await request(app)

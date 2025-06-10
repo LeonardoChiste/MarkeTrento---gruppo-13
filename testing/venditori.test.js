@@ -130,20 +130,6 @@ describe('Query parameter email errata, Venditori', ()=>{
 
 });
 
-describe('GET all venditori, promozioni e upgrades', () => {
-    
-    const tokenV = jwt.sign({ email: EMAIL_VENDITORE, aut: 'Venditore' },
-        process.env.SUPER_SECRET, { expiresIn: '86400' });
-
-    test('GET all venditori /api/v1/venditori/all', async () => {
-        const response = await request(app)
-            .get(`/api/v1/venditori/all`)
-            .set('x-access-token', tokenV);
-        expect(response.statusCode).toBe(200);
-    });
-
-});
-
 describe('Create and delete venditore', () => {
     const tokenV = jwt.sign({ email: EMAIL_VENDITORE, aut: 'Venditore' },
         process.env.SUPER_SECRET, { expiresIn: '86400' });
@@ -196,6 +182,20 @@ describe('Create and delete venditore', () => {
             .set('x-access-token', tokenV)
             .send(JSON.stringify({ sede: nuovaSede }))
             .set('Content-Type', 'application/json')
+        expect(response.statusCode).toBe(200);
+    });
+
+});
+
+describe('GET all venditori', () => {
+    
+    const tokenV = jwt.sign({ email: EMAIL_VENDITORE, aut: 'Venditore' },
+        process.env.SUPER_SECRET, { expiresIn: '86400' });
+
+    test('GET all venditori /api/v1/venditori/all', async () => {
+        const response = await request(app)
+            .get(`/api/v1/venditori/all`)
+            .set('x-access-token', tokenV);
         expect(response.statusCode).toBe(200);
     });
 

@@ -22,7 +22,7 @@ afterAll(async () => {
     await mongoose.connection.close(true);
 });
 
-describe('GET all venditori, promozioni e upgrades', () => {
+describe('GET all upgrades', () => {
     
     const tokenA = jwt.sign({ email: EMAIL_ADMIN, aut: 'Admin' },
         process.env.SUPER_SECRET, { expiresIn: '86400' });

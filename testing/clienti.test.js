@@ -118,7 +118,7 @@ describe('Query parameter email errata, Clienti', ()=>{
     const tokenC = jwt.sign({ email: EMAIL_CLIENTE, aut: 'Cliente' },
         process.env.SUPER_SECRET, { expiresIn: '86400' });
     
-    test('GET /api/v1/clienti?email=email returns 200', async () => {
+    test('GET /api/v1/clienti?email=email returns 404', async () => {
         const response = await request(app)
             .get(`/api/v1/clienti?email=${EMAIL_ERRATA}`)
             .set('x-access-token', tokenC);
