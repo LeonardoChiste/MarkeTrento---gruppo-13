@@ -152,7 +152,14 @@ paths:
             type: string
           description: ID del prodotto
       requestBody:
-        $ref: "#/components/requestBodies/ImageReq"
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: binary
       responses:
         "200":
           description: Foto del prodotto aggiornata con successo
@@ -171,7 +178,13 @@ paths:
         "200":
           description: Ottieni immagine associata al prodotto
           content:
-            $ref: "#/components/schemas/Image"
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  file:
+                    type: string
+                    description: binary
         "404":
           description: Foto non trovata
         "500":
