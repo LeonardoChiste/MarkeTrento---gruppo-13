@@ -105,7 +105,7 @@ router.post('/registrazione', async (req, res) => {
         const cliente=new Cliente(nome, cognome, birthdate, email, username, hashedPassword, []);
         const result = await ClientService.nuovaregistrazione(cliente);
     if (result.success) {
-    res.status(201).json({ success: true, message: result.message });
+        res.status(201).json({ success: true, message: result.message });
     } else {
     res.status(400).json({ success: false, error: result.error });
     } 

@@ -7,6 +7,8 @@ const adminRouter = require('../API/admin.cjs');
 const ordersRouter = require('../API/orders.cjs');
 const upgradesRouter = require('../API/upgrades.cjs');
 const promoRouter = require('../API/promozioni.cjs');
+const accountsRouter = require('../API/accounts.cjs');
+const DBVendor = require('../models/vendorModel.cjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 require('dotenv').config({ path: 'process.env' });
@@ -20,6 +22,7 @@ app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/promozioni', promoRouter);
 app.use('/api/v1/upgrades', upgradesRouter);
 app.use('/api/v1/orders', ordersRouter);
+app.use('/api/v1/accounts', accountsRouter);
 
 const DUMMY_USER_ID = '000000000000000000000000';
 const REAL_USER_ID = '6836ce090b73daa5b5bf653b'; 
@@ -363,12 +366,50 @@ describe('GET all venditori, promozioni e upgrades', () => {
     });
 });
 
+describe('Create and delete imprenditore', () => {
+    const tokenC = jwt.sign({ email: EMAIL_CLIENTE, aut: 'Cliente' },
+        process.env.SUPER_SECRET, { expiresIn: '86400' });
+    let id;
+    test('POST /api/v1/accounts/registrazione with valid user', async () => {
+        const response = await request(app)
+            .post(`/api/v1/accounts/registrazione`)
+            .set('x-access-token', tokenC)
+            .send(  { 
+                nome: 'test1',
+                cognome: 'test1',
+                birthdate: new Date(),
+                email: 'test@clienti.com',
+                username: 'test_cliente',
+                password: 'test_cliente',
+            } );
+        id=response.body._id;
+        expect(response.statusCode).toBe(201);
+    });
+
+    test('GET /api/v1/clienti?email=email returns 200', async () => {
+        const response = await request(app)
+            .get(`/api/v1/clienti?email=${'test@clienti.com'}`)
+            .set('x-access-token', tokenC);
+        id=response.body._id;
+        expect(response.statusCode).toBe(200);
+    });
+
+    test('DELETE /api/v1/clienti/:id with valid data', async () => {
+        const response = await request(app)
+            .delete(`/api/v1/clienti/${id}`)
+            .set('x-access-token', tokenC)
+        expect(response.statusCode).toBe(200);
+    });
+
+});
 
 describe('Create and delete imprenditore', () => {
     const tokenC = jwt.sign({ email: EMAIL_CLIENTE, aut: 'Cliente' },
         process.env.SUPER_SECRET, { expiresIn: '86400' });
     const tokenI = jwt.sign({ email: EMAIL_IMPRENDITORE, aut: 'Imprenditore' },
         process.env.SUPER_SECRET, { expiresIn: '86400' });
+    const nuovaDescrizione = 'Nuova descrizione';
+    const nuovaSede = 'Rovereto';
     let id;
     test('POST /api/v1/imprenditori/add with valid user', async () => {
         const response = await request(app)
@@ -396,11 +437,69 @@ describe('Create and delete imprenditore', () => {
             .set('x-access-token', tokenI)
         expect(response.statusCode).toBe(200);
     });
-
     test('DELETE /api/v1/imprenditori/:id with valid data', async () => {
         const response = await request(app)
             .delete(`/api/v1/imprenditori/${id}`)
             .set('x-access-token', tokenI)
+        expect(response.statusCode).toBe(200);
+    });
+
+});
+
+describe('Create and delete venditore', () => {
+    const tokenV = jwt.sign({ email: EMAIL_VENDITORE, aut: 'Venditore' },
+        process.env.SUPER_SECRET, { expiresIn: '86400' });
+    const tokenI = jwt.sign({ email: EMAIL_IMPRENDITORE, aut: 'Imprenditore' },
+        process.env.SUPER_SECRET, { expiresIn: '86400' });
+    const nuovaDescrizione = 'Nuova descrizione';
+    const nuovaSede = 'Rovereto';
+    let id;
+
+    afterAll(async () => {
+        // Pulisci il DB
+        await DBVendor.deleteOne({ _id: id });
+    });
+
+    test('POST /api/v1/venditori/registrazione with valid user', async () => {
+        const response = await request(app)
+            .post(`/api/v1/venditori/registrazione`)
+            .set('x-access-token', tokenV)
+            .send(  { 
+                nome: 'test2',
+                cognome: 'test2',
+                birthdate: new Date(),
+                email: 'test@venditori.com',
+                username: 'test_vend',
+                password: 'test_vend',
+                sede: 'Trento',
+                descrizione: 'Imprenditore di test',
+                tipo: 'venditore',
+                carrello: [],
+            } );
+        id=response.body._id;
+        expect(response.statusCode).toBe(201);
+    });
+
+    test('GET /api/v1/venditori/:id with valid data', async () => {
+        const response = await request(app)
+            .get(`/api/v1/venditori/${id}`)
+            .set('x-access-token', tokenV)
+        expect(response.statusCode).toBe(200);
+    });
+    test('PUT /api/v1/venditori/:id/descrizione with valid data', async () => {
+        const response = await request(app)
+            .put(`/api/v1/venditori/${id}/descrizione`)
+            .set('x-access-token', tokenV)
+            .send(JSON.stringify({ descrizione: nuovaDescrizione }))
+            .set('Content-Type', 'application/json')
+        expect(response.statusCode).toBe(200);
+    });
+    test('PUT /api/v1/venditori/:id/sede with valid data', async () => {
+        const response = await request(app)
+            .put(`/api/v1/venditori/${id}/sede`)
+            .set('x-access-token', tokenV)
+            .send(JSON.stringify({ sede: nuovaSede }))
+            .set('Content-Type', 'application/json')
         expect(response.statusCode).toBe(200);
     });
 
