@@ -179,23 +179,50 @@
                         } else {
                             inner += '<span style="color:red;">Venditore non trovato.</span><br>';
                         }
-                        const clientRes = await fetch(`/api/v1/clienti/${order.cliente}`, {
-                            headers: { 'x-access-token': token }
-                        });
+                        let model = order.clienteModel;
                         let client;
-                        if (clientRes.ok) {
-                            client = await clientRes.json();
-                        } else {
-                            inner += '<span style="color:red;">Cliente non trovato.</span><br>';
+                        switch(model) {
+                            case "DBClient":
+                                const clientRes = await fetch(`/api/v1/clienti/${order.cliente}`, {   
+                                    headers: { 'x-access-token': token }
+                                });
+                                if (clientRes.ok) {
+                                    client = await clientRes.json();
+                                } else {
+                                    inner += '<span style="color:red;">Cliente non trovato. Tipo Cliente</span><br>';
+                                }
+                                break;
+                            case "DBEntrepreneur":
+                                const entrRes = await fetch(`/api/v1/imprenditori/${order.cliente}`, {   
+                                    headers: { 'x-access-token': token }
+                                });
+                                if (entrRes.ok) {
+                                    client = await entrRes.json();
+                                } else {
+                                    inner += '<span style="color:red;">Cliente non trovato. Tipo Imprenditore</span><br>';
+                                }
+                                break;
+                            case "DBVendor":
+                                const vendRes = await fetch(`/api/v1/venditori/${order.cliente}`, { 
+                                    headers: { 'x-access-token': token }
+                                });
+                                if (vendRes.ok) {
+                                    client = await vendRes.json();
+                                } else {
+                                    inner += '<span style="color:red;">Cliente non trovato. Tipo Venditore</span><br>';
+                                }
+                                break;
+                            default:
+                                inner += '<span style="color:red;">Cliente non trovato. Tipo sconosciuto</span><br>';
                         }
 
                         inner += `
                             <strong>Venditore:</strong> ${vend ? (vend.nome + ' ' + vend.cognome) : 'N/A'} <br>
-                            <strong>Venditore email:</strong> ${vend ? vend.email : ' '} <br>
+                            <strong>Venditore email:</strong> ${vend ? vend.email : 'N/A'} <br>
                             <strong>Cliente:</strong> ${client ? (client.nome + ' ' + client.cognome) : 'N/A'} <br>
-                            <strong>Cliente email:</strong> ${client ? (client.email) : ' '} <br>
+                            <strong>Cliente email:</strong> ${client ? (client.email) : 'N/A'} <br>
                             <strong>Residenza venditore:</strong> ${vend ? vend.sede: ' '} <br>
-                            <strong>Zona:</strong> ${order ? order.zona : ' '} <br>
+                            <strong>Zona:</strong> ${order ? order.zona : 'N/A'} <br>
                         `;
                     } catch (e) {
                         inner += '<span style="color:red;">Errore nel recupero dei dati dell\'ordine.</span>';
