@@ -15,7 +15,7 @@ paths:
         "200":
           description: Home page
           content:
-            html:
+            text/html:
               schema:
                 type: string
   /mercato:
@@ -26,7 +26,7 @@ paths:
         "200":
           description: Market page
           content:
-            html:
+            text/html:
               schema:
                 type: string
   /login:
@@ -37,13 +37,13 @@ paths:
         "200":
           description: Login successful
           content:
-            html:
+            text/html:
               schema:
                 type: string
         "401":
           description: Unauthorized
           content:
-            html:
+            text/html:
               schema:
                 type: string
   /loginbusiness:
@@ -54,13 +54,13 @@ paths:
         "200":
           description: Login successful
           content:
-            html:
+            text/html:
               schema:
                 type: string
         "401":
           description: Unauthorized
           content:
-            html:
+            text/html:
               schema:
                 type: string
   /loginadmin:
@@ -71,13 +71,13 @@ paths:
         "200":
           description: Login successful
           content:
-            html:
+            text/html:
               schema:
                 type: string
         "401":
           description: Unauthorized
           content:
-            html:
+            text/html:
               schema:
                 type: string
   /api/v1/prodotti:
@@ -171,7 +171,7 @@ paths:
         "200":
           description: Ottieni immagine associata al prodotto
           content:
-            $ref: "#/components/requestBodies/ImageReq"
+            $ref: "#/components/schemas/Image"
         "404":
           description: Foto non trovata
         "500":
@@ -225,8 +225,8 @@ paths:
           description: A JSON with one seller
           content:
             application/json:
-              schema: null
-              $ref: "#/components/schemas/Venditore"
+              schema: 
+                $ref: "#/components/schemas/Venditore"
         "404":
           description: Venditore non trovato
         "500":
@@ -531,12 +531,11 @@ paths:
       description: Retrieve a user account (Cliente, Imprenditore, Venditore, Admin)
         by email.
       parameters:
-        parameters:
-          - in: query
-            name: email
-            schema:
-              type: string
-            description: Email utente
+        - in: query
+          name: email
+          schema:
+            type: string
+          description: Email utente
       responses:
         "200":
           description: Cliente trovato
@@ -1133,34 +1132,67 @@ paths:
           content:
             application/pdf:
               schema:
-                $ref: "#/components/schemas/PDF"
-        "404":
-          description: File non trovato
-        "500":
-          description: Errore durante il recupero del file
-  /api/v1/upgrades/{id}/registrazione:
-    get:
-      summary: Scarica il file PDF come attachment
-      description: Restituisce il file PDF come allegato per il download.
-      parameters:
-        - in: path
-          required: true
-          name: id
-          schema:
-            type: string
-          description: ID dell'upgrade
-      responses:
-        "200":
-          description: File PDF restituito come attachment
-          content:
-            application/pdf:
-              schema:
                 type: string
-                format: binary
+                description: binary
         "404":
           description: File non trovato
         "500":
           description: Errore durante il recupero del file
+  /api/v1/upgrades/registrazione:
+    post:
+      summary: Carica un file PDF per una richiesta di upgrade (registrazione imprenditore)
+      description: |
+        Permette di caricare un file PDF associato a una richiesta di upgrade (ad esempio, la registrazione di un imprenditore).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: binary
+                imprenditore:
+                  type: string
+                  description: L'ID dell'imprenditore associato
+                uploadDate:
+                  type: string
+                  description: date-time
+      responses:
+        "201":
+          description: File caricato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: File uploaded successfully
+                  id:
+                    type: string
+                    description: ID del file caricato
+        "400":
+          description: Nessun file PDF caricato
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No PDF file uploaded
+        "500":
+          description: Errore del server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Errore del server
   /api/v1/upgrades/{id}:
     delete:
       summary: Elimina una richiesta di upgrade
@@ -1445,13 +1477,11 @@ paths:
       description: Crea una nuova promozione
       security:
         - XAccessTokenHeaderAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/PromotionReq"
       responses:
         "201":
           description: Promozione creata con successo
-          content:
-            application/formDta:
-              schema:
-                $ref: "#/components/schemas/Promotion"
         "500":
           description: Errore durante la creazione della promozione
   /api/v1/service/mail:
@@ -1943,7 +1973,23 @@ components:
             type: object
             properties:
               schema:
-                $ref: "#/components/schemas/Product"
+                type: object
+                properties:
+                  nome:
+                    type: string
+                  descrizione:
+                    type: string
+                  venditore:
+                    type: string
+                  quantita:
+                    type: integer
+                  costo:
+                    type: integer
+                  tag:
+                    type: string
+                  immagine:
+                    type: string
+                    description: binary
     DescrizioneUpdate: 
       required: true
       content:
@@ -2026,7 +2072,7 @@ components:
             properties:
               date:
                 type: string
-                format: date
+                description: date-time
     OrdineIdReq:
       required: true
       content:
@@ -2042,7 +2088,36 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Order"
+            type: object
+            properties:
+              prodotti:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    nome:
+                      type: string
+                    prezzo:
+                      type: number
+                    quantity:
+                      type: integer
+              venditore:
+                type: string
+              cliente:
+                type: string
+              clienteModel:
+                type: string
+              zona:
+                type: string
+              tipo:
+                type: string
+              pubblicazione:
+                type: string
+                description: date-time
+              stato:
+                type: string
     AdminReq: 
       required: true
       content:
@@ -2074,7 +2149,7 @@ components:
                 description: ID dell'imprenditore
               uploadDate:
                 type: string
-                format: date-time
+                description: date-time
               file:
                 $ref: "#/components/schemas/PDF"
     RecensioneReq:
@@ -2097,16 +2172,87 @@ components:
       content:
         multipart/form-data:  # Specify media type
           schema: 
-            $ref: "#/components/schemas/Image"
+            type: object
+            properties:
+              data:
+                type: string
+                description: binary
+              contentType:
+                type: string
     VenditoreReq: 
       required: true
       content:
         application/json:  # Specify media type
           schema: 
-            $ref: "#/components/schemas/Venditore"
+            type: object
+            properties:
+              nome:
+                type: string
+              cognome:
+                type: string
+              birthdate:
+                type: string
+              email:
+                type: string
+              username:
+                type: string
+              password:
+                type: string
+              sede:
+                type: string
+              descrizione:
+                type: string
+              tipo:
+                type: string
+              carrello:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
     ImprenditoreReq:
       required: true
       content:
         application/json:  # Specify media type
           schema: 
-            $ref: "#/components/schemas/Imprenditore"
+            properties:
+              nome:
+                type: string
+              cognome:
+                type: string
+              birthdate:
+                type: string
+              email:
+                type: string
+              username:
+                type: string
+              password:
+                type: string
+              sede:
+                type: string
+              descrizione:
+                type: string
+              tipo:
+                type: string
+              datiPagamento:
+                type: string
+              carrello:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+    PromotionReq:
+      content:
+        application/form-data:
+          schema:
+            properties:
+              data:
+                type: string
+              titolo:
+                type: string
+              promotore:
+                type: string
+              descrizione:
+                type: string
+              img:
+                type: string
+                description: binary
+              tipoAnnuncio:
+                type: string
