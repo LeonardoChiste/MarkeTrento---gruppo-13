@@ -39,6 +39,9 @@ router.put('/:id/descrizione', tokenChecker('Imprenditore'), async (req, res) =>
 router.post('/add', tokenChecker('Cliente'), async (req, res) => {
     try {
         const imprenditore = new DBEntrepreneur(req.body);
+        if(!imprenditore){
+            return res.status(400).json({ error: 'Imprenditore non creato' });
+        }
         await imprenditore.save();
         res.status(201).json(imprenditore);
     } catch (error) {
