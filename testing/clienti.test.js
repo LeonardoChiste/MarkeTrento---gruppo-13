@@ -26,6 +26,12 @@ afterAll(async () => {
     await mongoose.connection.close(true);
 });
 
+describe('clientiRouter module should be defined', () => {
+    test('clientiRouter should be defined', () => {
+        expect(clientiRouter).toBeDefined();
+    });
+});
+
 describe('Clienti Carrello API - Unauthenticated/Invalid requests', () => {
 
     test('GET /api/v1/clienti/:id/carrello with non-existent user', async () => {

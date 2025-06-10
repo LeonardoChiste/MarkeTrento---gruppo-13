@@ -27,7 +27,11 @@ afterAll(async () => {
     await mongoose.connection.close(true);
 });
 
-
+describe('imprenditoriRouter module should be defined', () => {
+    test('imprenditoriRouter should be defined', () => {
+        expect(imprenditoriRouter).toBeDefined();
+    });
+});
 
 describe('Imprenditori Carrello API - Authenticated/Valid requests', () => {
     const token = jwt.sign({ email: EMAIL_IMPRENDITORE, aut: 'Imprenditore' },

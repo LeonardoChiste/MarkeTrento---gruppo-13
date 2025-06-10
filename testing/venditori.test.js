@@ -27,6 +27,12 @@ afterAll(async () => {
     await mongoose.connection.close(true);
 });
 
+describe('venditoriRouter module should be defined', () => {
+    test('venditoriRouter should be defined', () => {
+        expect(venditoriRouter).toBeDefined();
+    });
+});
+
 describe('Venditori Carrello API - Unauthenticated/Invalid requests', () => {
 
     test('GET /api/v1/venditori/:id/carrello with non-existent user', async () => {
